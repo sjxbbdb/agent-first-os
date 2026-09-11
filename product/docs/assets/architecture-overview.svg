@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 820" role="img" aria-labelledby="title desc">
+  <title id="title">Agent-First OS architecture overview</title>
+  <desc id="desc">A layered architecture from UEFI and a hybrid kernel to user-space services, agent runtime, and the owner.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0a0e17"/><stop offset="1" stop-color="#111827"/></linearGradient>
+    <linearGradient id="agent" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f6c453"/><stop offset="1" stop-color="#e8894a"/></linearGradient>
+    <linearGradient id="kernel" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#54b5b8"/><stop offset="1" stop-color="#2c738e"/></linearGradient>
+    <linearGradient id="user" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#25344b"/><stop offset="1" stop-color="#1b2638"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#000" flood-opacity=".34"/></filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#93a4bd"/></marker>
+    <style>
+      .label{font:600 18px Inter,Segoe UI,sans-serif;fill:#f8fafc}.small{font:400 14px Inter,Segoe UI,sans-serif;fill:#aebbd0}.micro{font:600 12px Inter,Segoe UI,sans-serif;fill:#71839f;letter-spacing:1.5px}.line{stroke:#93a4bd;stroke-width:2.5;fill:none;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1400" height="820" rx="28" fill="url(#bg)"/>
+  <text x="72" y="74" class="micro">AGENT-FIRST OS · DESIGN BASELINE 0.1</text>
+  <text x="72" y="125" style="font:700 42px Inter,Segoe UI,sans-serif;fill:#fff">Powerful intent. Small blast radius.</text>
+  <text x="72" y="158" class="small">The agent is the system's front door; the kernel remains the trust root.</text>
+
+  <g filter="url(#shadow)">
+    <rect x="490" y="205" width="420" height="92" rx="18" fill="url(#agent)"/>
+    <text x="700" y="245" text-anchor="middle" class="label" fill="#1b1720">Agent Runtime</text>
+    <text x="700" y="270" text-anchor="middle" style="font:400 14px Inter,Segoe UI,sans-serif;fill:#412b28">intent · planning · remote model adapter</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="106" y="350" width="1188" height="116" rx="22" fill="url(#user)" stroke="#45627f" stroke-width="2"/>
+    <text x="140" y="387" class="micro">RING 3 · USER SPACE</text>
+    <text x="140" y="424" class="label">Supervisor</text>
+    <text x="300" y="424" class="label">Policy Firewall</text>
+    <text x="518" y="424" class="label">File / Process</text>
+    <text x="735" y="424" class="label">Window / Input</text>
+    <text x="958" y="424" class="label">Network / Device</text>
+    <text x="1167" y="424" class="label">Desktop</text>
+    <text x="140" y="450" class="small">lifecycle</text><text x="300" y="450" class="small">policy + tokens</text><text x="518" y="450" class="small">native tools</text><text x="735" y="450" class="small">screen + HID</text><text x="958" y="450" class="small">hardware access</text><text x="1167" y="450" class="small">fallback</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="238" y="550" width="924" height="136" rx="24" fill="url(#kernel)"/>
+    <text x="276" y="590" class="micro" fill="#d4f4f1">RING 0 · HYBRID KERNEL</text>
+    <text x="276" y="632" class="label">memory</text><text x="436" y="632" class="label">threads + scheduling</text><text x="710" y="632" class="label">IPC</text><text x="820" y="632" class="label">interrupts</text><text x="1010" y="632" class="label">capability enforcement</text>
+    <text x="276" y="662" class="small" fill="#d4f4f1">small, privileged, restart-independent, difficult to bypass</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="480" y="730" width="440" height="54" rx="16" fill="#161d2b" stroke="#34445b"/>
+    <text x="700" y="764" text-anchor="middle" class="label" style="font-size:16px">UEFI / SeaBIOS · x86_64 · QEMU</text>
+  </g>
+  <path d="M700 297 V342" class="line"/><path d="M700 466 V542" class="line"/><path d="M700 686 V722" class="line"/>
+  <path d="M930 250 C1080 250 1130 320 1130 350" class="line"/>
+  <text x="970" y="235" class="small">owner-approved context</text>
+  <circle cx="700" cy="342" r="5" fill="#f6c453"/><circle cx="700" cy="542" r="5" fill="#54b5b8"/>
+</svg>

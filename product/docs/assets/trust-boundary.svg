@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
+  <title id="title">Agent-First OS trust and authorization boundaries</title>
+  <desc id="desc">The remote model proposes actions, the local agent requests capabilities, policy issues temporary tokens, and the kernel enforces hard rules.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#101522"/><stop offset="1" stop-color="#1a2130"/></linearGradient>
+    <linearGradient id="remote" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8b76d8"/><stop offset="1" stop-color="#536fb2"/></linearGradient>
+    <linearGradient id="local" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e4ae52"/><stop offset="1" stop-color="#cd734f"/></linearGradient>
+    <linearGradient id="hard" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#54b5b8"/><stop offset="1" stop-color="#27728b"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000" flood-opacity=".35"/></filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#9aa8bc"/></marker>
+    <style>.h{font:700 28px Inter,Segoe UI,sans-serif;fill:#fff}.t{font:600 17px Inter,Segoe UI,sans-serif;fill:#fff}.s{font:400 14px Inter,Segoe UI,sans-serif;fill:#b7c1d3}.m{font:600 12px Inter,Segoe UI,sans-serif;fill:#7d8da8;letter-spacing:1.4px}.a{stroke:#9aa8bc;stroke-width:2.5;fill:none;marker-end:url(#arrow);stroke-dasharray:9 7}</style>
+  </defs>
+  <rect width="1400" height="760" rx="28" fill="url(#bg)"/>
+  <text x="72" y="70" class="m">AUTHORITY MODEL · NO TRUST BY PROXY</text>
+  <text x="72" y="116" class="h">The model proposes. The local system decides.</text>
+  <text x="72" y="148" class="s">Direct agent calls stay fast; hard guarantees stay below the agent.</text>
+
+  <rect x="80" y="224" width="270" height="172" rx="22" fill="url(#remote)" filter="url(#shadow)"/>
+  <text x="116" y="266" class="m" fill="#e4ddff">REMOTE / UNTRUSTED</text>
+  <text x="116" y="310" class="t">Remote Model</text>
+  <text x="116" y="342" class="s">understands intent</text>
+  <text x="116" y="367" class="s">returns structured plans</text>
+
+  <rect x="415" y="195" width="310" height="230" rx="22" fill="url(#local)" filter="url(#shadow)"/>
+  <text x="451" y="237" class="m" fill="#fff0cf">LOCAL / HIGH AUTHORITY</text>
+  <text x="451" y="282" class="t">Agent Runtime</text>
+  <text x="451" y="317" class="s">direct native syscalls</text>
+  <text x="451" y="343" class="s">broad capability set</text>
+  <text x="451" y="369" class="s">task process group</text>
+  <text x="451" y="395" class="s">context and audit state</text>
+
+  <rect x="790" y="195" width="260" height="230" rx="22" fill="#273249" stroke="#55708c" stroke-width="2" filter="url(#shadow)"/>
+  <text x="826" y="237" class="m">POLICY GATE</text>
+  <text x="826" y="282" class="t">Policy Firewall</text>
+  <text x="826" y="317" class="s">L0–L3 risk rules</text>
+  <text x="826" y="343" class="s">owner confirmation</text>
+  <text x="826" y="369" class="s">one-time token</text>
+  <text x="826" y="395" class="s">cannot be changed by agent</text>
+
+  <rect x="1115" y="195" width="205" height="230" rx="22" fill="url(#hard)" filter="url(#shadow)"/>
+  <text x="1148" y="237" class="m" fill="#d8fbf7">RING 0</text>
+  <text x="1148" y="282" class="t">Kernel</text>
+  <text x="1148" y="317" class="s">capability check</text>
+  <text x="1148" y="343" class="s">resource bounds</text>
+  <text x="1148" y="369" class="s">hard deny rules</text>
+  <text x="1148" y="395" class="s">token validation</text>
+
+  <path d="M350 306 H405" class="a"/><path d="M725 306 H780" class="a"/><path d="M1050 306 H1105" class="a"/>
+  <text x="363" y="289" class="s">plan</text><text x="739" y="289" class="s">request</text><text x="1060" y="289" class="s">enforce</text>
+
+  <rect x="255" y="525" width="890" height="112" rx="22" fill="#151c2b" stroke="#384861"/>
+  <text x="300" y="565" class="m">TRUSTED CONFIRMATION CHANNEL</text>
+  <text x="300" y="603" class="t">Owner confirms with a channel the agent cannot simulate.</text>
+  <text x="300" y="628" class="s">Trusted UI · physical key · secure shortcut · future TPM-backed identity</text>
+  <path d="M920 425 C920 492 820 520 720 525" class="a"/>
+</svg>

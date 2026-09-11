@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
+  <title id="title">Agent task lifecycle and recovery</title>
+  <desc id="desc">A task moves from planning to execution, confirmation, verification, completion, failure, cancellation, and recovery under Supervisor control.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0d121c"/><stop offset="1" stop-color="#172132"/></linearGradient>
+    <linearGradient id="active" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f2bd55"/><stop offset="1" stop-color="#d8794e"/></linearGradient>
+    <linearGradient id="done" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#5fbcb5"/><stop offset="1" stop-color="#2f7e8c"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000" flood-opacity=".35"/></filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#98a8bd"/></marker>
+    <style>.h{font:700 28px Inter,Segoe UI,sans-serif;fill:#fff}.t{font:600 17px Inter,Segoe UI,sans-serif;fill:#fff}.s{font:400 14px Inter,Segoe UI,sans-serif;fill:#b7c1d3}.m{font:600 12px Inter,Segoe UI,sans-serif;fill:#7d8da8;letter-spacing:1.4px}.l{stroke:#98a8bd;stroke-width:2.5;fill:none;marker-end:url(#arrow)}</style>
+  </defs>
+  <rect width="1400" height="760" rx="28" fill="url(#bg)"/>
+  <text x="72" y="70" class="m">TASK LIFECYCLE · SUPERVISOR CONTROL</text>
+  <text x="72" y="116" class="h">Every action has a state, a record, and an escape hatch.</text>
+  <text x="72" y="148" class="s">Freeze first. Preserve evidence. Resume only when the next step is understood.</text>
+
+  <g filter="url(#shadow)"><rect x="105" y="240" width="210" height="100" rx="20" fill="#29364d" stroke="#546a89"/><text x="210" y="281" text-anchor="middle" class="t">planned</text><text x="210" y="309" text-anchor="middle" class="s">scope + context</text></g>
+  <g filter="url(#shadow)"><rect x="390" y="240" width="210" height="100" rx="20" fill="url(#active)"/><text x="495" y="281" text-anchor="middle" class="t" fill="#251a1a">executing</text><text x="495" y="309" text-anchor="middle" style="font:400 14px Inter,Segoe UI,sans-serif;fill:#472c29">IPC + actions</text></g>
+  <g filter="url(#shadow)"><rect x="675" y="240" width="250" height="100" rx="20" fill="#29364d" stroke="#546a89"/><text x="800" y="281" text-anchor="middle" class="t">awaiting confirmation</text><text x="800" y="309" text-anchor="middle" class="s">L2 / L3 token</text></g>
+  <g filter="url(#shadow)"><rect x="1000" y="240" width="210" height="100" rx="20" fill="url(#done)"/><text x="1105" y="281" text-anchor="middle" class="t">completed</text><text x="1105" y="309" text-anchor="middle" style="font:400 14px Inter,Segoe UI,sans-serif;fill:#d9fbf3">verified result</text></g>
+  <path d="M315 290 H380" class="l"/><path d="M600 290 H665" class="l"/><path d="M925 290 H990" class="l"/>
+
+  <g filter="url(#shadow)"><rect x="390" y="465" width="210" height="100" rx="20" fill="#5a3943" stroke="#ae6a67"/><text x="495" y="506" text-anchor="middle" class="t">failed</text><text x="495" y="534" text-anchor="middle" class="s">retry or inspect</text></g>
+  <g filter="url(#shadow)"><rect x="700" y="465" width="210" height="100" rx="20" fill="#303a4c" stroke="#667894"/><text x="805" y="506" text-anchor="middle" class="t">cancelled</text><text x="805" y="534" text-anchor="middle" class="s">frozen or rejected</text></g>
+  <path d="M495 340 V455" class="l"/><path d="M495 465 C350 420 310 330 390 290" class="l"/>
+  <path d="M800 340 V455" class="l"/><path d="M675 290 C630 365 675 430 700 485" class="l"/>
+
+  <rect x="150" y="640" width="1100" height="58" rx="16" fill="#151d2a" stroke="#374961"/>
+  <text x="700" y="676" text-anchor="middle" class="t" style="font-size:15px">Supervisor: process group · capability revoke · journal · freeze · rollback · restart</text>
+</svg>

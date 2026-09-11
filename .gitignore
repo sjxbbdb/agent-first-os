@@ -1,0 +1,31 @@
+# Build products
+build/
+out/
+dist/
+*.o
+*.a
+*.elf
+*.bin
+*.iso
+*.img
+*.efi
+
+# Debug and runtime output
+*.log
+*.trace
+*.dump
+*.map
+qemu-*.pid
+
+# Local tooling and secrets
+.env
+.env.*
+.venv/
+.cache/
+.vscode/
+.idea/
+
+# Keep evidence commands and reports; ignore large generated captures by default.
+learning/evidence/**/*.png
+learning/evidence/**/*.bmp
+learning/evidence/**/*.wav
