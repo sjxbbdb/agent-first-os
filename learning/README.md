@@ -6,6 +6,7 @@
 - [最小观看主线](curriculum/STUDY_PLAN.md)
 - [第一次课：程序、变量与赋值](lessons/day-01-c-basics.md)
 - [课堂笔记模板](notes/NOTE_TEMPLATE.md) · [学习笔记索引](notes/INDEX.md)
+- [学习进度记录](notes/PROGRESS.md)
 - [验收协议](curriculum/ASSESSMENT.md)
 - [资料清单](curriculum/RESOURCES.md)
 - `lessons/`：逐课讲义和练习
