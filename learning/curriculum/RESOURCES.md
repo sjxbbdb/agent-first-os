@@ -2,6 +2,8 @@
 
 资料只作为课程的支撑，不替代自己的实现和验收。外部课程的答案、作业解答和受限制材料不直接复制到项目仓库。
 
+阶段化的观看顺序见 [STUDY_PLAN.md](STUDY_PLAN.md)；本文件保留完整候选资料，方便遇到具体卡点时查阅。
+
 ## 推荐主线
 
 - [Nand2Tetris 官方课程](https://www.nand2tetris.org/)：从逻辑门、CPU、汇编器、VM、编译器到教学 OS，适合补齐硬件到软件的整体直觉。官方提供在线 IDE 和项目工具；课程材料带有非商业使用限制，公开仓库时只提交自己的实现。
@@ -10,6 +12,22 @@
 - [MIT 6.828 x86/JOS](https://pdos.csail.mit.edu/6.828/2018/)：更贴近 x86、QEMU、GDB、PC bootstrap、启动器、保护模式和 JOS 实验，适合阶段 1–7 的对照学习。
 
 ## 视频与网课
+
+### B站优先主线（只选指定部分）
+
+- [浙大翁恺《C语言程序设计》](https://www.bilibili.com/video/BV1dr4y1n7vA/)：阶段 0–1 首选。只看开发环境、类型/表达式、控制流、函数、数组/字符串、指针、结构体、文件和编译运行；不需要把整套课程刷完。
+- [尚硅谷《C语言零基础入门教程》](https://www.bilibili.com/video/BV1qJ411z7Hf/)：翁恺课程听不懂时的替代，只二选一，不与翁恺整套并行。
+- [2024 零基础 x64 汇编](https://www.bilibili.com/video/BV12M4m1o7f6/)：阶段 2 只看前 15 集，建立寄存器、内存、进制和基本指令直觉；长模式和系统编程仍以 OST2/Intel 为准。
+- [李忠《x86汇编语言：从实模式到保护模式》](https://www.bilibili.com/video/BV1xE411N74T/)：阶段 3 的中文启动主课，重点看数制、实模式、A20、GDT、保护模式和加载 C；它主要覆盖 32 位，不能替代 x86_64/UEFI 资料。
+- [从零开发操作系统](https://www.bilibili.com/video/BV18K411w7Z2/)：阶段 3–5 选看启动、ELF、C/汇编联合编程和 Ring 0/Ring 3 章节。页面标注为搬运，内容只作直觉参考。
+- [南京大学《操作系统》蒋炎岩](https://www.bilibili.com/video/BV1Cm4y1d7Ur/)：阶段 6–11 按 `STUDY_PLAN.md` 指定主题观看；课程较硬，不作为零基础第一门课。
+- [清华《操作系统原理》](https://www.bilibili.com/video/BV1uW411f72n/)：阶段 3 的中文概念补课，只按进程、内存、文件、I/O 和系统调用主题查漏。
+- [用 x86 汇编语言实现 64 位操作系统](https://www.bilibili.com/video/BV1gM4y1V7Ac/)：阶段 2、5 的辅助课，按分页、中断、特权级、多任务主题选看；不直接复制其实现。
+- [南京大学《计算机系统基础（一）》](https://www.bilibili.com/video/BV19J411T7rq/)：阶段 1–2 的桥梁课，只看数制/补码、ISA/指令、过程调用、数组/指针、汇编与链接加载。
+- [南京大学《计算机系统基础（二）》](https://www.bilibili.com/video/BV1Xx411E7qn/)：阶段 4 的补充，只看 Cache、虚拟存储、地址转换和存储保护。
+- [南京大学 ICS 2023 实验课](https://www.bilibili.com/video/BV1vj411H7N6/)：阶段 1–5 的实验桥梁，选看 C 拾遗、NEMU、机器级表示、x86-64、调试、链接加载、中断和虚拟存储周次。
+
+B站课程的 BV 号、章节和版权状态可能变化；开始学习时重新打开页面核对。高校课程搬运和个人 UP 视频统一作为 B/C 类资料，硬件事实回到 Intel、UEFI、QEMU 和 virtio 规范。
 
 - [OpenSecurityTraining2 Arch1001](https://p.ost2.fyi/courses/course-v1:OpenSecurityTraining2+Arch1001_x86-64_Assembly+2024_v1/about)：x86‑64 汇编、寄存器、栈、调用约定、位运算和 Intel 手册阅读，适合阶段 1–3。
 - [OpenSecurityTraining2 Arch2001](https://p.ost2.fyi/courses/course-v1:OpenSecurityTraining2+Arch2001_x86-64_OS_Internals+2024_v1/about)：执行模式、Ring 0/3、MSR、IDT、中断、syscall、分页和端口 I/O，适合阶段 2、6、7。

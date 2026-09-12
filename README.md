@@ -31,7 +31,7 @@ product/    产品主线：可合并的 OS 代码、系统模块、Agent Runtime
 
 产品区只接收经过独立验证、具备运行证据和清晰变更说明的成果。学习区的实验完成后，经过评审才会迁移到产品区。
 
-课程入口：[learning/curriculum/CURRICULUM.md](learning/curriculum/CURRICULUM.md)　·　产品设计书：[product/docs/DESIGN_BOOK.md](product/docs/DESIGN_BOOK.md)
+课程入口：[learning/curriculum/CURRICULUM.md](learning/curriculum/CURRICULUM.md)　·　最小观看主线：[learning/curriculum/STUDY_PLAN.md](learning/curriculum/STUDY_PLAN.md)　·　产品设计书：[product/docs/DESIGN_BOOK.md](product/docs/DESIGN_BOOK.md)
 
 ---
 

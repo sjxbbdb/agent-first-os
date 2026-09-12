@@ -3,6 +3,7 @@
 这里保存从基础到 Agent-First OS 的完整学习过程。
 
 - [课程总纲](curriculum/CURRICULUM.md)
+- [最小观看主线](curriculum/STUDY_PLAN.md)
 - [验收协议](curriculum/ASSESSMENT.md)
 - [资料清单](curriculum/RESOURCES.md)
 - `lessons/`：逐课讲义和练习
