@@ -8,6 +8,7 @@
 | 第二小节：完整 C 程序的基本外形 | [课后记录](lesson-log/2026-09-12-lesson-02.md) | 已复述 | 已掌握逐行赋值；下一步认识编译 |
 | 第三小节：从 C 源代码到可执行文件 | [课后记录](lesson-log/2026-09-12-lesson-03.md) | 已复述 | 复习构建阶段顺序 |
 | 第一周第一节 PDF 笔记批改 | [批改记录](lesson-log/week-1-lesson-1-note-review.md) | 已复述 | 精确表述：`.o` 不一定能直接运行 |
+| 第一周第二节 PDF 笔记批改 | [批改记录](lesson-log/week-1-lesson-2-note-review.md) | 已通过 | GCC 构建阶段、ELF 和返回码 |
 | 第四小节：复习与编译前检查 | [课后记录](lesson-log/2026-09-13-lesson-04.md) | 已通过 | 完整程序从 `main` 开始 |
 | 第五小节：第一次编译并运行 C 程序 | [课后记录](lesson-log/2026-09-13-lesson-05.md) | 进行中 | 等待笔记复核：ELF、返回码和动态链接 |
 
