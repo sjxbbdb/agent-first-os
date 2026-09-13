@@ -28,6 +28,8 @@ Native BIOS/QEMU evidence:
 ```text
 wsl.exe bash -lc "cd '/mnt/d/Agent OS' && bash product/tests/g3-native-dynamic-endpoint-test.sh"
 SYSCALL ipc create OK
+SYSCALL ipc close OK
+SYSCALL ipc recv wait closed
 SYSCALL ipc destroy OK
 SYSCALL ipc send denied
 DYNAMIC IPC ENDPOINT LIFECYCLE OK
@@ -36,9 +38,10 @@ PASS: native Ring 3 dynamic endpoint generation lifecycle
 ```
 
 The native fixture creates an endpoint from Ring 3, sends and receives a
-bounded message through its returned capability, destroys it, and proves the
-old capability cannot send afterward. The host fixture also proves close,
-destroy, and safe slot reuse.
+bounded message through its returned capability, closes it, proves an empty
+closed endpoint returns immediately from `SYS_IPC_RECV_WAIT`, destroys it, and
+proves the old capability cannot send afterward. The host fixture also proves
+close, destroy, and safe slot reuse.
 
 ## Remaining boundary
 

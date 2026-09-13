@@ -22,6 +22,8 @@ if [[ "$qemu_status" -ne 124 ]]; then
     exit 1
 fi
 grep -Fq 'SYSCALL ipc create OK' "$log"
+grep -Fq 'SYSCALL ipc close OK' "$log"
+grep -Fq 'SYSCALL ipc recv wait closed' "$log"
 grep -Fq 'SYSCALL ipc destroy OK' "$log"
 grep -Fq 'SYSCALL ipc send denied' "$log"
 grep -Fq 'DYNAMIC IPC ENDPOINT LIFECYCLE OK' "$log"

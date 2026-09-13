@@ -841,6 +841,14 @@ void kernel_syscall_handler(SyscallFrame *frame) {
             frame->rax = 0;
             return;
         }
+        if (status == AGENT_OS_E_CLOSED) {
+            /* A closed, empty endpoint is terminal.  It must not turn into a
+             * new blocked waiter after the close path has already woken all
+             * existing receivers. */
+            serial_print("SYSCALL ipc recv wait closed\r\n");
+            frame->rax = (uint64_t)-32; /* EPIPE-shaped closed endpoint */
+            return;
+        }
         current_process->blocked_ipc_buffer = frame->rsi;
         current_process->blocked_ipc_sequence = ++ipc_wait_sequence;
         current_process->blocked_ipc_endpoint = object;

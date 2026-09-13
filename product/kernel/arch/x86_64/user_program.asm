@@ -938,6 +938,17 @@ recursive_group_child_end:
     jnz .dynamic_endpoint_fail_stack
     cmp dword [rsp+8], 0xD2
     jne .dynamic_endpoint_fail_stack
+    mov eax, 21             ; close leaves the capability valid but terminal
+    mov rdi, r12
+    int 0x80
+    test rax, rax
+    jnz .dynamic_endpoint_fail_stack
+    mov eax, 19             ; closed empty endpoint must return immediately
+    mov rdi, r12
+    mov rsi, rsp
+    int 0x80
+    test rax, rax
+    jz .dynamic_endpoint_fail_stack
     mov eax, 23             ; SYS_IPC_DESTROY retires the capability
     mov rdi, r12
     int 0x80

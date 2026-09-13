@@ -28,6 +28,7 @@ bash product/tests/g2-kernel-test.sh
 加入完整多区域串口 marker。
 
 边界：最多 16 个 free ranges、最多 8 个保留范围；保留范围来自 BootInfo
-kernel/staging/initrd 和 E820 表本身。当前 `vm.c` 的页表池仍是独立的有界
-identity-mapped pool，尚未切换为该 PMM；没有验证 UEFI memory map、并发分配、
-内存类型合并、碎片策略、回收或真实硬件。
+kernel/staging/initrd 和 E820 表本身。BIOS 路径已经把该 PMM 有界接入页表页
+分配，并在各进程根中映射已分配的低地址页表页；PMM 不可用时仍回退到独立的
+identity-mapped bootstrap pool。没有验证 UEFI memory map、并发分配、内存类型
+合并、碎片策略、回收或真实硬件。
