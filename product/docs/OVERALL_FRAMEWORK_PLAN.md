@@ -67,6 +67,8 @@ SeaBIOS / UEFI
 
 验收：故意崩溃的服务被回收并重启；旧 capability 和 IPC 句柄失效；任务树可以冻结、恢复和终止；内核继续运行。
 
+当前增量：clean `SYS_EXIT` 会撤销旧 capability，并在父级授权 `SYS_RESTART` 时 bounded re-mint；原生 READY gate 已验证服务先阻塞等待依赖，再由 Supervisor 释放。证据见 `learning/evidence/g4-clean-exit-capability-remint.md` 与 `learning/evidence/g4-supervisor-ready-gate.md`。
+
 ### G5：UEFI 产品启动器与 BootInfo v2
 
 编写最小 PE/COFF UEFI loader，使用 FAT ESP 读取同一 ELF64，获得 UEFI memory map、GOP、ACPI RSDP，有限次处理 `ExitBootServices` key 变化，填充 BootInfo v2 后跳入同一个内核入口。退出 Boot Services 后内核不保留 EFI boot-service 指针。
@@ -78,6 +80,8 @@ SeaBIOS / UEFI
 先支持 QEMU virtio-block、virtio-net、virtio-input/serial 的最小传输和复位，再把文件/存储、网络、输入/窗口、进程服务放在用户态，通过 IPC、shared memory 和 capability 协作。提供 initramfs fallback，内核只保留硬件边界和必要中断机制。
 
 验收：从 virtio-block 读取服务或文件；网络 loopback fixture 可用；输入事件进入窗口服务；单服务崩溃不会拖垮其他服务；不宣称真实硬件驱动覆盖。
+
+当前增量：modern virtio capability layout、BAR 范围安全、Ring 3 RX buffer handoff ABI 和负向契约已固定并纳入测试；这些仍是 host/协议边界，virtio-net RX used completion、modern virtio-input event queue 和 DMA/IOMMU 校验尚未完成。
 
 ### G7：Policy Firewall、一次性 token 与事务恢复
 
