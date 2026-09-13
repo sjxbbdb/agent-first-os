@@ -25,6 +25,7 @@ qemu-*.pid
 .cache/
 .vscode/
 .idea/
+**/__pycache__/
 
 # Keep evidence commands and reports; ignore large generated captures by default.
 learning/evidence/**/*.png
