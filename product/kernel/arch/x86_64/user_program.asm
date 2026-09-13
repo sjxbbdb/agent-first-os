@@ -727,8 +727,29 @@ task_group_fail_message_end:
     mov esi, supervisor_start_end - supervisor_start - 1
     int 0x80
     sub rsp, 128
+%ifdef AGENT_OS_TEST_SUPERVISOR_READY_GATE
+    ; READY is a Supervisor event: the dependent service is released only
+    ; after this parent has announced its own startup.
+    mov eax, 1
+    lea rdi, [rel supervisor_ready]
+    mov esi, supervisor_ready_end - supervisor_ready - 1
+    int 0x80
+%endif
     mov eax, 2              ; SYS_YIELD: run the service
     int 0x80
+%ifdef AGENT_OS_TEST_SUPERVISOR_READY_GATE
+    ; The first yield lets the dependent service block in SYS_IPC_RECV.  Only
+    ; after the scheduler returns here is the READY release marker sent.
+    mov eax, 16
+    mov rdi, 0x0000000100000001
+    mov esi, 0xD8
+    mov edx, 1
+    int 0x80
+    mov eax, 1
+    lea rdi, [rel supervisor_gate_sent]
+    mov esi, supervisor_gate_sent_end - supervisor_gate_sent - 1
+    int 0x80
+%endif
     mov eax, 17             ; SYS_IPC_RECV: heartbeat generation 1
     mov rdi, 0x0000000100000001
     mov rsi, rsp
@@ -740,6 +761,13 @@ task_group_fail_message_end:
     mov eax, 5              ; SYS_RESTART: parent-owned zombie service
     mov rdi, 0x0000000100000002
     int 0x80
+%ifdef AGENT_OS_TEST_SUPERVISOR_READY_GATE
+    mov eax, 16
+    mov rdi, 0x0000000100000001
+    mov esi, 0xD8
+    mov edx, 2
+    int 0x80
+%endif
     mov eax, 2              ; SYS_YIELD: run restarted service
     int 0x80
     mov eax, 17             ; SYS_IPC_RECV: heartbeat generation 2
@@ -766,6 +794,10 @@ task_group_fail_message_end:
     jmp .supervisor_halt
 supervisor_start db 'SUPERVISOR RING3 START', 13, 10, 0
 supervisor_start_end:
+supervisor_ready db 'SUPERVISOR READY', 13, 10, 0
+supervisor_ready_end:
+supervisor_gate_sent db 'SUPERVISOR READY GATE SENT', 13, 10, 0
+supervisor_gate_sent_end:
 supervisor_heartbeat db 'SUPERVISOR HEARTBEAT 1', 13, 10, 0
 supervisor_heartbeat_end:
 supervisor_restarted db 'SUPERVISOR RESTART HEARTBEAT 2', 13, 10, 0
@@ -1549,6 +1581,35 @@ g10_service_fail_message_end:
     ; The service emits a bounded inline heartbeat and exits.  Restarting the
     ; same process frame executes this exact path a second time, proving that
     ; the Supervisor owns lifecycle policy while Ring 0 only enforces it.
+%ifdef AGENT_OS_TEST_SUPERVISOR_READY_GATE
+    sub rsp, 128
+    mov eax, 1
+    lea rdi, [rel service_waiting]
+    mov esi, service_waiting_end - service_waiting - 1
+    int 0x80
+.g4_supervisor_gate_wait:
+    mov eax, 17
+    test rbx, rbx
+    jnz .g4_supervisor_gate_cap
+    mov rdi, 0x0000000100000001
+    jmp .g4_supervisor_gate_recv
+.g4_supervisor_gate_cap:
+    mov rdi, rbx
+.g4_supervisor_gate_recv:
+    mov rsi, rsp
+    int 0x80
+    test rax, rax
+    jz .g4_supervisor_gate_ready
+    mov eax, 2
+    int 0x80
+    jmp .g4_supervisor_gate_wait
+.g4_supervisor_gate_ready:
+    mov eax, 1
+    lea rdi, [rel service_dependency_ready]
+    mov esi, service_dependency_ready_end - service_dependency_ready - 1
+    int 0x80
+    add rsp, 128
+%endif
     mov eax, 16             ; SYS_IPC_CALL
     test rbx, rbx
     jz .g4_supervisor_initial_cap
@@ -1700,6 +1761,10 @@ fault_recovery_task2 db 'FAULT RECOVERY TASK2 OK', 13, 10, 0
 fault_recovery_task2_end:
 service_heartbeat db 'SERVICE HEARTBEAT SENT', 13, 10, 0
 service_heartbeat_end:
+service_waiting db 'SERVICE WAITING DEPENDENCY', 13, 10, 0
+service_waiting_end:
+service_dependency_ready db 'SERVICE DEPENDENCY READY', 13, 10, 0
+service_dependency_ready_end:
 agent_action_committed db 'AGENT RING3 ACTION COMMITTED', 13, 10, 0
 agent_action_committed_end:
 g4_fault_supervisor_start db 'SUPERVISOR FAULT RING3 START', 13, 10, 0
