@@ -99,6 +99,8 @@ Runtime 只实现：session/task-window、上下文收集、远程 model adapter
 
 验收：mock remote model 能完成 L0/L1 fixture；提示注入和 malformed plan 被拒绝；L2/L3 等待 Trusted Input；断网进入 offline/null adapter；runtime 崩溃后 Supervisor 重启；每个动作都有结果证据和日志。
 
+当前增量：可选 `@earendil-works/pi-agent-core@0.85.1` Ring 3 host adapter 已接入 `Agent.subscribe()`/`prompt()`，并通过真实 `Agent/event stream` smoke 将响应校验为 versioned `ActionPlan`；这不等同于远程 provider、原生 Agent Runtime 服务或 QEMU 端到端完成。
+
 ### G10：端到端演示与发布审计
 
 在 QEMU 上完成一条可录制任务：用户输入目标 → Context Collector → mock/remote model → Registry → Policy → capability/syscall/IPC → 文件或窗口服务 → 后置验证 → journal。再执行服务崩溃、agent 超时、token 重放、紧急暂停、回滚和离线模式故障注入。
