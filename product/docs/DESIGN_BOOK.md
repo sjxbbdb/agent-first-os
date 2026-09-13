@@ -239,6 +239,12 @@ stateDiagram-v2
 
 离线时，系统不等待云端模型启动，也不把远程连接当成内核依赖。未来有条件部署本地模型时，只替换 `Model Adapter`，不重写内核、权限、工具和任务接口。
 
+### Agent Runtime 的实现基线
+
+Agent Runtime 采用现有 agent harness 做用户态适配层，优先以轻量、易改造的 **pi agent** 作为主线；需要时吸收 OpenAI Codex harness 在执行循环、结构化工具调用、验证、恢复和任务日志方面的成熟做法。两者只提供可替换的运行时实现，不改变内核 syscall、capability、Policy Firewall 和 Supervisor 的信任边界。
+
+运行时适配遵循三条约束：框架只能通过原生 syscall/IPC 请求能力；模型输出必须先转换为本地 schema 并经过策略检查；离线时系统和维护入口仍可独立运行。未来本地模型接入时替换 Model Adapter，不改变任务协议和权限模型。
+
 ---
 
 ## 原生程序与生态
@@ -323,4 +329,3 @@ Linux/Windows 兼容不是第一版目标。兼容层未来作为用户态适配
 - [总体架构图](assets/architecture-overview.svg)
 - [信任与权限边界图](assets/trust-boundary.svg)
 - [任务生命周期图](assets/task-lifecycle.svg)
-

@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "services": [
+    {
+      "version": 1,
+      "service_id": "echo",
+      "entrypoint": "/sbin/echo-service.elf",
+      "argv": ["echo-service"],
+      "dependencies": [],
+      "capabilities": [{"resource": "ipc:supervisor", "rights": ["send", "receive"]}],
+      "heartbeat": {"interval_ms": 1000, "timeout_ms": 3000, "grace_ms": 500},
+      "restart": {"mode": "on-fault", "max_attempts": 3, "backoff_ms": 250}
+    },
+    {
+      "version": 1,
+      "service_id": "logger",
+      "entrypoint": "/sbin/logger-service.elf",
+      "argv": ["logger-service"],
+      "dependencies": ["echo"],
+      "capabilities": [{"resource": "ipc:supervisor", "rights": ["send", "receive"]}],
+      "heartbeat": {"interval_ms": 1000, "timeout_ms": 3000, "grace_ms": 500},
+      "restart": {"mode": "on-fault", "max_attempts": 2, "backoff_ms": 250}
+    }
+  ]
+}

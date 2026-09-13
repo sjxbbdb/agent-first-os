@@ -1,0 +1,4 @@
+S1 BIOS OK - stage2 pending
+S2 BIOS OK - stage2 loaded
+S2 ERROR - long mode unavailable
+qemu-system-x86_64: terminating on signal 15 from pid 1357 (timeout)

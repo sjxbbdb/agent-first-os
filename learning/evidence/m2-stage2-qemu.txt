@@ -1,0 +1,3 @@
+S1 BIOS OK - stage2 pending
+S2 BIOS OK - stage2 loaded
+qemu-system-x86_64: terminating on signal 15 from pid 948 (timeout)

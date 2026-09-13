@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "agent-first-os/action-plan/v1",
+  "type": "object",
+  "required": ["version", "task_id", "actions"],
+  "properties": {
+    "version": {"const": 1},
+    "task_id": {"type": "string", "minLength": 1},
+    "actions": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "type": "object",
+        "required": ["action_id", "tool_id", "tool_version", "params", "risk", "idempotency_key"],
+        "properties": {
+          "action_id": {"type": "string", "minLength": 1},
+          "tool_id": {"type": "string", "pattern": "^[a-z0-9._-]+$"},
+          "tool_version": {"type": "string", "minLength": 1},
+          "params": {"type": "object"},
+          "risk": {"enum": ["L0", "L1", "L2", "L3"]},
+          "idempotency_key": {"type": "string", "minLength": 1},
+          "expected": {"type": "array", "items": {"type": "object"}}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

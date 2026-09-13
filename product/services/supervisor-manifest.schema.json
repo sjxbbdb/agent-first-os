@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "agent-first-os/supervisor-manifest/v1",
+  "title": "Agent-First OS Supervisor service manifest",
+  "type": "object",
+  "required": ["version", "service_id", "entrypoint", "dependencies", "capabilities", "heartbeat", "restart"],
+  "properties": {
+    "version": {"const": 1},
+    "service_id": {"type": "string", "pattern": "^[a-z][a-z0-9._-]{0,63}$"},
+    "entrypoint": {"type": "string", "pattern": "^/[A-Za-z0-9._/@+-]{1,191}$"},
+    "argv": {
+      "type": "array", "maxItems": 32,
+      "items": {"type": "string", "maxLength": 256}
+    },
+    "dependencies": {
+      "type": "array", "maxItems": 32, "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[a-z][a-z0-9._-]{0,63}$"}
+    },
+    "capabilities": {
+      "type": "array", "maxItems": 64,
+      "items": {
+        "type": "object", "required": ["resource", "rights"],
+        "properties": {
+          "resource": {"type": "string", "pattern": "^[a-z][a-z0-9._:/@+-]{0,191}$"},
+          "rights": {
+            "type": "array", "minItems": 1, "maxItems": 8, "uniqueItems": true,
+            "items": {"enum": ["read", "write", "execute", "map", "send", "receive", "transfer", "inspect"]}
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "heartbeat": {
+      "type": "object", "required": ["interval_ms", "timeout_ms", "grace_ms"],
+      "properties": {
+        "interval_ms": {"type": "integer", "minimum": 100, "maximum": 3600000},
+        "timeout_ms": {"type": "integer", "minimum": 100, "maximum": 3600000},
+        "grace_ms": {"type": "integer", "minimum": 0, "maximum": 3600000}
+      },
+      "additionalProperties": false
+    },
+    "restart": {
+      "type": "object", "required": ["mode", "max_attempts", "backoff_ms"],
+      "properties": {
+        "mode": {"enum": ["never", "on-fault", "always"]},
+        "max_attempts": {"type": "integer", "minimum": 0, "maximum": 32},
+        "backoff_ms": {"type": "integer", "minimum": 0, "maximum": 3600000}
+      },
+      "additionalProperties": false
+    },
+    "task_group": {"type": "string", "pattern": "^[a-z][a-z0-9._-]{0,63}$"}
+  },
+  "additionalProperties": false
+}

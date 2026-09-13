@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "agent-first-os/policy-decision/v1",
+  "type": "object",
+  "required": ["version", "task_id", "action_id", "decision", "risk", "resource_digest", "capability_digest", "expires_at", "audit_id"],
+  "properties": {
+    "version": {"const": 1},
+    "task_id": {"type": "string", "minLength": 1},
+    "action_id": {"type": "string", "minLength": 1},
+    "decision": {"enum": ["allow", "confirm", "deny", "pause"]},
+    "risk": {"enum": ["L0", "L1", "L2", "L3"]},
+    "resource_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "capability_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "expires_at": {"type": "string", "minLength": 1},
+    "audit_id": {"type": "string", "minLength": 1},
+    "reason": {"type": "string", "minLength": 1},
+    "confirmation_token": {"type": "string", "minLength": 16}
+  },
+  "additionalProperties": false
+}

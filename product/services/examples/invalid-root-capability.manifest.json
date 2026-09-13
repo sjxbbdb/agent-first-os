@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "service_id": "unsafe",
+  "entrypoint": "/sbin/unsafe.elf",
+  "dependencies": [],
+  "capabilities": [{"resource": "policy.root", "rights": ["inspect"]}],
+  "heartbeat": {"interval_ms": 1000, "timeout_ms": 2000, "grace_ms": 0},
+  "restart": {"mode": "never", "max_attempts": 0, "backoff_ms": 0}
+}

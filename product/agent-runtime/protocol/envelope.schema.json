@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "agent-first-os/task-envelope/v1",
+  "type": "object",
+  "required": ["version", "type", "task_id", "sequence", "payload"],
+  "properties": {
+    "version": {"const": 1},
+    "type": {"enum": ["task.open", "task.context", "plan.proposed", "action.result", "task.event", "task.checkpoint"]},
+    "task_id": {"type": "string", "pattern": "^[A-Za-z0-9._:-]{1,128}$"},
+    "sequence": {"type": "integer", "minimum": 0},
+    "payload": {"type": "object"},
+    "at": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": false
+}

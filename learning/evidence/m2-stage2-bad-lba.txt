@@ -1,0 +1,5 @@
+S1 BIOS OK - stage2 pending
+S1 BIOS disk read failed
+S1 BIOS disk read failed
+S1 BIOS disk read failed
+qemu-system-x86_64: terminating on signal 15 from pid 995 (timeout)

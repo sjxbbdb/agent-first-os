@@ -1,0 +1,5 @@
+{"version":1,"event":"STARTING","service_id":"echo","sequence":1,"monotonic_ns":1000,"generation":1}
+{"version":1,"event":"READY","service_id":"echo","sequence":2,"monotonic_ns":2000,"generation":1}
+{"version":1,"event":"HEARTBEAT","service_id":"echo","sequence":3,"monotonic_ns":3000,"generation":1,"heartbeat_nonce":"0123456789abcdef"}
+{"version":1,"event":"FAULT","service_id":"echo","sequence":4,"monotonic_ns":4000,"generation":1,"reason":"fixture"}
+{"version":1,"event":"RESTARTING","service_id":"echo","sequence":5,"monotonic_ns":5000,"generation":2,"reason":"backoff"}

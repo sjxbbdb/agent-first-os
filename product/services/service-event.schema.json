@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "agent-first-os/supervisor-service-event/v1",
+  "title": "Agent-First OS Supervisor service event",
+  "type": "object",
+  "required": ["version", "event", "service_id", "sequence", "monotonic_ns"],
+  "properties": {
+    "version": {"const": 1},
+    "event": {"enum": ["STARTING", "READY", "HEARTBEAT", "FAULT", "EXIT", "FROZEN", "RESTARTING", "STOPPING"]},
+    "service_id": {"type": "string", "pattern": "^[a-z][a-z0-9._-]{0,63}$"},
+    "sequence": {"type": "integer", "minimum": 0},
+    "monotonic_ns": {"type": "integer", "minimum": 0},
+    "generation": {"type": "integer", "minimum": 1},
+    "exit_code": {"type": "integer", "minimum": -2147483648, "maximum": 2147483647},
+    "reason": {"type": "string", "maxLength": 256},
+    "heartbeat_nonce": {"type": "string", "pattern": "^[A-Fa-f0-9]{16,64}$"}
+  },
+  "additionalProperties": false
+}
