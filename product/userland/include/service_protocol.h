@@ -61,8 +61,23 @@ typedef struct AgentOsServiceRequest {
     uint32_t flags;
 } AgentOsServiceRequest;
 
+/* Kernel-produced RX completion metadata.  The capability and generation are
+ * copied as an opaque pair; Ring 3 must reject stale generations before using
+ * the bounded frame buffer. */
+typedef struct AgentOsVirtioRxBuffer {
+    AbiHeader header;
+    uint16_t queue;
+    uint16_t descriptor;
+    uint32_t reserved;
+    CapabilityRef buffer;
+    uint64_t address;
+    uint32_t length;
+    uint32_t flags;
+} AgentOsVirtioRxBuffer;
+
 _Static_assert(sizeof(AgentOsServiceRequest) == 56, "service request ABI changed");
 _Static_assert(sizeof(AgentOsServiceResponse) == 48, "service response ABI changed");
 _Static_assert(sizeof(AgentOsFileRange) == 16, "file range ABI changed");
+_Static_assert(sizeof(AgentOsVirtioRxBuffer) == 48, "virtio RX ABI changed");
 
 #endif

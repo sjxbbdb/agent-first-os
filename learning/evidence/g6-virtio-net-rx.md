@@ -12,6 +12,12 @@ deterministic Ethernet frame. The test accepts success only when the guest
 observes `used.idx` and emits `G6 virtio net RX OK`; injector delivery alone is
 not evidence.
 
+The native handoff ABI is now fixed in `userland/include/service_protocol.h` as
+`AgentOsVirtioRxBuffer` (versioned header, queue/descriptor, opaque capability
+reference, generation, address, and bounded length). The ABI layout test is
+host-only; the kernel still does not produce this record or deliver it over
+IPC, so native Ring 3 handoff remains blocked.
+
 Run:
 
 ```text
