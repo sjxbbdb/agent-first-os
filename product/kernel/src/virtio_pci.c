@@ -116,6 +116,12 @@ static int discover_input_modern(AgentOsVirtioProbe *out_probe) {
              * the capability chain until the device is fully realized. */
             out_probe->modern_caps = (out_probe->common_cfg != 0 &&
                                       out_probe->notify_cfg != 0);
+            out_probe->modern_mapping_safe =
+                out_probe->modern_caps &&
+                agent_os_virtio_modern_window_ok(out_probe->common_cfg, 0x1000,
+                                                 UINT64_C(0x200000)) &&
+                agent_os_virtio_modern_window_ok(out_probe->notify_cfg, 0x1000,
+                                                 UINT64_C(0x200000));
             return out_probe->modern_caps;
         }
     }

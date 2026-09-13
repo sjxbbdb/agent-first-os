@@ -1297,7 +1297,9 @@ void kernel_main(const BootInfo *boot_info) {
         serial_print(virtio_probe.queue_ready
                          ? "G6 virtio input transport READY\r\n"
                          : (virtio_probe.modern_caps
-                                ? "G6 virtio input modern CAPABILITIES DISCOVERED\r\n"
+                                ? (virtio_probe.modern_mapping_safe
+                                       ? "G6 virtio input modern CAPABILITIES DISCOVERED\r\n"
+                                       : "G6 virtio input modern BAR MAPPING BLOCKED\r\n")
                                 : "G6 virtio input transport DISCOVERED\r\n"));
 #if defined(AGENT_OS_TEST_G6_VIRTIO_INPUT)
         if (virtio_probe.queue_ready) {

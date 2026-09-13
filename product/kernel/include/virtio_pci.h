@@ -12,10 +12,18 @@ typedef struct AgentOsVirtioProbe {
     uint16_t tx_queue_size;
     uint8_t queue_ready;
     uint8_t modern_caps;
+    uint8_t modern_mapping_safe;
     uint64_t common_cfg;
     uint64_t notify_cfg;
     uint64_t device_cfg;
 } AgentOsVirtioProbe;
+
+static inline int agent_os_virtio_modern_window_ok(uint64_t address,
+                                                    uint32_t length,
+                                                    uint64_t identity_end) {
+    return length != 0 && address < identity_end &&
+           (uint64_t)length <= identity_end - address;
+}
 
 typedef struct AgentOsVirtioInputEvent {
     uint16_t type;
