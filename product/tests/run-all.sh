@@ -52,6 +52,9 @@ cat "$evidence_dir/g9-adapter.log"
 node "$repo_root/product/tests/g9-pi-loop.test.js" \
     > "$evidence_dir/g9-pi-loop.log" 2>&1
 cat "$evidence_dir/g9-pi-loop.log"
+bash "$repo_root/product/tests/g9-pi-core-adapter-test.sh" \
+    > "$evidence_dir/g9-pi-core-adapter.log" 2>&1
+cat "$evidence_dir/g9-pi-core-adapter.log"
 
 # Leave the default non-fault image available for manual use.
 bash "$repo_root/product/tools/build-bios.sh" > "$evidence_dir/build-default.log" 2>&1
