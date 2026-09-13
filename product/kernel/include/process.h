@@ -11,6 +11,12 @@
  * slab-backed table later without changing the lifecycle contract. */
 #define AGENT_OS_MAX_PROCESSES 32u
 #define AGENT_OS_PROCESS_INVALID UINT64_C(0)
+#define AGENT_OS_RESTART_CAPS 16u
+
+typedef struct AgentOsRestartCapability {
+    uint64_t object;
+    uint64_t rights;
+} AgentOsRestartCapability;
 
 typedef uint64_t AgentOsProcessId;
 
@@ -70,6 +76,8 @@ typedef struct AgentOsProcess {
      * creation and transfer remain explicit operations; zeroed tables are
      * initialized by the process creator when the object is provisioned. */
     AgentOsCapabilityTable capabilities;
+    AgentOsRestartCapability restart_capabilities[AGENT_OS_RESTART_CAPS];
+    uint32_t restart_capability_count;
 } AgentOsProcess;
 
 typedef struct AgentOsProcessTable {
@@ -97,6 +105,10 @@ int agent_os_process_yield(AgentOsProcessTable *table);
 int agent_os_process_exit(AgentOsProcessTable *table,
                           AgentOsProcessId id,
                           int64_t exit_code);
+/* Clean exit retires the process' handles, retaining only bounded object/
+ * rights descriptors for an authorized restart to re-mint fresh handles. */
+int agent_os_process_clean_exit(AgentOsProcessTable *table,
+                                AgentOsProcessId id, int64_t exit_code);
 int agent_os_process_kill(AgentOsProcessTable *table,
                           AgentOsProcessId id,
                           int64_t exit_code);

@@ -1545,7 +1545,13 @@ g10_service_fail_message_end:
     ; same process frame executes this exact path a second time, proving that
     ; the Supervisor owns lifecycle policy while Ring 0 only enforces it.
     mov eax, 16             ; SYS_IPC_CALL
+    test rbx, rbx
+    jz .g4_supervisor_initial_cap
+    mov rdi, rbx
+    jmp .g4_supervisor_send
+.g4_supervisor_initial_cap:
     mov rdi, 0x0000000100000001
+.g4_supervisor_send:
     mov esi, 0xB0           ; supervisor heartbeat opcode
     mov edx, 0x00000001     ; service generation marker in this fixture
     int 0x80

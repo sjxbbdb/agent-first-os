@@ -1200,7 +1200,7 @@ void kernel_syscall_handler(SyscallFrame *frame) {
     }
     if (frame->rax == SYS_EXIT) {
         if (current_id == AGENT_OS_PROCESS_INVALID ||
-            agent_os_process_exit(&process_table, current_id,
+            agent_os_process_clean_exit(&process_table, current_id,
                                   (int64_t)frame->rdi) != AGENT_OS_PROCESS_OK) {
             scheduler_halt("SYSCALL exit failed");
         }
@@ -1550,6 +1550,11 @@ void kernel_main(const BootInfo *boot_info) {
             &secondary_shm_capability) != AGENT_OS_OK) {
         scheduler_halt("SCHEDULER secondary capability setup failed");
     }
+#if defined(AGENT_OS_TEST_SUPERVISOR)
+    /* The supervisor fixture receives the service's current generation-tagged
+     * endpoint handle in the initial register; restart refreshes this value. */
+    secondary_record->frame.rbx = secondary_ipc_capability;
+#endif
     CapabilityHandle secondary_policy_capability;
     if (agent_os_capability_mint(
             &secondary_record->capabilities,

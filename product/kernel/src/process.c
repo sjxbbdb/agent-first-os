@@ -55,6 +55,19 @@ static void revoke_process_capabilities(AgentOsProcess *process) {
     }
 }
 
+static void snapshot_restart_capabilities(AgentOsProcess *process) {
+    process->restart_capability_count = 0;
+    for (uint32_t i = 0; i < AGENT_OS_CAPABILITY_SLOTS &&
+                          process->restart_capability_count < AGENT_OS_RESTART_CAPS; ++i) {
+        AgentOsCapabilityEntry *entry = &process->capabilities.entries[i];
+        if (!entry->active) continue;
+        AgentOsRestartCapability *saved =
+            &process->restart_capabilities[process->restart_capability_count++];
+        saved->object = entry->object;
+        saved->rights = entry->rights;
+    }
+}
+
 void agent_os_process_table_init(AgentOsProcessTable *table) {
     if (table == 0) {
         return;
@@ -224,6 +237,18 @@ int agent_os_process_exit(AgentOsProcessTable *table,
     return AGENT_OS_PROCESS_OK;
 }
 
+int agent_os_process_clean_exit(AgentOsProcessTable *table,
+                                AgentOsProcessId id, int64_t exit_code) {
+    AgentOsProcess *process;
+    if (agent_os_process_lookup(table, id, &process) != AGENT_OS_PROCESS_OK) {
+        return AGENT_OS_PROCESS_ESTALE;
+    }
+    if (process->state == AGENT_OS_PROCESS_ZOMBIE) return AGENT_OS_PROCESS_EBUSY;
+    snapshot_restart_capabilities(process);
+    revoke_process_capabilities(process);
+    return agent_os_process_exit(table, id, exit_code);
+}
+
 int agent_os_process_kill(AgentOsProcessTable *table,
                           AgentOsProcessId id,
                           int64_t exit_code) {
@@ -353,11 +378,27 @@ int agent_os_process_restart(AgentOsProcessTable *table,
     process->blocked_ipc_capability = 0;
     process->blocked_ipc_pending = 0;
     process->blocked_ipc_message = (IpcMessage){0};
+    CapabilityHandle first_handle = 0;
+    for (uint32_t i = 0; i < process->restart_capability_count; ++i) {
+        CapabilityHandle handle = 0;
+        if (agent_os_capability_mint(&process->capabilities,
+                                     process->restart_capabilities[i].object,
+                                     process->restart_capabilities[i].rights,
+                                     &handle) != AGENT_OS_OK) {
+            return AGENT_OS_PROCESS_ENOSPC;
+        }
+        if (first_handle == 0) first_handle = handle;
+    }
+    process->restart_capability_count = 0;
     process->frame.rip = process->initial_rip;
     process->frame.cs = 0x2B;
     process->frame.rflags = 0x202;
     process->frame.rsp = process->initial_rsp;
     process->frame.ss = 0x23;
+    /* The first re-minted handle is passed in the initial argument register;
+     * a restarted service can use it without replaying its stale handle. */
+    process->frame.rdi = first_handle;
+    process->frame.rbx = first_handle;
     process->has_frame = 1;
     process->state = AGENT_OS_PROCESS_READY;
     if (table->live_count != 0) {
