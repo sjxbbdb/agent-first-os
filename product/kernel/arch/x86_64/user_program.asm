@@ -838,6 +838,11 @@ supervisor_exit_end:
     mov esi, 0x43
     mov edx, 0xBEEF
     int 0x80
+    ; Let task 2 consume the transferred descendant before this owner exits.
+    ; Clean exit revokes the source lineage, so the fixture must model the
+    ; receiver using the capability while its parent handle is still live.
+    mov eax, 2              ; SYS_YIELD
+    int 0x80
 %endif
 %ifdef AGENT_OS_TEST_WAIT_KILL
     ; Fixture IDs are generation 1, slots 0 and 1.  The kernel still checks
