@@ -9,6 +9,7 @@ dist/
 *.iso
 *.img
 *.efi
+learning/projects/stage-0/day-02-compile/hello
 
 # Debug and runtime output
 *.log
