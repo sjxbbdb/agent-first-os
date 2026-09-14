@@ -1,4 +1,8 @@
-# 第三节：第一次观察 ELF Header
+# 第三节：从源代码追踪到 ELF Header
+
+## 本节方式
+
+今天采用源码驱动方式：先回到已经成功运行的 `hello.c`，确认它和可执行文件的关系，再用 `readelf` 观察文件的身份证信息。不会先背一整套 ELF 术语。
 
 ## 本节出口
 
@@ -30,10 +34,11 @@ ELF 可以暂时看成一个“程序容器”：里面有机器代码、数据�
 
 ```bash
 cd "/mnt/d/Agent OS/learning/projects/stage-0/day-02-compile"
+nl -ba hello.c
 readelf -h hello
 ```
 
-把完整输出复制保存或发给老师。先只找下面六行，不必一次理解全部内容：
+把完整输出复制保存或发给老师。先把源码中的 `main`、`printf`、`return` 与 Header 输出放在一起观察，再只找下面六行，不必一次理解全部内容：
 
 ```text
 Class:
