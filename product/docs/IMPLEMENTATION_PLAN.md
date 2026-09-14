@@ -117,6 +117,9 @@
 
 - **2026-09-14 验证增量：** G6 的 QEMU socket 注入器已使用四字节大端长度前缀和 60 字节以太网最小帧，`g6-virtio-net-rx-test.sh` 真实观察到 RX `used.idx` 完成；MMIO helper 通过实际页表测试，拒绝溢出、跨 2 MiB 和跨 region 别名，并设置 supervisor/RW/NX/uncached 叶权限。G6 block/net/input 队列存储已分离，动态 `.user_text` 地址避免 kernel `.bss` 重叠。G9 原生 Runtime 的真实 envelope 已通过 ABI 偏移检查和 BIOS/OVMF `START → HEARTBEAT → ACK → CHECKPOINT` IPC；这些结果仍不替代真实硬件、远程 provider、持久化文件系统或完整 G10 故障矩阵。
 
+- **2026-09-14 G7 生命周期增量：** `SYS_POLICY_PAUSE/RESUME` 现在驱动内核任务生命周期：暂停会取消阻塞 IPC waiter 并冻结其他 READY 任务，恢复只解冻本次暂停标记的任务；新增 BIOS/QEMU 串口证据见 `product/docs/G7_NATIVE_EMERGENCY_PAUSE.md`。持久化 journal、真实磁盘事务、输入设备停止、SMP 全局暂停和完整 G7 故障矩阵仍未完成。
+- **2026-09-14 G6 输入状态增量：** modern virtio-input 队列配置在启用 queue 后显式写入并校验 `DRIVER_OK`，保证设备只有在完整初始化后才可消费 descriptor；QEMU QMP synthetic input 仍未观察到 used-ring completion，因此继续标记为 `BLOCKED`。
+
 ## 目录约定
 
 ```text

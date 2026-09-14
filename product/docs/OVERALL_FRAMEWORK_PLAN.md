@@ -83,13 +83,15 @@ SeaBIOS / UEFI
 
 当前增量：modern virtio capability layout、BAR 范围安全、Ring 3 RX buffer handoff ABI 和负向契约已固定并纳入测试；这些仍是 host/协议边界，virtio-net RX used completion、modern virtio-input event queue 和 DMA/IOMMU 校验尚未完成。
 
-最新增量：`g6-virtio-net-rx-test.sh` 已在 QEMU socket backend 通过真实 `used.idx` RX completion；输入路径已完成独立 queue arm/poll，QMP synthetic event 仍明确 BLOCKED，modern event completion 与 DMA/IOMMU 仍未验证。
+最新增量：`g6-virtio-net-rx-test.sh` 已在 QEMU socket backend 通过真实 `used.idx` RX completion；输入路径已完成独立 queue arm/poll，modern queue 配置现在显式完成 `DRIVER_OK` 状态转换，QMP synthetic event 仍明确 BLOCKED，modern event completion 与 DMA/IOMMU 仍未验证。
 
 ### G7：Policy Firewall、一次性 token 与事务恢复
 
 定义包含 actor、task、capability、resource、risk、reversibility、expiry、audit id 的动作协议。Policy Firewall 负责 L0–L3 判断和 Trusted Input；内核验证并一次性消费绑定范围的 token。文件等本地动作写入 journal/snapshot，外部副作用标记为不可自动重放；全局暂停执行 revoke → freeze → cancel IPC → stop input → persist log。
 
 验收：伪造、重放、过期、错资源 token 全部拒绝；L0/L1/L2/L3 行为符合策略；崩溃后日志可恢复且无重复外部副作用；紧急暂停能冻结整个任务树。
+
+最新 G7 增量：`SYS_POLICY_PAUSE/RESUME` 已接入内核任务生命周期。暂停会取消阻塞 IPC waiter，并冻结其他 READY 任务；恢复只解冻本次暂停标记的任务。BIOS/QEMU 串口证据见 `product/docs/G7_NATIVE_EMERGENCY_PAUSE.md`。持久化 journal、真实磁盘事务、输入设备停止、SMP 全局暂停和完整故障矩阵仍未完成。
 
 ### G8：Semantic Registry 与 Context Collector
 

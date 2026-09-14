@@ -359,6 +359,58 @@ int agent_os_process_cancel_ipc(AgentOsProcessTable *table,
     return AGENT_OS_PROCESS_OK;
 }
 
+int agent_os_process_emergency_pause(AgentOsProcessTable *table,
+                                     AgentOsProcessId actor) {
+    if (table == 0 || actor == AGENT_OS_PROCESS_INVALID ||
+        find_process(table, actor) == 0) {
+        return AGENT_OS_PROCESS_ESTALE;
+    }
+    int affected = 0;
+    for (uint32_t index = 0; index < AGENT_OS_MAX_PROCESSES; ++index) {
+        AgentOsProcess *process = &table->entries[index];
+        if (process->state == AGENT_OS_PROCESS_UNUSED ||
+            process->id == actor) {
+            continue;
+        }
+        if (process->state == AGENT_OS_PROCESS_BLOCKED) {
+            /* Emergency stop must release a waiter before freezing the
+             * task, otherwise the endpoint retains a stale waiter. */
+            if (agent_os_process_cancel_ipc(table, process->id) ==
+                AGENT_OS_PROCESS_OK) {
+                process->state = AGENT_OS_PROCESS_FROZEN;
+                process->emergency_frozen = 1;
+                ++affected;
+            }
+            continue;
+        }
+        if (process->state == AGENT_OS_PROCESS_READY) {
+            process->state = AGENT_OS_PROCESS_FROZEN;
+            process->emergency_frozen = 1;
+            ++affected;
+        }
+    }
+    return affected;
+}
+
+int agent_os_process_emergency_resume(AgentOsProcessTable *table,
+                                       AgentOsProcessId actor) {
+    if (table == 0 || actor == AGENT_OS_PROCESS_INVALID ||
+        find_process(table, actor) == 0) {
+        return AGENT_OS_PROCESS_ESTALE;
+    }
+    int resumed = 0;
+    for (uint32_t index = 0; index < AGENT_OS_MAX_PROCESSES; ++index) {
+        AgentOsProcess *process = &table->entries[index];
+        if (process->state == AGENT_OS_PROCESS_FROZEN &&
+            process->emergency_frozen) {
+            process->state = AGENT_OS_PROCESS_READY;
+            process->emergency_frozen = 0;
+            ++resumed;
+        }
+    }
+    return resumed;
+}
+
 int agent_os_process_restart(AgentOsProcessTable *table,
                              AgentOsProcessId id) {
     AgentOsProcess *process;

@@ -23,8 +23,10 @@ if [[ "$qemu_status" -ne 124 ]]; then
 fi
 grep -Fq 'SYSCALL policy token mint OK' "$log"
 grep -Fq 'SYSCALL policy emergency pause OK' "$log"
+grep -Fq 'SYSCALL policy emergency pause lifecycle OK' "$log"
 grep -Fq 'SYSCALL policy token consume paused' "$log"
 grep -Fq 'SYSCALL policy emergency resume OK' "$log"
+grep -Fq 'SYSCALL policy emergency resume lifecycle OK' "$log"
 grep -Fq 'SYSCALL policy token consume OK' "$log"
 grep -Fq 'SYSCALL policy token consume timeout' "$log"
 grep -Fq 'SCHEDULER idle - all tasks exited' "$log"

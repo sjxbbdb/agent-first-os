@@ -63,7 +63,8 @@ typedef struct AgentOsProcess {
     uint32_t flags;
     uint32_t generation;
     uint8_t has_frame;
-    uint8_t reserved[3];
+    uint8_t emergency_frozen;
+    uint8_t reserved[2];
     SyscallFrame frame;
     uint64_t blocked_ipc_buffer;
     uint64_t blocked_ipc_sequence;
@@ -128,6 +129,12 @@ int agent_os_process_group_resume(AgentOsProcessTable *table,
                                   AgentOsProcessId parent, uint64_t group_id);
 int agent_os_process_cancel_ipc(AgentOsProcessTable *table,
                                 AgentOsProcessId id);
+/* Emergency policy gate: cancel blocked IPC and freeze READY tasks other
+ * than the policy caller.  Only tasks frozen by this call are resumed. */
+int agent_os_process_emergency_pause(AgentOsProcessTable *table,
+                                     AgentOsProcessId actor);
+int agent_os_process_emergency_resume(AgentOsProcessTable *table,
+                                      AgentOsProcessId actor);
 int agent_os_process_restart(AgentOsProcessTable *table,
                              AgentOsProcessId id);
 int agent_os_process_wait(AgentOsProcessTable *table,

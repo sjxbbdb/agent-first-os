@@ -1016,10 +1016,22 @@ void kernel_syscall_handler(SyscallFrame *frame) {
         if (status == AGENT_OS_OK &&
             authority_object == (uint64_t)(uintptr_t)&policy_authority) {
             policy_emergency_paused = frame->rax == SYS_POLICY_PAUSE;
+            int lifecycle = policy_emergency_paused
+                ? agent_os_process_emergency_pause(&process_table, current_id)
+                : agent_os_process_emergency_resume(&process_table, current_id);
+            if (lifecycle < 0) {
+                policy_emergency_paused = !policy_emergency_paused;
+                serial_print("SYSCALL policy emergency lifecycle denied\r\n");
+                frame->rax = (uint64_t)-13;
+                return;
+            }
             serial_print(policy_emergency_paused
                              ? "SYSCALL policy emergency pause OK\r\n"
                              : "SYSCALL policy emergency resume OK\r\n");
-            frame->rax = 0;
+            serial_print(policy_emergency_paused
+                             ? "SYSCALL policy emergency pause lifecycle OK\r\n"
+                             : "SYSCALL policy emergency resume lifecycle OK\r\n");
+            frame->rax = (uint64_t)lifecycle;
         } else {
             serial_print("SYSCALL policy emergency gate denied\r\n");
             frame->rax = (uint64_t)-13;

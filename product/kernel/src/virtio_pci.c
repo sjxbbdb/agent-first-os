@@ -176,6 +176,9 @@ static int configure_input_modern(AgentOsVirtioProbe *probe) {
     if (vm_map_mmio_identity((uint64_t)(uintptr_t)notify_queue, sizeof(*notify_queue)) != AGENT_OS_OK) return 0;
     *(volatile uint16_t *)(void *)(common + 0x1c) = 1;
     *(volatile uint16_t *)(void *)(notify_queue) = 0;
+    /* DRIVER_OK is the point at which the device may consume the queue. */
+    common[0x14] = 1 | 2 | 8 | 4;
+    if ((common[0x14] & 4) == 0) return 0;
     probe->queue_size = queue_size;
     probe->queue_ready = 1;
     return 1;
