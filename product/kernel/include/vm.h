@@ -30,6 +30,10 @@ void vm_load_address_space(uint64_t root_physical);
 void vm_set_phys_allocator(PhysAllocator *allocator);
 int vm_page_tables_use_phys_allocator(void);
 AgentOsStatus vm_map_phys_allocator_pages(AgentOsAddressSpace *space);
+
+/* Map a bounded supervisor-only PCI MMIO window into the bootstrap root.
+ * The mapping is page-granular and deliberately excludes user access. */
+AgentOsStatus vm_map_mmio_identity(uint64_t physical_address, uint64_t length);
 /* Return to the bootstrap root after a bounded transition probe. */
 void vm_restore_bootstrap_address_space(void);
 

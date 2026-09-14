@@ -7,10 +7,13 @@ network backend and no injected host packet, `RX WAIT` is a bounded queue-arm
 result and the focused test exits 2; it does not claim RX completion.
 
 The focused test also supports a controlled local socket backend: it starts
-`g6_qemu_packet_injector.py`, connects QEMU with `-netdev socket`, and sends one
-deterministic Ethernet frame. The test accepts success only when the guest
-observes `used.idx` and emits `G6 virtio net RX OK`; injector delivery alone is
-not evidence.
+`g6_qemu_packet_injector.py`, connects QEMU with `-netdev socket`, and sends a
+deterministic Ethernet frame. QEMU's TCP socket backend uses a four-byte
+big-endian packet-length prefix; the injector therefore prefixes each frame and
+pads it to the 60-byte Ethernet minimum. It repeats the bounded send briefly so
+the guest can arm queue 0 after the socket connects. The test accepts success
+only when the guest observes `used.idx` and emits `G6 virtio net RX OK`; injector
+delivery alone is not evidence.
 
 The native handoff ABI is now fixed in `userland/include/service_protocol.h` as
 `AgentOsVirtioRxBuffer` (versioned header, queue/descriptor, opaque capability

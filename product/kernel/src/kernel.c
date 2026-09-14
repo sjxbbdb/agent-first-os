@@ -690,6 +690,7 @@ void kernel_syscall_handler(SyscallFrame *frame) {
             .header = {.version = AGENT_OS_ABI_VERSION, .size = sizeof(IpcMessage)},
             .opcode = (uint32_t)frame->rsi,
             .length = 1,
+            .sequence = frame->rdx,
             .words = {frame->rdx, 0, 0, 0},
         };
         AgentOsStatus status = AGENT_OS_E_NOT_FOUND;

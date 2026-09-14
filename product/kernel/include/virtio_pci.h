@@ -16,6 +16,8 @@ typedef struct AgentOsVirtioProbe {
     uint64_t common_cfg;
     uint64_t notify_cfg;
     uint64_t device_cfg;
+    uint32_t notify_off_multiplier;
+    uint16_t notify_off;
 } AgentOsVirtioProbe;
 
 static inline int agent_os_virtio_modern_window_ok(uint64_t address,

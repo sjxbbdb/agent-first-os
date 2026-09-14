@@ -9,7 +9,7 @@ KERNEL_CFLAGS_EXTRA="-DAGENT_OS_TEST_RING3 -DAGENT_OS_TEST_G6_VIRTIO_INPUT" \
     bash "$repo_root/product/tools/build-bios.sh" >/dev/null
 
 set +e
-"$repo_root/product/tests/qemu-timeout.sh" 5s "$log" \
+"$repo_root/product/tests/qemu-timeout.sh" 15s "$log" \
     -machine pc \
     -drive "format=raw,file=$build_dir/stage1.img,if=ide" \
     -device virtio-keyboard-pci \

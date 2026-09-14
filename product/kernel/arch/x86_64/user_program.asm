@@ -6,6 +6,81 @@ global user_entry
 global user_entry_secondary
 section .user_text
 user_entry:
+%ifdef AGENT_OS_TEST_RUNTIME_SERVICE
+    ; Bounded native Agent Runtime service bootstrap.  The primary Ring 3
+    ; task sends START, then a HEARTBEAT; the sibling returns ACK before the
+    ; checkpoint. Kernel code only transports/validates the IPC envelope.
+    mov eax, 1
+    lea rdi, [rel runtime_service_start]
+    mov esi, runtime_service_start_end-runtime_service_start-1
+    int 0x80
+    mov eax, 16             ; SYS_IPC_CALL: START
+    mov rdi, 0x0000000100000001
+    mov esi, 0xD8
+    mov edx, 1              ; sequence 1
+    int 0x80
+    test rax, rax
+    jnz .runtime_service_fail
+    mov eax, 2              ; let Supervisor-side service consume START
+    int 0x80
+    sub rsp, 128
+    mov eax, 17             ; receive HEARTBEAT
+    mov rdi, 0x0000000100000001
+    mov rsi, rsp
+    int 0x80
+    test rax, rax
+    jnz .runtime_service_fail_stack
+    cmp dword [rsp+8], 0xD9
+    jne .runtime_service_fail_stack
+    cmp qword [rsp+24], 1
+    jne .runtime_service_fail_stack
+    mov eax, 16             ; ACK
+    mov rdi, 0x0000000100000001
+    mov esi, 0xDB
+    mov edx, 1
+    int 0x80
+    test rax, rax
+    jnz .runtime_service_fail_stack
+    mov eax, 16             ; CHECKPOINT sequence 2
+    mov rdi, 0x0000000100000001
+    mov esi, 0xDA
+    mov edx, 2
+    int 0x80
+    test rax, rax
+    jnz .runtime_service_fail_stack
+    mov eax, 2              ; let the Supervisor-side service persist it
+    int 0x80
+    mov eax, 1
+    lea rdi, [rel runtime_service_checkpoint]
+    mov esi, runtime_service_checkpoint_end-runtime_service_checkpoint-1
+    int 0x80
+    add rsp, 128
+    mov eax, 1
+    lea rdi, [rel runtime_service_ok]
+    mov esi, runtime_service_ok_end-runtime_service_ok-1
+    int 0x80
+    mov eax, 0
+    xor edi, edi
+    int 0x80
+.runtime_service_fail_stack:
+    add rsp, 128
+.runtime_service_fail:
+    mov eax, 1
+    lea rdi, [rel runtime_service_fail_message]
+    mov esi, runtime_service_fail_message_end-runtime_service_fail_message-1
+    int 0x80
+    mov eax, 0
+    mov edi, 1
+    int 0x80
+runtime_service_start db 'AGENT RUNTIME SERVICE START',13,10,0
+runtime_service_start_end:
+runtime_service_checkpoint db 'AGENT RUNTIME CHECKPOINT SENT',13,10,0
+runtime_service_checkpoint_end:
+runtime_service_ok db 'AGENT RUNTIME SERVICE ABI OK',13,10,0
+runtime_service_ok_end:
+runtime_service_fail_message db 'AGENT RUNTIME SERVICE ABI FAIL',13,10,0
+runtime_service_fail_message_end:
+%else
 %ifdef AGENT_OS_TEST_GROUP_RECURSIVE
     ; Let both descendants enter the scheduler, then terminate the entire
     ; group subtree and reap the direct child.
@@ -931,6 +1006,8 @@ supervisor_exit_end:
 
 %endif
 
+%endif
+
 hello db 'USER RING3 OK', 13, 10, 0
 hello_end:
 
@@ -938,6 +1015,65 @@ hello_end:
 ; process after the first process executes SYS_EXIT.
 section .user_text
 user_entry_secondary:
+%ifdef AGENT_OS_TEST_RUNTIME_SERVICE
+    sub rsp, 128
+    mov eax, 17             ; consume START from the Runtime client
+    mov rdi, 0x0000000100000001
+    mov rsi, rsp
+    int 0x80
+    cmp dword [rsp+8], 0xD8
+    jne .runtime_service_child_fail
+    cmp qword [rsp+24], 1
+    jne .runtime_service_child_fail
+    mov eax, 16             ; HEARTBEAT, same task/generation
+    mov rdi, 0x0000000100000001
+    mov esi, 0xD9
+    mov edx, 1
+    int 0x80
+    test rax, rax
+    jnz .runtime_service_child_fail
+    mov eax, 2              ; let Runtime consume HEARTBEAT
+    int 0x80
+    mov eax, 17
+    mov rdi, 0x0000000100000001
+    mov rsi, rsp
+    int 0x80
+    cmp dword [rsp+8], 0xDB
+    jne .runtime_service_child_fail
+    cmp qword [rsp+24], 1
+    jne .runtime_service_child_fail
+    mov eax, 2              ; wait for the checkpoint event
+    int 0x80
+    mov eax, 17
+    mov rdi, 0x0000000100000001
+    mov rsi, rsp
+    int 0x80
+    cmp dword [rsp+8], 0xDA
+    jne .runtime_service_child_fail
+    cmp qword [rsp+24], 2
+    jne .runtime_service_child_fail
+    add rsp, 128
+    mov eax, 1
+    lea rdi, [rel runtime_service_heartbeat]
+    mov esi, runtime_service_heartbeat_end-runtime_service_heartbeat-1
+    int 0x80
+    mov eax, 0
+    xor edi, edi
+    int 0x80
+.runtime_service_child_fail:
+    add rsp, 128
+    mov eax, 1
+    lea rdi, [rel runtime_service_child_fail_message]
+    mov esi, runtime_service_child_fail_message_end-runtime_service_child_fail_message-1
+    int 0x80
+    mov eax, 0
+    mov edi, 1
+    int 0x80
+runtime_service_heartbeat db 'AGENT RUNTIME HEARTBEAT ACK',13,10,0
+runtime_service_heartbeat_end:
+runtime_service_child_fail_message db 'AGENT RUNTIME CHILD ABI FAIL',13,10,0
+runtime_service_child_fail_message_end:
+%else
 %ifdef AGENT_OS_TEST_GROUP_RECURSIVE
     mov eax, 1
     lea rdi, [rel recursive_group_child]
@@ -1832,6 +1968,7 @@ ipc_multi_sender_ok db 'IPC MULTI SENDER OK',13,10,0
 ipc_multi_sender_ok_end:
 ipc_multi_receiver_fail_message db 'IPC MULTI FAIL',13,10,0
 ipc_multi_receiver_fail_message_end:
+%endif
 %endif
 %endif
 %endif

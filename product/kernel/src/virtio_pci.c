@@ -1,9 +1,12 @@
 #include "virtio_pci.h"
+#include "vm.h"
 
 static uint8_t queue_page[16384] __attribute__((aligned(4096)));
 static uint8_t net_tx_queue_page[16384] __attribute__((aligned(4096)));
+static uint8_t input_queue_page[16384] __attribute__((aligned(4096)));
 static uint8_t request_page[4096] __attribute__((aligned(4096)));
 static uint8_t net_tx_page[4096] __attribute__((aligned(4096)));
+static uint8_t input_event_page[4096] __attribute__((aligned(4096)));
 
 typedef struct __attribute__((packed)) VirtioDescriptor {
     uint64_t address;
@@ -49,6 +52,7 @@ static inline uint32_t inl(uint16_t port) {
     __asm__ volatile ("inl %1, %0" : "=a"(value) : "Nd"(port));
     return value;
 }
+
 
 static uint32_t pci_config_read32(uint8_t bus, uint8_t device,
                                   uint8_t function, uint8_t offset) {
@@ -98,12 +102,16 @@ static int discover_input_modern(AgentOsVirtioProbe *out_probe) {
                                                    (uint8_t)(capability + 4));
                     uint32_t offset = pci_config_read32((uint8_t)bus, device, 0,
                                                         (uint8_t)(capability + 8));
-                    uint64_t address = pci_bar_address((uint8_t)bus, device, 0, bar);
-                    if (address == 0) return 0;
+                    uint32_t multiplier = pci_config_read32((uint8_t)bus, device, 0,
+                                                             (uint8_t)(capability + 16));
+                    uint64_t address = cfg_type == 5
+                        ? 0 : pci_bar_address((uint8_t)bus, device, 0, bar);
+                    if (cfg_type != 5 && address == 0) return 0;
                     address += offset;
                     if (cfg_type == 1) out_probe->common_cfg = address;
                     if (cfg_type == 2) out_probe->notify_cfg = address;
                     if (cfg_type == 4) out_probe->device_cfg = address;
+                    if (cfg_type == 2) out_probe->notify_off_multiplier = multiplier;
                 }
                 if (next == 0 || next == capability) break;
                 capability = next;
@@ -118,14 +126,56 @@ static int discover_input_modern(AgentOsVirtioProbe *out_probe) {
                                       out_probe->notify_cfg != 0);
             out_probe->modern_mapping_safe =
                 out_probe->modern_caps &&
-                agent_os_virtio_modern_window_ok(out_probe->common_cfg, 0x1000,
-                                                 UINT64_C(0x200000)) &&
-                agent_os_virtio_modern_window_ok(out_probe->notify_cfg, 0x1000,
-                                                 UINT64_C(0x200000));
+                vm_map_mmio_identity(out_probe->common_cfg, 0x1000) == AGENT_OS_OK &&
+                vm_map_mmio_identity(out_probe->notify_cfg, 0x1000) == AGENT_OS_OK;
             return out_probe->modern_caps;
         }
     }
     return 0;
+}
+
+static int configure_input_modern(AgentOsVirtioProbe *probe) {
+    if (probe == 0 || !probe->modern_mapping_safe || probe->common_cfg == 0 ||
+        probe->notify_cfg == 0 || probe->notify_off_multiplier == 0) return 0;
+    volatile uint8_t *common = (volatile uint8_t *)(uintptr_t)probe->common_cfg;
+    volatile uint8_t *notify = (volatile uint8_t *)(uintptr_t)probe->notify_cfg;
+    /* The status transition is intentionally conservative: accept no device
+     * features, then require FEATURES_OK before touching the queue. */
+    common[0x14] = 0;
+    common[0x14] = 1 | 2;
+    *(volatile uint32_t *)(void *)(common + 0x08) = 0;
+    (void)*(volatile uint32_t *)(const void *)(common + 0x04);
+    *(volatile uint32_t *)(void *)(common + 0x0c) = 0;
+    common[0x14] = 1 | 2 | 8;
+    if ((common[0x14] & 8) == 0) return 0;
+    *(volatile uint16_t *)(void *)(common + 0x16) = 0;
+    uint16_t queue_size = *(volatile uint16_t *)(const void *)(common + 0x18);
+    if (queue_size == 0) return 0;
+    if (queue_size > 256) queue_size = 256;
+    for (uint32_t index = 0; index < sizeof(input_queue_page); ++index) input_queue_page[index] = 0;
+    for (uint32_t index = 0; index < sizeof(input_event_page); ++index) input_event_page[index] = 0;
+    VirtioDescriptor *descriptors = (VirtioDescriptor *)(void *)input_queue_page;
+    uint8_t *avail = input_queue_page + (uint32_t)queue_size * sizeof(VirtioDescriptor);
+    uint32_t used_offset = ((uint32_t)queue_size * sizeof(VirtioDescriptor) +
+                            4u + (uint32_t)queue_size * 2u + 0xfffu) & ~0xfffu;
+    if (used_offset + 4u + (uint32_t)queue_size * 8u > sizeof(input_queue_page)) return 0;
+    uint8_t *used = input_queue_page + used_offset;
+    descriptors[0].address = (uint64_t)(uintptr_t)input_event_page;
+    descriptors[0].length = sizeof(AgentOsVirtioInputEvent);
+    descriptors[0].flags = 2;
+    *(volatile uint16_t *)(void *)(common + 0x18) = queue_size;
+    *(volatile uint64_t *)(void *)(common + 0x20) = (uint64_t)(uintptr_t)input_queue_page;
+    *(volatile uint64_t *)(void *)(common + 0x28) = (uint64_t)(uintptr_t)avail;
+    *(volatile uint64_t *)(void *)(common + 0x30) = (uint64_t)(uintptr_t)used;
+    probe->notify_off = *(volatile uint16_t *)(const void *)(common + 0x1e);
+    volatile uint16_t *notify_queue = (volatile uint16_t *)(uintptr_t)(
+        probe->notify_cfg + (uint64_t)probe->notify_off * probe->notify_off_multiplier);
+    if (vm_map_mmio_identity((uint64_t)(uintptr_t)notify_queue, sizeof(*notify_queue)) != AGENT_OS_OK) return 0;
+    *(volatile uint16_t *)(void *)(common + 0x1c) = 1;
+    *(volatile uint16_t *)(void *)(notify_queue) = 0;
+    probe->queue_size = queue_size;
+    probe->queue_ready = 1;
+    return 1;
 }
 
 static uint32_t pci_bar0(uint8_t bus, uint8_t device, uint8_t function) {
@@ -343,30 +393,60 @@ int agent_os_virtio_net_receive_test_packet(const AgentOsVirtioProbe *probe) {
 int agent_os_virtio_probe_input(AgentOsVirtioProbe *out_probe) {
     if (probe_products(out_probe, 0x1052, 0x1053, 0x1054, 0)) return 1;
     /* Modern virtio-input devices expose MMIO common configuration rather
-     * than the legacy I/O BAR.  Keep this as discovery-only evidence until
-     * the PCI capability list/common-config path is implemented. */
-    if (discover_input_modern(out_probe)) return 1;
+     * than the legacy I/O BAR.  Discovery and the bounded queue setup happen
+     * before any event completion is claimed. */
+    if (discover_input_modern(out_probe)) {
+        (void)configure_input_modern(out_probe);
+        return 1;
+    }
     return discover_products(out_probe, 0x1052, 0x1053, 0x1054);
 }
 
 int agent_os_virtio_input_read_event(const AgentOsVirtioProbe *probe,
                                      AgentOsVirtioInputEvent *out_event) {
+    if (probe != 0 && out_event != 0 && probe->modern_caps &&
+        probe->queue_ready && probe->common_cfg != 0 && probe->notify_cfg != 0) {
+        uint16_t queue_size = probe->queue_size;
+        if (queue_size == 0 || queue_size > 256) return -1;
+        uint8_t *avail = input_queue_page + (uint32_t)queue_size * sizeof(VirtioDescriptor);
+        uint32_t used_offset = ((uint32_t)queue_size * sizeof(VirtioDescriptor) +
+                                4u + (uint32_t)queue_size * 2u + 0xfffu) & ~0xfffu;
+        if (used_offset + 4u + (uint32_t)queue_size * 8u > sizeof(input_queue_page)) return -1;
+        uint8_t *used = input_queue_page + used_offset;
+        uint16_t *avail_index = (uint16_t *)(void *)(avail + 2);
+        uint16_t *avail_ring = (uint16_t *)(void *)(avail + 4);
+        uint16_t *used_index = (uint16_t *)(void *)(used + 2);
+        *avail_index = 1;
+        avail_ring[0] = 0;
+        __asm__ volatile ("mfence" : : : "memory");
+        volatile uint16_t *notify_queue = (volatile uint16_t *)(uintptr_t)(
+            probe->notify_cfg + (uint64_t)probe->notify_off * probe->notify_off_multiplier);
+        *notify_queue = 0;
+        for (uint32_t spin = 0; spin < 100000000u; ++spin) {
+            if (*used_index == 1) {
+                __asm__ volatile ("mfence" : : : "memory");
+                *out_event = *(const AgentOsVirtioInputEvent *)(const void *)input_event_page;
+                return 1;
+            }
+        }
+        return 0;
+    }
     if (probe == 0 || out_event == 0 || !probe->queue_ready ||
         probe->io_base == 0 || probe->queue_size == 0 ||
         probe->queue_size > 256) return -1;
     const uint16_t io = probe->io_base;
     const uint16_t queue_size = probe->queue_size;
-    VirtioDescriptor *descriptors = (VirtioDescriptor *)(void *)queue_page;
-    uint8_t *avail = queue_page + (uint32_t)queue_size * sizeof(VirtioDescriptor);
+    VirtioDescriptor *descriptors = (VirtioDescriptor *)(void *)input_queue_page;
+    uint8_t *avail = input_queue_page + (uint32_t)queue_size * sizeof(VirtioDescriptor);
     uint32_t used_offset = ((uint32_t)queue_size * sizeof(VirtioDescriptor) +
                             4u + (uint32_t)queue_size * 2u + 0xfffu) & ~0xfffu;
-    if (used_offset + 4u + (uint32_t)queue_size * 8u > sizeof(queue_page)) return -1;
-    uint8_t *used = queue_page + used_offset;
-    for (uint32_t index = 0; index < sizeof(queue_page); ++index) queue_page[index] = 0;
+    if (used_offset + 4u + (uint32_t)queue_size * 8u > sizeof(input_queue_page)) return -1;
+    uint8_t *used = input_queue_page + used_offset;
+    for (uint32_t index = 0; index < sizeof(input_queue_page); ++index) input_queue_page[index] = 0;
     /* Reuse the bounded scratch page; the input fixture is run independently
      * of the net TX fixture and must not grow the identity-mapped BSS. */
-    for (uint32_t index = 0; index < sizeof(net_tx_page); ++index) net_tx_page[index] = 0;
-    descriptors[0].address = (uint64_t)(uintptr_t)net_tx_page;
+    for (uint32_t index = 0; index < sizeof(input_event_page); ++index) input_event_page[index] = 0;
+    descriptors[0].address = (uint64_t)(uintptr_t)input_event_page;
     descriptors[0].length = sizeof(AgentOsVirtioInputEvent);
     descriptors[0].flags = 2; /* DEVICE_WRITE */
     uint16_t *avail_index = (uint16_t *)(void *)(avail + 2);
@@ -376,10 +456,10 @@ int agent_os_virtio_input_read_event(const AgentOsVirtioProbe *probe,
     *avail_index = 1;
     __asm__ volatile ("mfence" : : : "memory");
     outw((uint16_t)(io + 0x10), 0);
-    for (uint32_t spin = 0; spin < 1000000u; ++spin) {
+    for (uint32_t spin = 0; spin < 100000000u; ++spin) {
         if (*used_index == 1) {
             __asm__ volatile ("mfence" : : : "memory");
-            *out_event = *(const AgentOsVirtioInputEvent *)(const void *)net_tx_page;
+            *out_event = *(const AgentOsVirtioInputEvent *)(const void *)input_event_page;
             return 1;
         }
     }

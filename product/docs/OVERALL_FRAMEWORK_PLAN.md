@@ -83,6 +83,8 @@ SeaBIOS / UEFI
 
 当前增量：modern virtio capability layout、BAR 范围安全、Ring 3 RX buffer handoff ABI 和负向契约已固定并纳入测试；这些仍是 host/协议边界，virtio-net RX used completion、modern virtio-input event queue 和 DMA/IOMMU 校验尚未完成。
 
+最新增量：`g6-virtio-net-rx-test.sh` 已在 QEMU socket backend 通过真实 `used.idx` RX completion；输入路径已完成独立 queue arm/poll，QMP synthetic event 仍明确 BLOCKED，modern event completion 与 DMA/IOMMU 仍未验证。
+
 ### G7：Policy Firewall、一次性 token 与事务恢复
 
 定义包含 actor、task、capability、resource、risk、reversibility、expiry、audit id 的动作协议。Policy Firewall 负责 L0–L3 判断和 Trusted Input；内核验证并一次性消费绑定范围的 token。文件等本地动作写入 journal/snapshot，外部副作用标记为不可自动重放；全局暂停执行 revoke → freeze → cancel IPC → stop input → persist log。
@@ -104,6 +106,8 @@ Runtime 只实现：session/task-window、上下文收集、远程 model adapter
 验收：mock remote model 能完成 L0/L1 fixture；提示注入和 malformed plan 被拒绝；L2/L3 等待 Trusted Input；断网进入 offline/null adapter；runtime 崩溃后 Supervisor 重启；每个动作都有结果证据和日志。
 
 当前增量：可选 `@earendil-works/pi-agent-core@0.85.1` Ring 3 host adapter 已接入 `Agent.subscribe()`/`prompt()`，并通过真实 `Agent/event stream` smoke 将响应校验为 versioned `ActionPlan`；这不等同于远程 provider、原生 Agent Runtime 服务或 QEMU 端到端完成。
+
+最新增量：原生 Ring 3 Runtime service 已在 BIOS/QEMU 与 OVMF 通过真实 IPC envelope 完成 `START → HEARTBEAT → ACK → CHECKPOINT`，ABI 偏移断言与 scheduler idle 证据已加入；这仍不是完整 Registry、远程模型、持久 checkpoint 或 G10 故障矩阵。
 
 ### G10：端到端演示与发布审计
 

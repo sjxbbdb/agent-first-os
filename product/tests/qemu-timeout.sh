@@ -46,4 +46,10 @@ cat "$stderr_log" >>"$log"
 if [[ "$status" -eq 137 ]]; then
     status=124
 fi
+# Some QEMU builds exit cleanly after handling the TERM sent by `timeout`,
+# even though the bounded runner did expire. Preserve the stable timeout
+# contract when the diagnostic proves that this was the runner's signal.
+if [[ "$status" -eq 0 ]] && grep -Fq '(timeout)' "$stderr_log"; then
+    status=124
+fi
 exit "$status"

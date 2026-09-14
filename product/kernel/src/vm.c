@@ -5,6 +5,8 @@
 #define PTE_PRESENT UINT64_C(0x001)
 #define PTE_WRITABLE UINT64_C(0x002)
 #define PTE_USER UINT64_C(0x004)
+#define PTE_PWT UINT64_C(0x008)
+#define PTE_PCD UINT64_C(0x010)
 #define PTE_NX (UINT64_C(1) << 63)
 
 /* These tables live in the kernel image and are identity mapped during the
@@ -14,6 +16,14 @@ static uint64_t pml4[512] __attribute__((aligned(4096)));
 static uint64_t pdpt[512] __attribute__((aligned(4096)));
 static uint64_t pd[512] __attribute__((aligned(4096)));
 static uint64_t pt[512] __attribute__((aligned(4096)));
+/* One additional 2 MiB region is enough for the QEMU PCI MMIO aperture used
+ * by the modern virtio-input fixture.  It is installed lazily, page by page,
+ * after PCI capability discovery; no user bit is ever set on these leaves. */
+static uint64_t mmio_pd[512] __attribute__((aligned(4096)));
+static uint64_t mmio_pt[512] __attribute__((aligned(4096)));
+static uint64_t mmio_region_base;
+static int mmio_region_selected;
+static int vm_bootstrap_ready;
 
 /* Early process roots and their child tables are allocated from an identity
  * mapped, kernel-owned pool.  This is intentionally bounded: the next stage
@@ -40,7 +50,11 @@ extern char __kernel_bss_start[];
 extern char __kernel_bss_end[];
 
 static inline void write_cr3(uint64_t value) {
+#if !defined(VM_HOST_TEST)
     __asm__ volatile("mov %0, %%cr3" : : "r"(value) : "memory");
+#else
+    (void)value;
+#endif
 }
 
 static AgentOsStatus process_page_allocate(void *context,
@@ -106,11 +120,13 @@ AgentOsStatus vm_map_phys_allocator_pages(AgentOsAddressSpace *space) {
 }
 
 static inline void enable_nxe(void) {
+#if !defined(VM_HOST_TEST)
     uint32_t low;
     uint32_t high;
     __asm__ volatile("rdmsr" : "=a"(low), "=d"(high) : "c"(UINT32_C(0xC0000080)));
     low |= UINT32_C(1) << 11;
     __asm__ volatile("wrmsr" : : "a"(low), "d"(high), "c"(UINT32_C(0xC0000080)));
+#endif
 }
 
 static uint64_t page_floor(uint64_t value) {
@@ -144,17 +160,25 @@ static AgentOsStatus map_high_half_region(AgentOsAddressSpace *space,
 
 void vm_init(void) {
     process_page_pool_next = 0;
+    vm_bootstrap_ready = 0;
     for (size_t i = 0; i < 512; ++i) {
         pml4[i] = 0;
         pdpt[i] = 0;
         pd[i] = 0;
         pt[i] = 0;
+        mmio_pd[i] = 0;
+        mmio_pt[i] = 0;
     }
+    mmio_region_base = 0;
+    mmio_region_selected = 0;
     /* Upper-level U/S bits must be set for a user leaf to be reachable;
      * supervisor-only leaves below still remain protected by their own bit. */
     pml4[0] = (uint64_t)(uintptr_t)pdpt | PTE_PRESENT | PTE_WRITABLE | PTE_USER;
     pdpt[0] = (uint64_t)(uintptr_t)pd | PTE_PRESENT | PTE_WRITABLE | PTE_USER;
     pd[0] = (uint64_t)(uintptr_t)pt | PTE_PRESENT | PTE_WRITABLE | PTE_USER;
+    /* The 0xC0000000..0xFFFFFFFF 1 GiB region is attached only when a
+     * validated PCI BAR needs it. */
+    pdpt[3] = (uint64_t)(uintptr_t)mmio_pd | PTE_PRESENT | PTE_WRITABLE;
 
     const uint64_t text_start = page_floor((uint64_t)(uintptr_t)__kernel_text_start);
     const uint64_t text_end = page_floor((uint64_t)(uintptr_t)__kernel_text_end - 1) + 0x1000;
@@ -187,6 +211,53 @@ void vm_init(void) {
 
     enable_nxe();
     write_cr3((uint64_t)(uintptr_t)pml4);
+    vm_bootstrap_ready = 1;
+}
+
+AgentOsStatus vm_map_mmio_identity(uint64_t physical_address, uint64_t length) {
+    uint64_t physical_end;
+    uint64_t start;
+    uint64_t end;
+    const uint64_t aperture_start = UINT64_C(0xFD000000);
+    const uint64_t aperture_end = UINT64_C(0xFF000000);
+    const uint64_t region_size = UINT64_C(0x200000);
+
+    if (!vm_bootstrap_ready) return AGENT_OS_E_FAULT;
+    if (length == 0 || physical_address > UINT64_MAX - length) {
+        return AGENT_OS_E_INVAL;
+    }
+    physical_end = physical_address + length;
+    if (physical_address < aperture_start || physical_end > aperture_end) {
+        return AGENT_OS_E_INVAL;
+    }
+    start = page_floor(physical_address);
+    if (physical_end > UINT64_MAX - UINT64_C(0xfff)) {
+        return AGENT_OS_E_INVAL;
+    }
+    end = (physical_end + UINT64_C(0xfff)) & ~UINT64_C(0xfff);
+    if (end <= start || end > aperture_end) return AGENT_OS_E_INVAL;
+
+    uint64_t region_base = start & ~(region_size - 1);
+    if (region_base < aperture_start || region_base > aperture_end - region_size ||
+        end > region_base + region_size) return AGENT_OS_E_INVAL;
+    if (mmio_region_selected && region_base != mmio_region_base) {
+        return AGENT_OS_E_BUSY;
+    }
+    mmio_region_base = region_base;
+    mmio_region_selected = 1;
+
+    uint64_t pd_index = (region_base >> 21) & 0x1ff;
+    uint64_t first = (start >> 12) & 0x1ff;
+    uint64_t last = (end - 1) >> 12;
+    if (((last >> 9) & 0x1ff) != pd_index) return AGENT_OS_E_INVAL;
+    mmio_pd[pd_index] = (uint64_t)(uintptr_t)mmio_pt |
+                        PTE_PRESENT | PTE_WRITABLE;
+    for (uint64_t index = first; index <= (last & 0x1ff); ++index) {
+        mmio_pt[index] = (region_base | (index << 12) |
+                          PTE_PRESENT | PTE_WRITABLE | PTE_PWT | PTE_PCD |
+                          PTE_NX);
+    }
+    return AGENT_OS_OK;
 }
 
 void vm_load_address_space(uint64_t root_physical) {

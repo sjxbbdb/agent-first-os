@@ -22,7 +22,16 @@ for attempt in $(seq 1 50); do
   sleep 0.1
 done
 [[ -S "$qmp" ]]
-python3 -c 'import json,socket,sys; p=sys.argv[1]; s=socket.socket(socket.AF_UNIX); s.connect(p); s.recv(4096); s.sendall((json.dumps({"execute":"qmp_capabilities"})+"\r\n").encode()); s.recv(4096); e={"execute":"input-send-event","arguments":{"events":[{"type":"key","data":{"down":True,"key":{"type":"qcode","data":"a"}}},{"type":"key","data":{"down":False,"key":{"type":"qcode","data":"a"}}}]}}; s.sendall((json.dumps(e)+"\r\n").encode()); print(s.recv(4096).decode()); s.close()' "$qmp" >"$build_dir/g6-input-qmp-response.log"
+# The guest's bounded poll can finish in a few milliseconds. Send a short,
+# deterministic burst so at least one event overlaps queue arming without
+# claiming success until the guest reports a used-ring completion.
+python3 -c 'import json,socket,sys,time; p=sys.argv[1]; s=socket.socket(socket.AF_UNIX); s.connect(p); s.recv(4096); s.sendall((json.dumps({"execute":"qmp_capabilities"})+"\r\n").encode()); s.recv(4096); e={"execute":"input-send-event","arguments":{"events":[{"type":"key","data":{"down":True,"key":{"type":"qcode","data":"a"}}},{"type":"key","data":{"down":False,"key":{"type":"qcode","data":"a"}}}]}}; out=[]
+for _ in range(50):
+ s.sendall((json.dumps(e)+"\r\n").encode()); s.settimeout(0.2)
+ try: out.append(s.recv(4096).decode())
+ except TimeoutError: pass
+ time.sleep(0.02)
+sys.stdout.write("".join(out)); s.close()' "$qmp" >"$build_dir/g6-input-qmp-response.log"
 sleep 2
 grep -Fq 'G6 virtio input' "$log" || true
 if grep -Fq 'G6 virtio input EVENT OK' "$log"; then

@@ -28,7 +28,7 @@ fi
 grep -Fq 'G6 virtio block transport READY' "$log"
 grep -Fq 'G6 virtio block READ OK' "$log"
 grep -Fq 'G6 virtio net transport READY' "$log"
-grep -Fq 'G6 virtio input transport DISCOVERED' "$log"
+grep -Eq 'G6 virtio input transport (DISCOVERED|READY)' "$log"
 grep -Fq 'G2 ELF user load OK' "$log"
 grep -Fq 'SCHEDULER idle - all tasks exited' "$log"
 echo 'PASS: QEMU virtio-blk PCI legacy transport initializes queue 0, reads sector 0, and preserves Ring 3 boot'
