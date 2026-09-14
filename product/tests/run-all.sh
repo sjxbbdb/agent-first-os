@@ -45,6 +45,11 @@ bash "$repo_root/product/tests/g9-durable-checkpoint-test.sh" \
     > "$evidence_dir/g9-durable-checkpoint.log" 2>&1
 cat "$evidence_dir/g9-durable-checkpoint.log"
 
+printf 'Running g9-host-boundary-test.sh\n'
+bash "$repo_root/product/tests/g9-host-boundary-test.sh" \
+    > "$evidence_dir/g9-host-boundary.log" 2>&1
+cat "$evidence_dir/g9-host-boundary.log"
+
 printf 'Running g9-http-adapter-test.sh\n'
 bash "$repo_root/product/tests/g9-http-adapter-test.sh" \
     > "$evidence_dir/g9-http-adapter.log" 2>&1
