@@ -3,10 +3,13 @@
 
 static uint8_t queue_page[16384] __attribute__((aligned(4096)));
 static uint8_t net_tx_queue_page[16384] __attribute__((aligned(4096)));
+/* Queue memory stays owned by its device for the whole DRIVER_OK lifetime. */
 static uint8_t input_queue_page[16384] __attribute__((aligned(4096)));
+static uint8_t net_rx_queue_page[16384] __attribute__((aligned(4096)));
 static uint8_t request_page[4096] __attribute__((aligned(4096)));
 static uint8_t net_tx_page[4096] __attribute__((aligned(4096)));
 static uint8_t input_event_page[4096] __attribute__((aligned(4096)));
+static uint8_t net_rx_page[4096] __attribute__((aligned(4096)));
 
 typedef struct __attribute__((packed)) VirtioDescriptor {
     uint64_t address;
@@ -184,7 +187,8 @@ static uint32_t pci_bar0(uint8_t bus, uint8_t device, uint8_t function) {
 
 static int probe_products(AgentOsVirtioProbe *out_probe,
                           uint16_t product_a, uint16_t product_b,
-                          uint16_t product_c, int configure_tx_queue) {
+                          uint16_t product_c, int configure_tx_queue,
+                          uint8_t *rx_queue) {
     if (out_probe == 0) return 0;
     *out_probe = (AgentOsVirtioProbe){0};
     for (uint16_t bus = 0; bus < 32; ++bus) {
@@ -211,11 +215,12 @@ static int probe_products(AgentOsVirtioProbe *out_probe,
             outw((uint16_t)(io + 0x0e), 0); /* queue 0 */
             uint16_t queue_size = inw((uint16_t)(io + 0x0c));
             if (queue_size == 0 || queue_size > 256) continue;
+            if (rx_queue == 0) return 0;
             for (uint32_t index = 0; index < sizeof(queue_page); ++index) {
-                queue_page[index] = 0;
+                rx_queue[index] = 0;
             }
             outl((uint16_t)(io + 0x08),
-                 (uint32_t)((uint64_t)(uintptr_t)queue_page >> 12));
+                 (uint32_t)((uint64_t)(uintptr_t)rx_queue >> 12));
             uint16_t tx_queue_size = 0;
             if (configure_tx_queue) {
                 outw((uint16_t)(io + 0x0e), 1); /* queue 1: transmit */
@@ -264,7 +269,7 @@ static int discover_products(AgentOsVirtioProbe *out_probe,
 }
 
 int agent_os_virtio_probe_block(AgentOsVirtioProbe *out_probe) {
-    return probe_products(out_probe, 0x1001, 0x1042, 0x1045, 0);
+    return probe_products(out_probe, 0x1001, 0x1042, 0x1045, 0, queue_page);
 }
 
 int agent_os_virtio_block_read_sector0(const AgentOsVirtioProbe *probe) {
@@ -312,7 +317,7 @@ int agent_os_virtio_block_read_sector0(const AgentOsVirtioProbe *probe) {
 }
 
 int agent_os_virtio_probe_net(AgentOsVirtioProbe *out_probe) {
-    return probe_products(out_probe, 0x1000, 0x1041, 0x1044, 1);
+    return probe_products(out_probe, 0x1000, 0x1041, 0x1044, 1, net_rx_queue_page);
 }
 
 int agent_os_virtio_net_send_test_packet(const AgentOsVirtioProbe *probe) {
@@ -363,16 +368,16 @@ int agent_os_virtio_net_receive_test_packet(const AgentOsVirtioProbe *probe) {
         probe->queue_size == 0) return -1;
     const uint16_t io = probe->io_base;
     const uint16_t queue_size = probe->queue_size;
-    VirtioDescriptor *descriptors = (VirtioDescriptor *)(void *)queue_page;
-    uint8_t *avail = queue_page + (uint32_t)queue_size * sizeof(VirtioDescriptor);
+    VirtioDescriptor *descriptors = (VirtioDescriptor *)(void *)net_rx_queue_page;
+    uint8_t *avail = net_rx_queue_page + (uint32_t)queue_size * sizeof(VirtioDescriptor);
     uint32_t used_offset = ((uint32_t)queue_size * sizeof(VirtioDescriptor) +
                             4u + (uint32_t)queue_size * 2u + 0xfffu) & ~0xfffu;
-    if (used_offset + 4u + (uint32_t)queue_size * 8u > sizeof(queue_page)) return -1;
-    uint8_t *used = queue_page + used_offset;
-    for (uint32_t index = 0; index < sizeof(queue_page); ++index) queue_page[index] = 0;
-    for (uint32_t index = 0; index < sizeof(net_tx_page); ++index) net_tx_page[index] = 0;
-    descriptors[0].address = (uint64_t)(uintptr_t)net_tx_page;
-    descriptors[0].length = sizeof(net_tx_page);
+    if (used_offset + 4u + (uint32_t)queue_size * 8u > sizeof(net_rx_queue_page)) return -1;
+    uint8_t *used = net_rx_queue_page + used_offset;
+    for (uint32_t index = 0; index < sizeof(net_rx_queue_page); ++index) net_rx_queue_page[index] = 0;
+    for (uint32_t index = 0; index < sizeof(net_rx_page); ++index) net_rx_page[index] = 0;
+    descriptors[0].address = (uint64_t)(uintptr_t)net_rx_page;
+    descriptors[0].length = sizeof(net_rx_page);
     descriptors[0].flags = 2; /* DEVICE_WRITE */
     uint16_t *avail_index = (uint16_t *)(void *)(avail + 2);
     uint16_t *avail_ring = (uint16_t *)(void *)(avail + 4);
@@ -391,7 +396,7 @@ int agent_os_virtio_net_receive_test_packet(const AgentOsVirtioProbe *probe) {
 }
 
 int agent_os_virtio_probe_input(AgentOsVirtioProbe *out_probe) {
-    if (probe_products(out_probe, 0x1052, 0x1053, 0x1054, 0)) return 1;
+    if (probe_products(out_probe, 0x1052, 0x1053, 0x1054, 0, input_queue_page)) return 1;
     /* Modern virtio-input devices expose MMIO common configuration rather
      * than the legacy I/O BAR.  Discovery and the bounded queue setup happen
      * before any event completion is claimed. */

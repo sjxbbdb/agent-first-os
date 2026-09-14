@@ -16,12 +16,10 @@ enum AgentOsRuntimeOpcode {
     AGENT_OS_RUNTIME_ACK = 0xDB,
 };
 
-#define AGENT_OS_RUNTIME_TASK_ID_BYTES 32u
-#define AGENT_OS_RUNTIME_DIGEST_BYTES 32u
-
 /* Runtime events are exactly the native IPC envelope.  The kernel transports
- * this envelope; semantic fields beyond the bounded inline words must be
- * carried by a separately capability-authorized shared object in a later gate.
+ * this envelope; task identity, digests, and other semantic fields are not
+ * part of this bounded slice and require a separately capability-authorized
+ * shared object in a later gate.
  */
 typedef IpcMessage AgentOsRuntimeEvent;
 

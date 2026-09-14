@@ -40,12 +40,15 @@ SECTIONS
         __kernel_bss_end = .;
     } :data
 
-    /* Fixed low-memory user image for the first Ring 3 demonstration. */
-    .user_text 0x00180000 : ALIGN(16) {
+    /* Keep the bootstrap user image on separate pages after all kernel data.
+     * Device queues and test variants can grow BSS; never overlap it with an
+     * executable user mapping. Native ELF tasks use the separate 0x400000 VMA. */
+    .user_text MAX(0x00180000, ALIGN(0x1000)) : {
         __user_text_start = .;
         KEEP(*(.user_text))
         __user_text_end = .;
     } :user
 
     __kernel_end = .;
+    ASSERT(__kernel_end <= 0x001FA000, "kernel/user bootstrap image overlaps user stack reservation")
 }

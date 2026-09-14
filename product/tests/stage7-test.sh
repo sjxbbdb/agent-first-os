@@ -4,7 +4,7 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 build_dir="$repo_root/build/bios"
 bash "$repo_root/product/tools/build-bios.sh" >/dev/null
 readelf -S "$build_dir/kernel.elf" | grep -Fq '.user_text'
-readelf -l "$build_dir/kernel.elf" | grep -Fq '0x0000000000180000'
+python3 -c 'import subprocess,sys; symbols={p[2]:int(p[0],16) for line in subprocess.check_output(["nm","-n",sys.argv[1]],text=True).splitlines() if len(p:=line.split())==3}; start=symbols["__user_text_start"]; assert start % 4096 == 0; assert symbols["__kernel_bss_end"] <= start; assert 0x180000 <= start < symbols["__user_text_end"] <= 0x1fa000' "$build_dir/kernel.elf"
 bash "$repo_root/product/tools/run-bios.sh" > "$build_dir/qemu-m7-gated.log"
 grep -Fq 'RING3 ABI READY - launch gated pending TSS' "$build_dir/qemu-m7-gated.log"
 grep -Fq 'IDT OK - 256 vectors' "$build_dir/qemu-m7-gated.log"
