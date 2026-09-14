@@ -7,6 +7,7 @@
 - [第一次课：程序、变量与赋值](lessons/day-01-c-basics.md)
 - [课堂笔记模板](notes/NOTE_TEMPLATE.md) · [学习笔记索引](notes/INDEX.md)
 - [学习进度记录](notes/PROGRESS.md)
+- [第三节：第一次观察 ELF Header](lessons/day-03-elf-header.md)
 - [教学闭环与记录协议](curriculum/TEACHING_WORKFLOW.md)
 - [第一次课后记录](notes/lesson-log/2026-09-12-lesson-01.md)
 - [验收协议](curriculum/ASSESSMENT.md)
