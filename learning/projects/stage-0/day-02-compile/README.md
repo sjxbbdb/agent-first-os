@@ -1,4 +1,6 @@
-# day-02-compile：第一个 C 程序
+# 历史前置实验：day-02-compile 第一个 C 程序
+
+这个实验保留用于复习普通 Linux 用户程序、返回码和 ELF。它不是当前源码主线的内核产物，也不代表 freestanding 或 Ring 3 内核能力已经通过。
 
 ## 构建
 

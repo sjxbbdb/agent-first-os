@@ -31,3 +31,6 @@ qemu-*.pid
 learning/evidence/**/*.png
 learning/evidence/**/*.bmp
 learning/evidence/**/*.wav
+
+# External kernel snapshots are kept outside the public repository.
+learning/.references/

@@ -11,13 +11,16 @@ product/    产品主线：可合并的 OS 代码、系统模块、Agent Runtime
 
 ### `learning/` 学习区
 
-- `curriculum/`：课程总纲、资源清单和阶段验收协议；
-- `lessons/`：每一课的目标、讲解、预测题和练习；
-- `projects/`：按阶段保存的独立实验和可运行小产物；
-- `evidence/`：构建命令、QEMU 参数、串口日志、GDB/ELF/页表输出、故障注入结果；
-- `notes/`：概念笔记、设计复盘和未验证事项。
+学习区现在采用 Source-First Track：先读一份真实的小型内核，沿调用链运行和改动，再把机制独立重写到我们的实验中。视频和理论资料只在当前源码遇到具体缺口时按需介入。
 
-学习区的代码允许为了教学而拆小、重写和故意注入故障，不直接等同于产品代码。
+- `curriculum/`：源码阶段路线、单元执行表、资料索引和验收协议；
+- `source-track/`：外部仓库清单、commit/许可证记录、调用链和源码单元模板；
+- `lessons/`：每个源码单元的讲义、预测题和当前作业；
+- `projects/`：我们自己写的最小实验和可运行产物；
+- `evidence/`：源码单元证据以及历史产品证据（按 `SF-*`、`M*`、`G*` 区分）；
+- `notes/`：平板笔记摘要、课后记录、能力状态和迁移复盘。
+
+当前学习入口：[SF-00 源码基线](learning/lessons/SF-00-source-baseline.md)。学习区的代码允许为了教学而拆小、重写和故意注入故障，不直接等同于产品代码。
 
 ### `product/` 产品区
 
@@ -31,13 +34,15 @@ product/    产品主线：可合并的 OS 代码、系统模块、Agent Runtime
 
 产品区只接收经过独立验证、具备运行证据和清晰变更说明的成果。学习区的实验完成后，经过评审才会迁移到产品区。
 
-课程入口：[learning/curriculum/CURRICULUM.md](learning/curriculum/CURRICULUM.md)　·　最小观看主线：[learning/curriculum/STUDY_PLAN.md](learning/curriculum/STUDY_PLAN.md)　·　产品设计书：[product/docs/DESIGN_BOOK.md](product/docs/DESIGN_BOOK.md)　·　整体框架长链路：[product/docs/OVERALL_FRAMEWORK_PLAN.md](product/docs/OVERALL_FRAMEWORK_PLAN.md)
+学习总纲：[learning/curriculum/CURRICULUM.md](learning/curriculum/CURRICULUM.md)　·　源码执行表：[learning/curriculum/STUDY_PLAN.md](learning/curriculum/STUDY_PLAN.md)　·　外部内核清单：[learning/source-track/SOURCES.md](learning/source-track/SOURCES.md)　·　产品设计书：[product/docs/DESIGN_BOOK.md](product/docs/DESIGN_BOOK.md)　·　整体框架长链路：[product/docs/OVERALL_FRAMEWORK_PLAN.md](product/docs/OVERALL_FRAMEWORK_PLAN.md)
 
 当前已实现基线可用以下命令重跑（WSL2，脚本会串行处理共享 BIOS 构建目录）：
 
 ```text
 wsl.exe bash '/mnt/d/Agent OS/product/tests/run-all.sh'
 ```
+
+学习状态以 [learning/notes/PROGRESS.md](learning/notes/PROGRESS.md) 为准；产品实现状态以 [product/docs/OVERALL_FRAMEWORK_PLAN.md](product/docs/OVERALL_FRAMEWORK_PLAN.md) 及其证据为准，两者不会互相替代。
 
 ---
 

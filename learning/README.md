@@ -1,20 +1,89 @@
-# 学习区
+# 学习区：Source-First Track
 
-这里保存从基础到 Agent-First OS 的完整学习过程。
+这里保存从源码理解到自主实现 Agent-First OS 的学习过程。学习区是实验场和证据库，`product/` 才是产品实现区。
 
-- [课程总纲](curriculum/CURRICULUM.md)
-- [最小观看主线](curriculum/STUDY_PLAN.md)
-- [第一次课：程序、变量与赋值](lessons/day-01-c-basics.md)
-- [课堂笔记模板](notes/NOTE_TEMPLATE.md) · [学习笔记索引](notes/INDEX.md)
-- [学习进度记录](notes/PROGRESS.md)
-- [第三节：第一次观察 ELF Header](lessons/day-03-elf-header.md)
+## 当前入口
+
+- 当前路线：源码驱动、纵向切片、理论按需补齐
+- 当前单元：`SF-00`，建立外部内核源码基线
+- 当前讲义：[SF-00：源码基线与阅读方法](lessons/SF-00-source-baseline.md)
+- 当前进度：[学习进度](notes/PROGRESS.md)
+- 源码清单：[外部内核清单](source-track/SOURCES.md)
+- 调用链地图：[内核调用链](source-track/CALL_CHAINS.md)
+- 单元模板：[源码单元模板](source-track/UNIT_TEMPLATE.md)
+
+## 新的学习方式
+
+每个单元只追一条可以运行或观察的执行链：
+
+~~~text
+选择一个真实行为
+  → 定位入口文件和调用链
+  → 先预测寄存器、内存、状态和输出
+  → 运行并保存原始证据
+  → 只改一个变量、指令或接口
+  → 再运行并解释差异
+  → 注入一个可控故障
+  → 用自己的话复述
+  → 通过单元 Gate
+~~~
+
+视频、教材和规范只在当前源码遇到问题时介入。我们不要求把课程视频从头看完，也不要求把成熟内核的所有文件逐行读完；外部源码按当前机制选择文件和函数，自己编写的代码才要求逐条解释。
+
+## 目录职责
+
+| 目录 | 保存什么 | 边界 |
+|---|---|---|
+| `curriculum/` | 路线、单元顺序、资料索引和验收标准 | 决定学习顺序，不保存第三方源码 |
+| `source-track/` | 外部仓库清单、版本记录、调用链和源码阅读单元 | 只保存元数据与阅读记录；源码克隆在仓库外 |
+| `lessons/` | 老师每次发出的讲义、问题和当前作业 | 一个单元一个出口 |
+| `projects/` | 我们自己写的教学实验和可运行小产物 | 可以故意拆小或注入故障 |
+| `evidence/` | 命令、日志、反汇编、QEMU 输出和故障证据 | `SF-*` 是学习证据，`M*`/`G*` 是产品证据 |
+| `notes/` | 平板笔记摘要、课后记录、能力状态和复盘 | 只写已观察到的事实，未验证内容单独标记 |
+
+外部仓库使用 `git clone` 拉到 `~/agent-os-references/` 等仓库外路径。即使某个外部项目很适合作为参考，也不把它的源码快照复制到 `product/`。
+
+## 一个单元何时算完成
+
+老师会检查以下内容是否形成闭环：
+
+1. 你能指出入口文件、关键函数和调用顺序；
+2. 你在运行前写出预测；
+3. 你保存了实际命令和原始输出；
+4. 你独立改动一处并解释行为变化；
+5. 你制造了一个受控故障并定位根因；
+6. 你能脱离源码复述机制，并把它映射到我们的内核设计；
+7. 记录、证据和下一单元入口已经互相链接。
+
+只看懂代码或只看到屏幕上的成功输出，都不能单独算通过。
+
+## 两类代码的关系
+
+~~~text
+外部完整内核（xv6-public）
+  用来建立“一个 OS 怎样从启动走到 Shell”的全局地图
+
+现代 x86_64 参考（AxiomX-OS）
+  用来观察 BIOS、长模式、页表和中断在 64 位上的落地
+
+我们的教学实验
+  把上面得到的机制缩小、重写并做变体题
+
+product/
+  只接收通过独立 Gate、具备运行证据的自研成果
+~~~
+
+产品区已有的 `G0–G10` 证据不会自动转化为学员掌握度；两套状态分别记录。
+
+## 历史前置内容
+
+早期的 C 变量、编译、ELF 观察课件和记录仍然保留，位置不变。它们现在是按需补课材料，入口和状态见 [历史记录索引](notes/INDEX.md)，旧版课程恢复方法见 [curriculum/archive](curriculum/archive/README.md)。这次迁移不删除学习痕迹，也不让旧的线性课次阻挡源码主线。
+
+## 相关入口
+
+- [课程文档导航](curriculum/README.md) · [源码驱动课程总纲](curriculum/CURRICULUM.md)
+- [源码单元执行表](curriculum/STUDY_PLAN.md)
 - [教学闭环与记录协议](curriculum/TEACHING_WORKFLOW.md)
-- [第一次课后记录](notes/lesson-log/2026-09-12-lesson-01.md)
 - [验收协议](curriculum/ASSESSMENT.md)
-- [资料清单](curriculum/RESOURCES.md)
-- `lessons/`：逐课讲义和练习
-- `projects/`：阶段实验代码
-- `evidence/`：运行、调试和故障注入证据
-- `notes/`：概念笔记和复盘
-
-学习区的代码以理解和实验为目的。通过阶段 Gate 后，才考虑迁移到产品区。
+- [按需资料与仓库清单](curriculum/RESOURCES.md)
+- [产品设计书](../product/docs/DESIGN_BOOK.md)
