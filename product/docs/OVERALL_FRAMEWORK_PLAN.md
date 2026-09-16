@@ -99,6 +99,8 @@ SeaBIOS / UEFI
 
 `SYS_VIRTIO_BLOCK_READ` 现在以同一 opaque device capability 暴露用户态单扇区读取，并在 QEMU 独立数据盘上验证了负向边界和真实 used completion；这只是 journal 扫描所需的硬件原语，尚未实现事务恢复。
 
+新增的固定 Ring 3 journal fixture 在同一 QEMU 数据盘上完成了 `PREPARE → FLUSH → payload → FLUSH → 受控崩溃 → 重启读取 → rollback → FLUSH`，并检查真实扇区结果；它是 G7 恢复子集证据，不封闭完整 COMMIT/replay/corruption 故障矩阵或实体掉电语义。
+
 ### G8：Semantic Registry 与 Context Collector
 
 实现用户态 registry，保存稳定 tool id、版本、参数 schema、capability 要求、风险、可逆性、结果验证器和 provider。查询按意图、标签、能力和版本确定性返回结构化动作；Context Collector 只提交当前任务窗口和明确授权文件，执行前后都保留证据。

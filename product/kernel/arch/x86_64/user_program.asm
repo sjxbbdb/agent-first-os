@@ -6,6 +6,168 @@ global user_entry
 global user_entry_secondary
 section .user_text
 user_entry:
+%ifdef AGENT_OS_TEST_G7_NATIVE_JOURNAL_PREPARE
+    mov eax, 1
+    lea rdi, [rel g7_journal_prepare_start]
+    mov esi, g7_journal_prepare_start_end-g7_journal_prepare_start-1
+    int 0x80
+    sub rsp, 1536
+    mov r12, rsp
+    lea r13, [rsp+512]
+    xor eax, eax
+    mov rdi, r12
+    mov rcx, 192
+    rep stosq
+    mov rax, 0x3145524150455250
+    mov [r12], rax                       ; PREPARE1
+    mov qword [r12+8], 0x0000000000000001 ; action nonce
+    mov qword [r12+16], 3                 ; payload sector
+    mov rax, 0x31304c415657454e
+    mov [r13], rax                       ; NEWVAL01
+    mov rdi, rbx
+    mov esi, 1
+    mov rdx, r12
+    mov r10d, 512
+    mov r8d, 1
+    mov eax, 45
+    int 0x80
+    cmp rax, 512
+    jne .g7_journal_prepare_fail
+    mov rdi, rbx
+    mov r8d, 1
+    mov eax, 46
+    int 0x80
+    test rax, rax
+    jnz .g7_journal_prepare_fail
+    mov rdi, rbx
+    mov esi, 3
+    mov rdx, r13
+    mov r10d, 512
+    mov r8d, 1
+    mov eax, 45
+    int 0x80
+    cmp rax, 512
+    jne .g7_journal_prepare_fail
+    mov rdi, rbx
+    mov r8d, 1
+    mov eax, 46
+    int 0x80
+    test rax, rax
+    jnz .g7_journal_prepare_fail
+    mov eax, 1
+    lea rdi, [rel g7_journal_prepare_durable]
+    mov esi, g7_journal_prepare_durable_end-g7_journal_prepare_durable-1
+    int 0x80
+.g7_journal_prepare_crash:
+    pause
+    jmp .g7_journal_prepare_crash
+.g7_journal_prepare_fail:
+    add rsp, 1536
+    mov eax, 1
+    lea rdi, [rel g7_journal_fail_message]
+    mov esi, g7_journal_fail_message_end-g7_journal_fail_message-1
+    int 0x80
+    mov eax, 0
+    mov edi, 1
+    int 0x80
+g7_journal_prepare_start db 'G7 JOURNAL PREPARE START',13,10,0
+g7_journal_prepare_start_end:
+g7_journal_prepare_durable db 'JOURNAL PREPARE DURABLE',13,10,0
+g7_journal_prepare_durable_end:
+g7_journal_fail_message db 'G7 JOURNAL RECOVERY FAIL',13,10,0
+g7_journal_fail_message_end:
+%endif
+%ifdef AGENT_OS_TEST_G7_NATIVE_JOURNAL_RECOVER
+    mov eax, 1
+    lea rdi, [rel g7_journal_recover_start]
+    mov esi, g7_journal_recover_start_end-g7_journal_recover_start-1
+    int 0x80
+    sub rsp, 1536
+    mov r12, rsp
+    lea r13, [rsp+512]
+    mov rdi, rbx
+    mov esi, 1
+    mov rdx, r12
+    mov r10d, 512
+    mov r8d, 1
+    mov eax, 47
+    int 0x80
+    cmp rax, 512
+    jne .g7_journal_recover_fail
+    mov rax, 0x3145524150455250
+    cmp qword [r12], rax
+    jne .g7_journal_recover_fail
+    mov rdi, rbx
+    mov esi, 3
+    mov rdx, r13
+    mov r10d, 512
+    mov r8d, 1
+    mov eax, 47
+    int 0x80
+    cmp rax, 512
+    jne .g7_journal_recover_fail
+    mov rax, 0x31304c415657454e
+    cmp qword [r13], rax
+    jne .g7_journal_recover_fail
+    mov rax, 0x31304c4156444c4f
+    mov [r13], rax                       ; OLDVAL01
+    mov rdi, rbx
+    mov esi, 3
+    mov rdx, r13
+    mov r10d, 512
+    mov r8d, 1
+    mov eax, 45
+    int 0x80
+    cmp rax, 512
+    jne .g7_journal_recover_fail
+    mov rdi, rbx
+    mov r8d, 1
+    mov eax, 46
+    int 0x80
+    test rax, rax
+    jnz .g7_journal_recover_fail
+    mov rax, 0x31304b424c4c4f52
+    mov [r12], rax                       ; ROLLBK01
+    mov qword [r12+8], 0x0000000000000002 ; rollback sequence
+    mov rdi, rbx
+    mov esi, 1
+    mov rdx, r12
+    mov r10d, 512
+    mov r8d, 1
+    mov eax, 45
+    int 0x80
+    cmp rax, 512
+    jne .g7_journal_recover_fail
+    mov rdi, rbx
+    mov r8d, 1
+    mov eax, 46
+    int 0x80
+    test rax, rax
+    jnz .g7_journal_recover_fail
+    mov eax, 1
+    lea rdi, [rel g7_journal_recovered]
+    mov esi, g7_journal_recovered_end-g7_journal_recovered-1
+    int 0x80
+    add rsp, 1536
+    mov eax, 0
+    xor edi, edi
+    int 0x80
+.g7_journal_recover_fail:
+    add rsp, 1536
+    mov eax, 1
+    lea rdi, [rel g7_journal_fail_message]
+    mov esi, g7_journal_fail_message_end-g7_journal_fail_message-1
+    int 0x80
+    mov eax, 0
+    mov edi, 1
+    int 0x80
+g7_journal_recover_start db 'G7 JOURNAL RECOVERY START',13,10,0
+g7_journal_recover_start_end:
+g7_journal_recovered db 'JOURNAL RECOVERY ROLLBACK',13,10,0
+g7_journal_recovered_end:
+g7_journal_fail_message db 'G7 JOURNAL RECOVERY FAIL',13,10,0
+g7_journal_fail_message_end:
+%endif
 %ifdef AGENT_OS_TEST_G7_NATIVE_BLOCK_READ
     mov eax, 1
     lea rdi, [rel g7_block_read_start]

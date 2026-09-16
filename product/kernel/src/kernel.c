@@ -1669,7 +1669,9 @@ void kernel_main(const BootInfo *boot_info) {
     }
 #if defined(AGENT_OS_TEST_G7_NATIVE_BLOCK_READ) || \
     defined(AGENT_OS_TEST_G7_NATIVE_BLOCK_WRITE) || \
-    defined(AGENT_OS_TEST_G7_NATIVE_BLOCK_FLUSH)
+    defined(AGENT_OS_TEST_G7_NATIVE_BLOCK_FLUSH) || \
+    defined(AGENT_OS_TEST_G7_NATIVE_JOURNAL_PREPARE) || \
+    defined(AGENT_OS_TEST_G7_NATIVE_JOURNAL_RECOVER)
     /* This is a deliberately test-gated bootstrap grant.  The default image
      * exposes no block-device capability to Ring 3. */
     if (!virtio_block_ready) {
@@ -1682,6 +1684,10 @@ void kernel_main(const BootInfo *boot_info) {
 #if defined(AGENT_OS_TEST_G7_NATIVE_BLOCK_WRITE) || \
     defined(AGENT_OS_TEST_G7_NATIVE_BLOCK_FLUSH)
     bootstrap_block_rights |= CAP_RIGHT_WRITE;
+#endif
+#if defined(AGENT_OS_TEST_G7_NATIVE_JOURNAL_PREPARE) || \
+    defined(AGENT_OS_TEST_G7_NATIVE_JOURNAL_RECOVER)
+    bootstrap_block_rights |= CAP_RIGHT_READ | CAP_RIGHT_WRITE;
 #endif
     CapabilityHandle bootstrap_block_capability;
     if (agent_os_capability_mint(
