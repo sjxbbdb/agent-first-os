@@ -99,6 +99,8 @@ SeaBIOS / UEFI
 
 验收：schema 不匹配、未知工具、未授权注册/撤销和越界上下文在执行前拒绝；版本 pin、废弃和 provider 崩溃有明确行为。
 
+最新 G8 增量：原生 Registry fixture 新增不支持 semantic opcode 与错误 action digest 的 BIOS/QEMU deny 证据，Ring 0 仍只转发 bounded IPC；IPC header version 伪造处理和通用 schema 引擎仍未完成。证据见 `product/docs/g8-native-semantic-negative-evidence.md`，这仍不等同于持久化 Registry 或生产 provider。
+
 ### G9：Agent Runtime 适配层
 
 Ring 3 runtime 优先以 pi agent 的轻量 agent loop、tool calling 和状态管理为适配基线；按需吸收 OpenAI Codex app-server 的双向 JSON-RPC、线程/turn/item 生命周期、背压、审批和事件流语义。具体依赖版本、许可证和可移植性在实现时重新核验。

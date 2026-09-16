@@ -119,6 +119,7 @@
 
 - **2026-09-14 G7 生命周期增量：** `SYS_POLICY_PAUSE/RESUME` 现在驱动内核任务生命周期：暂停会取消阻塞 IPC waiter 并冻结其他 READY 任务，恢复只解冻本次暂停标记的任务；新增 BIOS/QEMU 串口证据见 `product/docs/G7_NATIVE_EMERGENCY_PAUSE.md`。持久化 journal、真实磁盘事务、输入设备停止、SMP 全局暂停和完整 G7 故障矩阵仍未完成。
 - **2026-09-14 G6 输入状态增量：** modern virtio-input 队列配置在启用 queue 后显式写入并校验 `DRIVER_OK`，保证设备只有在完整初始化后才可消费 descriptor；QEMU QMP synthetic input 仍未观察到 used-ring completion，因此继续标记为 `BLOCKED`。
+- **2026-09-14 G8 负向增量：** 原生 Ring 3 Semantic Registry fixture 新增不支持 opcode 和错误 action digest 的 deny 验证，测试见 `product/tests/g8-native-semantic-negative-test.sh`；IPC header version 伪造处理和通用 schema 引擎仍未完成，这也不是持久化 Registry。
 
 ## 目录约定
 

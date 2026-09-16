@@ -35,6 +35,10 @@ typedef struct AgentOsVirtioInputEvent {
 
 int agent_os_virtio_probe_block(AgentOsVirtioProbe *out_probe);
 int agent_os_virtio_block_read_sector0(const AgentOsVirtioProbe *probe);
+/* Ring-0 hardware primitive: submit one validated 512-byte write. */
+int agent_os_virtio_block_write_sector(const AgentOsVirtioProbe *probe,
+                                       uint64_t sector,
+                                       const uint8_t *data);
 int agent_os_virtio_probe_net(AgentOsVirtioProbe *out_probe);
 int agent_os_virtio_net_send_test_packet(const AgentOsVirtioProbe *probe);
 int agent_os_virtio_net_receive_test_packet(const AgentOsVirtioProbe *probe);

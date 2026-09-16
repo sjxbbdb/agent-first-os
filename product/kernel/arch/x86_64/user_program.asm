@@ -561,6 +561,55 @@ g6_native_fail_message_end:
     ; Native Ring 3 Semantic service slice.  Ring 0 only transports these
     ; bounded words; registry, context, action binding and Trusted Input are
     ; implemented by the Ring 3 Policy/Registry fixture below.
+%ifdef AGENT_OS_TEST_G8_NATIVE_NEGATIVE
+    mov eax, 16
+    mov rdi, 0x0000000100000001
+    mov esi, 0x7f
+    mov rdx, 0x7368656c6c2e7772
+    int 0x80
+    mov eax, 16
+    mov esi, 0x82
+    mov rdx, 0xbadac71000000001
+    int 0x80
+    mov eax, 2
+    int 0x80
+    sub rsp, 128
+    mov eax, 17
+    mov rdi, 0x0000000100000001
+    mov rsi, rsp
+    int 0x80
+    cmp dword [rsp + 8], 0x9f
+    jne .g8_native_negative_fail
+    cmp qword [rsp + 32], 0
+    jne .g8_native_negative_fail
+    mov eax, 17
+    mov rsi, rsp
+    int 0x80
+    cmp dword [rsp + 8], 0x9f
+    jne .g8_native_negative_fail
+    cmp qword [rsp + 32], 0
+    jne .g8_native_negative_fail
+    add rsp, 128
+    mov eax, 1
+    lea rdi, [rel g8_native_negative_ok]
+    mov esi, g8_native_negative_ok_end-g8_native_negative_ok-1
+    int 0x80
+    mov eax, 0
+    xor edi, edi
+    int 0x80
+.g8_native_negative_fail:
+    mov eax, 1
+    lea rdi, [rel g8_native_negative_fail_message]
+    mov esi, g8_native_negative_fail_message_end-g8_native_negative_fail_message-1
+    int 0x80
+    mov eax, 0
+    mov edi, 1
+    int 0x80
+g8_native_negative_ok db 'NATIVE REGISTRY NEGATIVE DENY OK', 13, 10, 0
+g8_native_negative_ok_end:
+g8_native_negative_fail_message db 'NATIVE REGISTRY NEGATIVE DENY FAIL', 13, 10, 0
+g8_native_negative_fail_message_end:
+%else
     mov eax, 16             ; unknown registry query (must be denied)
     mov rdi, 0x0000000100000001
     mov esi, 0x80
@@ -646,6 +695,7 @@ g8_native_ok db 'NATIVE REGISTRY CONTEXT TRUSTED INPUT OK', 13, 10, 0
 g8_native_ok_end:
 g8_native_fail_message db 'NATIVE REGISTRY CONTEXT TRUSTED INPUT FAIL', 13, 10, 0
 g8_native_fail_message_end:
+%endif
 %endif
 %ifdef AGENT_OS_TEST_AGENT_LOOP
     ; Agent -> Policy: structured action nonce over the endpoint, then yield
@@ -1624,6 +1674,42 @@ g10_service_fail_message_end:
 %ifdef AGENT_OS_TEST_G8_NATIVE
     ; Ring 3 Policy/Registry service.  It denies unknown descriptors and
     ; returns the deterministic metadata/digests bound to this task window.
+%ifdef AGENT_OS_TEST_G8_NATIVE_NEGATIVE
+    sub rsp, 128
+    mov eax, 17
+    mov rdi, 0x0000000100000001
+    mov rsi, rsp
+    int 0x80
+    cmp dword [rsp + 8], 0x7f
+    jne .g8_service_negative_fail
+    add rsp, 128
+    mov eax, 16
+    mov esi, 0x9f
+    xor edx, edx
+    int 0x80
+    sub rsp, 128
+    mov eax, 17
+    mov rdi, 0x0000000100000001
+    mov rsi, rsp
+    int 0x80
+    cmp dword [rsp + 8], 0x82
+    jne .g8_service_negative_fail
+    mov rax, 0xbadac71000000001
+    cmp qword [rsp + 32], rax
+    jne .g8_service_negative_fail
+    add rsp, 128
+    mov eax, 16
+    mov esi, 0x9f
+    xor edx, edx
+    int 0x80
+    mov eax, 0
+    xor edi, edi
+    int 0x80
+.g8_service_negative_fail:
+    mov eax, 0
+    mov edi, 1
+    int 0x80
+%else
     sub rsp, 128
     mov eax, 17             ; unknown tool query
     mov rdi, 0x0000000100000001
@@ -1712,6 +1798,7 @@ g10_service_fail_message_end:
     mov eax, 0
     xor edi, edi
     int 0x80
+%endif
 %endif
 %ifdef AGENT_OS_TEST_SUPERVISOR
     ; The service emits a bounded inline heartbeat and exits.  Restarting the

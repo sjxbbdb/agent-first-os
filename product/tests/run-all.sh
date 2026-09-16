@@ -50,6 +50,16 @@ bash "$repo_root/product/tests/g9-host-boundary-test.sh" \
     > "$evidence_dir/g9-host-boundary.log" 2>&1
 cat "$evidence_dir/g9-host-boundary.log"
 
+printf 'Running g8-native-semantic-negative-test.sh\n'
+bash "$repo_root/product/tests/g8-native-semantic-negative-test.sh" \
+    > "$evidence_dir/g8-native-semantic-negative.log" 2>&1
+cat "$evidence_dir/g8-native-semantic-negative.log"
+
+printf 'Running g7-native-journal-contract-test.sh\n'
+bash "$repo_root/product/tests/g7-native-journal-contract-test.sh" \
+    > "$evidence_dir/g7-native-journal-contract.log" 2>&1
+cat "$evidence_dir/g7-native-journal-contract.log"
+
 printf 'Running g9-http-adapter-test.sh\n'
 bash "$repo_root/product/tests/g9-http-adapter-test.sh" \
     > "$evidence_dir/g9-http-adapter.log" 2>&1

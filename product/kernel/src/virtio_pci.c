@@ -319,6 +319,45 @@ int agent_os_virtio_block_read_sector0(const AgentOsVirtioProbe *probe) {
     return 0;
 }
 
+int agent_os_virtio_block_write_sector(const AgentOsVirtioProbe *probe,
+                                      uint64_t sector,
+                                      const uint8_t *data) {
+    if (probe == 0 || data == 0 || !probe->queue_ready || probe->io_base == 0 ||
+        probe->queue_size == 0) return 0;
+    const uint16_t io = probe->io_base;
+    VirtioDescriptor *descriptors = (VirtioDescriptor *)(void *)queue_page;
+    uint16_t queue_size = probe->queue_size;
+    uint8_t *avail = queue_page + (uint32_t)queue_size * sizeof(VirtioDescriptor);
+    uint32_t used_offset = ((uint32_t)queue_size * sizeof(VirtioDescriptor) +
+                            4u + (uint32_t)queue_size * 2u + 0xfffu) & ~0xfffu;
+    uint8_t *used = queue_page + used_offset;
+    VirtioBlkRequest *request = (VirtioBlkRequest *)(void *)request_page;
+    for (uint32_t index = 0; index < sizeof(queue_page); ++index) queue_page[index] = 0;
+    for (uint32_t index = 0; index < sizeof(request_page); ++index) request_page[index] = 0;
+    for (uint32_t index = 0; index < sizeof(request->data); ++index) request->data[index] = data[index];
+    descriptors[0].address = (uint64_t)(uintptr_t)request;
+    descriptors[0].length = 16; descriptors[0].flags = 1; descriptors[0].next = 1;
+    descriptors[1].address = (uint64_t)(uintptr_t)request->data;
+    descriptors[1].length = sizeof(request->data); descriptors[1].flags = 1; descriptors[1].next = 2;
+    descriptors[2].address = (uint64_t)(uintptr_t)&request->status;
+    descriptors[2].length = 1; descriptors[2].flags = 2;
+    request->type = 1; /* VIRTIO_BLK_T_OUT */
+    request->sector = sector;
+    uint16_t *avail_index = (uint16_t *)(void *)(avail + 2);
+    uint16_t *avail_ring = (uint16_t *)(void *)(avail + 4);
+    *avail_index = 1; avail_ring[0] = 0;
+    __asm__ volatile ("mfence" : : : "memory");
+    outw((uint16_t)(io + 0x10), 0);
+    uint16_t *used_index = (uint16_t *)(void *)(used + 2);
+    for (uint32_t spin = 0; spin < 10000000u; ++spin) {
+        if (*used_index == 1) {
+            __asm__ volatile ("mfence" : : : "memory");
+            return request->status == 0;
+        }
+    }
+    return 0;
+}
+
 int agent_os_virtio_probe_net(AgentOsVirtioProbe *out_probe) {
     return probe_products(out_probe, 0x1000, 0x1041, 0x1044, 1, net_rx_queue_page);
 }
