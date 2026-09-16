@@ -637,6 +637,56 @@ void kernel_syscall_handler(SyscallFrame *frame) {
         frame->rax = completed ? 0 : (uint64_t)-95;
         return;
     }
+    if (frame->rax == SYS_VIRTIO_BLOCK_READ) {
+        AgentOsProcess *current_process = 0;
+        uint64_t device_object = 0;
+        AgentOsStatus cap_status = AGENT_OS_E_BAD_CAP;
+        if (current_id != AGENT_OS_PROCESS_INVALID &&
+            agent_os_process_lookup(&process_table, current_id,
+                                    &current_process) == AGENT_OS_PROCESS_OK) {
+            cap_status = agent_os_capability_lookup(
+                &current_process->capabilities,
+                (CapabilityHandle)frame->rdi, CAP_RIGHT_READ,
+                &device_object, 0);
+        }
+        if (frame->r8 != AGENT_OS_VIRTIO_BLOCK_READ_ABI_VERSION ||
+            frame->r10 != AGENT_OS_VIRTIO_BLOCK_READ_BYTES ||
+            frame->rsi == 0) {
+            serial_print("SYSCALL block read EINVAL\r\n");
+            frame->rax = (uint64_t)-22;
+            return;
+        }
+        if (!user_range_ok(frame->rdx, AGENT_OS_VIRTIO_BLOCK_READ_BYTES, 1)) {
+            serial_print("SYSCALL block read EFAULT\r\n");
+            frame->rax = (uint64_t)-14;
+            return;
+        }
+        if (cap_status != AGENT_OS_OK ||
+            device_object != (uint64_t)(uintptr_t)&virtio_block_probe ||
+            !virtio_block_ready) {
+            serial_print("SYSCALL block read ECAP\r\n");
+            frame->rax = (uint64_t)-13;
+            return;
+        }
+        uint8_t data[AGENT_OS_VIRTIO_BLOCK_READ_BYTES];
+        int completed = agent_os_virtio_block_read_sector(
+            (const AgentOsVirtioProbe *)(uintptr_t)device_object,
+            frame->rsi, data);
+        if (completed) {
+            volatile uint8_t *destination =
+                (volatile uint8_t *)(uintptr_t)frame->rdx;
+            for (uint64_t index = 0;
+                 index < AGENT_OS_VIRTIO_BLOCK_READ_BYTES; ++index) {
+                destination[index] = data[index];
+            }
+        }
+        serial_print(completed
+                         ? "SYSCALL block read OK used completion\r\n"
+                         : "SYSCALL block read EIO\r\n");
+        frame->rax = completed
+            ? AGENT_OS_VIRTIO_BLOCK_READ_BYTES : (uint64_t)-5;
+        return;
+    }
     if (frame->rax == SYS_IPC_CREATE) {
         AgentOsProcess *current_process = 0;
         uint64_t authority_object = 0;
@@ -1617,22 +1667,31 @@ void kernel_main(const BootInfo *boot_info) {
             &bootstrap_shm_capability) != AGENT_OS_OK) {
         scheduler_halt("SCHEDULER shared memory setup failed");
     }
-#if defined(AGENT_OS_TEST_G7_NATIVE_BLOCK_WRITE) || \
+#if defined(AGENT_OS_TEST_G7_NATIVE_BLOCK_READ) || \
+    defined(AGENT_OS_TEST_G7_NATIVE_BLOCK_WRITE) || \
     defined(AGENT_OS_TEST_G7_NATIVE_BLOCK_FLUSH)
     /* This is a deliberately test-gated bootstrap grant.  The default image
      * exposes no block-device capability to Ring 3. */
     if (!virtio_block_ready) {
         scheduler_halt("SCHEDULER block device capability unavailable");
     }
-    CapabilityHandle bootstrap_block_write_capability;
+    uint64_t bootstrap_block_rights = 0;
+#if defined(AGENT_OS_TEST_G7_NATIVE_BLOCK_READ)
+    bootstrap_block_rights |= CAP_RIGHT_READ;
+#endif
+#if defined(AGENT_OS_TEST_G7_NATIVE_BLOCK_WRITE) || \
+    defined(AGENT_OS_TEST_G7_NATIVE_BLOCK_FLUSH)
+    bootstrap_block_rights |= CAP_RIGHT_WRITE;
+#endif
+    CapabilityHandle bootstrap_block_capability;
     if (agent_os_capability_mint(
             &bootstrap_record->capabilities,
             (uint64_t)(uintptr_t)&virtio_block_probe,
-            CAP_RIGHT_WRITE,
-            &bootstrap_block_write_capability) != AGENT_OS_OK) {
+            bootstrap_block_rights,
+            &bootstrap_block_capability) != AGENT_OS_OK) {
         scheduler_halt("SCHEDULER block capability setup failed");
     }
-    bootstrap_record->frame.rbx = bootstrap_block_write_capability;
+    bootstrap_record->frame.rbx = bootstrap_block_capability;
 #endif
     second.parent = bootstrap_process;
     if (agent_os_process_create(&process_table, &second, &secondary_process) !=

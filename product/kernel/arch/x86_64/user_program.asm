@@ -6,6 +6,81 @@ global user_entry
 global user_entry_secondary
 section .user_text
 user_entry:
+%ifdef AGENT_OS_TEST_G7_NATIVE_BLOCK_READ
+    mov eax, 1
+    lea rdi, [rel g7_block_read_start]
+    mov esi, g7_block_read_start_end-g7_block_read_start-1
+    int 0x80
+    sub rsp, 512
+    ; ABI, reserved sector, forged capability and unmapped destination must
+    ; all fail before the device queue is touched.
+    mov rdi, rbx
+    mov esi, 1
+    mov rdx, rsp
+    mov r10d, 512
+    xor r8d, r8d
+    mov eax, 47
+    int 0x80
+    cmp rax, -22
+    jne .g7_block_read_fail
+    mov r8d, 1
+    xor esi, esi
+    mov eax, 47
+    int 0x80
+    cmp rax, -22
+    jne .g7_block_read_fail
+    mov rdi, 0x00000001000000ff
+    mov esi, 1
+    mov rdx, rsp
+    mov r10d, 512
+    mov r8d, 1
+    mov eax, 47
+    int 0x80
+    cmp rax, -13
+    jne .g7_block_read_fail
+    mov rdi, rbx
+    mov rdx, 0x00300000
+    mov r10d, 512
+    mov r8d, 1
+    mov eax, 47
+    int 0x80
+    cmp rax, -14
+    jne .g7_block_read_fail
+    mov rdi, rbx
+    mov esi, 1
+    mov rdx, rsp
+    mov r10d, 512
+    mov r8d, 1
+    mov eax, 47
+    int 0x80
+    cmp rax, 512
+    jne .g7_block_read_fail
+    mov rax, 0x31304b4f44414552 ; host seeded bytes: READOK01
+    cmp qword [rsp], rax
+    jne .g7_block_read_fail
+    mov eax, 1
+    lea rdi, [rel g7_block_read_ok]
+    mov esi, g7_block_read_ok_end-g7_block_read_ok-1
+    int 0x80
+    mov eax, 0
+    xor edi, edi
+    int 0x80
+.g7_block_read_fail:
+    add rsp, 512
+    mov eax, 1
+    lea rdi, [rel g7_block_read_fail_message]
+    mov esi, g7_block_read_fail_message_end-g7_block_read_fail_message-1
+    int 0x80
+    mov eax, 0
+    mov edi, 1
+    int 0x80
+g7_block_read_start db 'G7 NATIVE BLOCK READ START',13,10,0
+g7_block_read_start_end:
+g7_block_read_ok db 'G7 NATIVE BLOCK READ OK',13,10,0
+g7_block_read_ok_end:
+g7_block_read_fail_message db 'G7 NATIVE BLOCK READ FAIL',13,10,0
+g7_block_read_fail_message_end:
+%endif
 %ifdef AGENT_OS_TEST_G7_NATIVE_BLOCK_FLUSH
     mov eax, 1
     lea rdi, [rel g7_block_flush_start]

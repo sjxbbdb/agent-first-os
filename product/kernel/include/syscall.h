@@ -59,10 +59,16 @@ enum AgentOsSyscall {
     /* Test-gated versioned virtio-block flush.  RDI is the opaque device
      * capability and R8 is the ABI version; success returns 0. */
     SYS_VIRTIO_BLOCK_FLUSH = 46,
+    /* Versioned Ring 3 adapter for one 512-byte virtio-block read.
+     * RDI=device capability, RSI=sector (sector 0 is rejected),
+     * RDX=user read buffer, R10=exact byte length, R8=ABI version. */
+    SYS_VIRTIO_BLOCK_READ = 47,
 };
 
 #define AGENT_OS_VIRTIO_BLOCK_WRITE_ABI_VERSION UINT64_C(1)
 #define AGENT_OS_VIRTIO_BLOCK_WRITE_BYTES UINT64_C(512)
 #define AGENT_OS_VIRTIO_BLOCK_FLUSH_ABI_VERSION UINT64_C(1)
+#define AGENT_OS_VIRTIO_BLOCK_READ_ABI_VERSION UINT64_C(1)
+#define AGENT_OS_VIRTIO_BLOCK_READ_BYTES UINT64_C(512)
 
 #endif

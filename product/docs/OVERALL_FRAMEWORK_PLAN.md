@@ -97,6 +97,8 @@ SeaBIOS / UEFI
 
 `SYS_VIRTIO_BLOCK_FLUSH` 随后补齐了受 capability 保护的 `VIRTIO_BLK_F_FLUSH` 原语，并在独立 QEMU 数据盘上观察到 used completion；不支持该 feature 时内核 fail closed。证据见 `product/docs/G7_NATIVE_BLOCK_FLUSH.md`。journal 格式、跨重启恢复和真实硬件掉电语义仍未完成。
 
+`SYS_VIRTIO_BLOCK_READ` 现在以同一 opaque device capability 暴露用户态单扇区读取，并在 QEMU 独立数据盘上验证了负向边界和真实 used completion；这只是 journal 扫描所需的硬件原语，尚未实现事务恢复。
+
 ### G8：Semantic Registry 与 Context Collector
 
 实现用户态 registry，保存稳定 tool id、版本、参数 schema、capability 要求、风险、可逆性、结果验证器和 provider。查询按意图、标签、能力和版本确定性返回结构化动作；Context Collector 只提交当前任务窗口和明确授权文件，执行前后都保留证据。

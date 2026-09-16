@@ -283,9 +283,11 @@ int agent_os_virtio_probe_block(AgentOsVirtioProbe *out_probe) {
     return probe_products(out_probe, 0x1001, 0x1042, 0x1045, 0, 1, queue_page);
 }
 
-int agent_os_virtio_block_read_sector0(const AgentOsVirtioProbe *probe) {
-    if (probe == 0 || !probe->queue_ready || probe->io_base == 0 ||
-        probe->queue_size == 0) return 0;
+int agent_os_virtio_block_read_sector(const AgentOsVirtioProbe *probe,
+                                      uint64_t sector,
+                                      uint8_t *out_data) {
+    if (probe == 0 || out_data == 0 || !probe->queue_ready ||
+        probe->io_base == 0 || probe->queue_size == 0) return 0;
     const uint16_t io = probe->io_base;
     VirtioDescriptor *descriptors = (VirtioDescriptor *)(void *)queue_page;
     uint16_t queue_size = probe->queue_size;
@@ -295,7 +297,10 @@ int agent_os_virtio_block_read_sector0(const AgentOsVirtioProbe *probe) {
                            ~0xfffu;
     uint8_t *used = queue_page + used_offset;
     VirtioBlkRequest *request = (VirtioBlkRequest *)(void *)request_page;
-    for (uint32_t index = 0; index < sizeof(queue_page); ++index) queue_page[index] = 0;
+    uint16_t *avail_index = (uint16_t *)(void *)(avail + 2);
+    uint16_t *used_index = (uint16_t *)(void *)(used + 2);
+    uint16_t previous_avail = *avail_index;
+    uint16_t previous_used = *used_index;
     for (uint32_t index = 0; index < sizeof(request_page); ++index) request_page[index] = 0;
     descriptors[0].address = (uint64_t)(uintptr_t)request;
     descriptors[0].length = 16;
@@ -309,22 +314,31 @@ int agent_os_virtio_block_read_sector0(const AgentOsVirtioProbe *probe) {
     descriptors[2].length = 1;
     descriptors[2].flags = 2; /* DEVICE_WRITE */
     request->type = 0; /* VIRTIO_BLK_T_IN */
-    request->sector = 0;
-    uint16_t *avail_index = (uint16_t *)(void *)(avail + 2);
+    request->sector = sector;
     uint16_t *avail_ring = (uint16_t *)(void *)(avail + 4);
-    *avail_index = 1;
-    avail_ring[0] = 0;
+    uint16_t next_avail = (uint16_t)(previous_avail + 1u);
+    avail_ring[previous_avail % queue_size] = 0;
+    *avail_index = next_avail;
     __asm__ volatile ("mfence" : : : "memory");
     outw((uint16_t)(io + 0x10), 0);
-    uint16_t *used_index = (uint16_t *)(void *)(used + 2);
+    uint16_t expected_used = (uint16_t)(previous_used + 1u);
     for (uint32_t spin = 0; spin < 10000000u; ++spin) {
-        if (*used_index == 1) {
+        if (*used_index == expected_used) {
             __asm__ volatile ("mfence" : : : "memory");
-            return request->status == 0 && request->data[510] == 0x55 &&
-                   request->data[511] == 0xaa;
+            if (request->status != 0) return 0;
+            for (uint32_t index = 0; index < sizeof(request->data); ++index) {
+                out_data[index] = request->data[index];
+            }
+            return 1;
         }
     }
     return 0;
+}
+
+int agent_os_virtio_block_read_sector0(const AgentOsVirtioProbe *probe) {
+    uint8_t data[sizeof(((VirtioBlkRequest *)0)->data)];
+    return agent_os_virtio_block_read_sector(probe, 0, data) &&
+           data[510] == 0x55 && data[511] == 0xaa;
 }
 
 int agent_os_virtio_block_write_sector(const AgentOsVirtioProbe *probe,
@@ -340,9 +354,9 @@ int agent_os_virtio_block_write_sector(const AgentOsVirtioProbe *probe,
                             4u + (uint32_t)queue_size * 2u + 0xfffu) & ~0xfffu;
     uint8_t *used = queue_page + used_offset;
     uint16_t *avail_index = (uint16_t *)(void *)(avail + 2);
+    uint16_t *used_index = (uint16_t *)(void *)(used + 2);
     uint16_t previous_avail = *avail_index;
     VirtioBlkRequest *request = (VirtioBlkRequest *)(void *)request_page;
-    for (uint32_t index = 0; index < sizeof(queue_page); ++index) queue_page[index] = 0;
     for (uint32_t index = 0; index < sizeof(request_page); ++index) request_page[index] = 0;
     for (uint32_t index = 0; index < sizeof(request->data); ++index) request->data[index] = data[index];
     descriptors[0].address = (uint64_t)(uintptr_t)request;
@@ -359,9 +373,9 @@ int agent_os_virtio_block_write_sector(const AgentOsVirtioProbe *probe,
     avail_ring[previous_avail % queue_size] = 0;
     __asm__ volatile ("mfence" : : : "memory");
     outw((uint16_t)(io + 0x10), 0);
-    uint16_t *used_index = (uint16_t *)(void *)(used + 2);
+    uint16_t expected_used = (uint16_t)(*used_index + 1u);
     for (uint32_t spin = 0; spin < 10000000u; ++spin) {
-        if (*used_index == next_avail) {
+        if (*used_index == expected_used) {
             __asm__ volatile ("mfence" : : : "memory");
             return request->status == 0;
         }
