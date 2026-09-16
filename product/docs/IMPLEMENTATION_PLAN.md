@@ -121,6 +121,7 @@
 - **2026-09-14 G6 输入状态增量：** modern virtio-input 队列配置在启用 queue 后显式写入并校验 `DRIVER_OK`，保证设备只有在完整初始化后才可消费 descriptor；QEMU QMP synthetic input 仍未观察到 used-ring completion，因此继续标记为 `BLOCKED`。
 - **2026-09-14 G8 负向增量：** 原生 Ring 3 Semantic Registry fixture 新增不支持 opcode 和错误 action digest 的 deny 验证，测试见 `product/tests/g8-native-semantic-negative-test.sh`；IPC header version 伪造处理和通用 schema 引擎仍未完成，这也不是持久化 Registry。
 - **2026-09-16 G7/G6 原生存储增量：** `SYS_VIRTIO_BLOCK_WRITE` 现在提供 test-gated 的 Ring 3 单扇区适配器：内核要求 opaque device capability、`CAP_RIGHT_WRITE`、sector 非零、ABI version/length 固定值和用户地址范围，再调用已验证的 virtio-block used-ring 原语；BIOS/QEMU 独立数据盘测试同时注入错误 ABI、伪造 capability，并检查 sector 1 的真实 512 字节结果。证据见 `product/docs/G7_NATIVE_BLOCK_WRITE.md` 和 `product/tests/g7-native-block-write-test.sh`。这仍不是通用 block service、持久化 journal、flush/barrier、崩溃恢复或 DMA/IOMMU 隔离。
+- **2026-09-16 G7 flush 原语增量：** legacy virtio-block probe 现在只在设备报告 `VIRTIO_BLK_F_FLUSH` 时协商该 feature，并通过 `SYS_VIRTIO_BLOCK_FLUSH` 暴露 test-gated 的无数据 flush 请求；BIOS/QEMU fixture 验证错误 capability/ABI 被拒绝以及真实 used completion。证据见 `product/docs/G7_NATIVE_BLOCK_FLUSH.md` 和 `product/tests/g7-native-block-flush-test.sh`。这仍不等同于 journal 格式、跨重启恢复或实体磁盘掉电保证。
 
 ## 目录约定
 

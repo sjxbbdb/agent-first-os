@@ -6,6 +6,53 @@ global user_entry
 global user_entry_secondary
 section .user_text
 user_entry:
+%ifdef AGENT_OS_TEST_G7_NATIVE_BLOCK_FLUSH
+    mov eax, 1
+    lea rdi, [rel g7_block_flush_start]
+    mov esi, g7_block_flush_start_end-g7_block_flush_start-1
+    int 0x80
+    ; Invalid opaque capability and ABI version both fail closed as
+    ; EOPNOTSUPP, before the device queue can be touched.
+    mov rdi, 0x00000001000000ff
+    mov r8d, 1
+    mov eax, 46                 ; SYS_VIRTIO_BLOCK_FLUSH
+    int 0x80
+    cmp rax, -95
+    jne .g7_block_flush_fail
+    mov rdi, rbx
+    xor r8d, r8d
+    mov eax, 46
+    int 0x80
+    cmp rax, -95
+    jne .g7_block_flush_fail
+    mov rdi, rbx
+    mov r8d, 1                  ; AGENT_OS_VIRTIO_BLOCK_FLUSH_ABI_VERSION
+    mov eax, 46
+    int 0x80
+    test rax, rax
+    jnz .g7_block_flush_fail
+    mov eax, 1
+    lea rdi, [rel g7_block_flush_ok]
+    mov esi, g7_block_flush_ok_end-g7_block_flush_ok-1
+    int 0x80
+    mov eax, 0
+    xor edi, edi
+    int 0x80
+.g7_block_flush_fail:
+    mov eax, 1
+    lea rdi, [rel g7_block_flush_fail_message]
+    mov esi, g7_block_flush_fail_message_end-g7_block_flush_fail_message-1
+    int 0x80
+    mov eax, 0
+    mov edi, 1
+    int 0x80
+g7_block_flush_start db 'G7 NATIVE BLOCK FLUSH START',13,10,0
+g7_block_flush_start_end:
+g7_block_flush_ok db 'G7 NATIVE BLOCK FLUSH OK',13,10,0
+g7_block_flush_ok_end:
+g7_block_flush_fail_message db 'G7 NATIVE BLOCK FLUSH FAIL',13,10,0
+g7_block_flush_fail_message_end:
+%endif
 %ifdef AGENT_OS_TEST_G7_NATIVE_BLOCK_WRITE
     ; Test-gated native block service client.  The kernel passes the opaque
     ; device capability in RBX; the user buffer, sector and ABI fields are

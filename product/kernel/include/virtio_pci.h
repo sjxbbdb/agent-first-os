@@ -11,6 +11,7 @@ typedef struct AgentOsVirtioProbe {
     uint16_t queue_size;
     uint16_t tx_queue_size;
     uint8_t queue_ready;
+    uint8_t flush_supported;
     uint8_t modern_caps;
     uint8_t modern_mapping_safe;
     uint64_t common_cfg;
@@ -39,6 +40,8 @@ int agent_os_virtio_block_read_sector0(const AgentOsVirtioProbe *probe);
 int agent_os_virtio_block_write_sector(const AgentOsVirtioProbe *probe,
                                        uint64_t sector,
                                        const uint8_t *data);
+/* Ring-0 hardware primitive: submit one no-data VIRTIO_BLK_T_FLUSH request. */
+int agent_os_virtio_block_flush(const AgentOsVirtioProbe *probe);
 int agent_os_virtio_probe_net(AgentOsVirtioProbe *out_probe);
 int agent_os_virtio_net_send_test_packet(const AgentOsVirtioProbe *probe);
 int agent_os_virtio_net_receive_test_packet(const AgentOsVirtioProbe *probe);

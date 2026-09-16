@@ -609,6 +609,34 @@ void kernel_syscall_handler(SyscallFrame *frame) {
             ? AGENT_OS_VIRTIO_BLOCK_WRITE_BYTES : (uint64_t)-5;
         return;
     }
+    if (frame->rax == SYS_VIRTIO_BLOCK_FLUSH) {
+        AgentOsProcess *current_process = 0;
+        uint64_t device_object = 0;
+        AgentOsStatus cap_status = AGENT_OS_E_BAD_CAP;
+        if (current_id != AGENT_OS_PROCESS_INVALID &&
+            agent_os_process_lookup(&process_table, current_id,
+                                    &current_process) == AGENT_OS_PROCESS_OK) {
+            cap_status = agent_os_capability_lookup(
+                &current_process->capabilities,
+                (CapabilityHandle)frame->rdi, CAP_RIGHT_WRITE,
+                &device_object, 0);
+        }
+        if (frame->r8 != AGENT_OS_VIRTIO_BLOCK_FLUSH_ABI_VERSION ||
+            cap_status != AGENT_OS_OK ||
+            device_object != (uint64_t)(uintptr_t)&virtio_block_probe ||
+            !virtio_block_ready || !virtio_block_probe.flush_supported) {
+            serial_print("SYSCALL block flush EOPNOTSUPP\r\n");
+            frame->rax = (uint64_t)-95;
+            return;
+        }
+        int completed = agent_os_virtio_block_flush(
+            (const AgentOsVirtioProbe *)(uintptr_t)device_object);
+        serial_print(completed
+                         ? "SYSCALL block flush OK used completion\r\n"
+                         : "SYSCALL block flush EOPNOTSUPP\r\n");
+        frame->rax = completed ? 0 : (uint64_t)-95;
+        return;
+    }
     if (frame->rax == SYS_IPC_CREATE) {
         AgentOsProcess *current_process = 0;
         uint64_t authority_object = 0;
@@ -1328,6 +1356,9 @@ void kernel_main(const BootInfo *boot_info) {
     virtio_block_ready = agent_os_virtio_probe_block(&virtio_block_probe);
     if (virtio_block_ready) {
         serial_print("G6 virtio block transport READY\r\n");
+        serial_print(virtio_block_probe.flush_supported
+                         ? "G7 virtio block FLUSH SUPPORTED\r\n"
+                         : "G7 virtio block FLUSH UNSUPPORTED\r\n");
         if (agent_os_virtio_block_read_sector0(&virtio_block_probe)) {
             serial_print("G6 virtio block READ OK\r\n");
         } else {
@@ -1586,7 +1617,8 @@ void kernel_main(const BootInfo *boot_info) {
             &bootstrap_shm_capability) != AGENT_OS_OK) {
         scheduler_halt("SCHEDULER shared memory setup failed");
     }
-#if defined(AGENT_OS_TEST_G7_NATIVE_BLOCK_WRITE)
+#if defined(AGENT_OS_TEST_G7_NATIVE_BLOCK_WRITE) || \
+    defined(AGENT_OS_TEST_G7_NATIVE_BLOCK_FLUSH)
     /* This is a deliberately test-gated bootstrap grant.  The default image
      * exposes no block-device capability to Ring 3. */
     if (!virtio_block_ready) {

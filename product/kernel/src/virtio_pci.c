@@ -26,6 +26,9 @@ typedef struct __attribute__((packed)) VirtioBlkRequest {
     uint8_t status;
 } VirtioBlkRequest;
 
+#define VIRTIO_BLK_F_FLUSH (UINT32_C(1) << 9)
+#define VIRTIO_BLK_T_FLUSH UINT32_C(4)
+
 static inline void outb(uint16_t port, uint8_t value) {
     __asm__ volatile ("outb %0, %1" : : "a"(value), "Nd"(port));
 }
@@ -191,6 +194,7 @@ static uint32_t pci_bar0(uint8_t bus, uint8_t device, uint8_t function) {
 static int probe_products(AgentOsVirtioProbe *out_probe,
                           uint16_t product_a, uint16_t product_b,
                           uint16_t product_c, int configure_tx_queue,
+                          int negotiate_flush,
                           uint8_t *rx_queue) {
     if (out_probe == 0) return 0;
     *out_probe = (AgentOsVirtioProbe){0};
@@ -211,8 +215,10 @@ static int probe_products(AgentOsVirtioProbe *out_probe,
             outb((uint16_t)(io + 0x12), 0);
             outb((uint16_t)(io + 0x12), 1); /* ACKNOWLEDGE */
             outb((uint16_t)(io + 0x12), 3); /* DRIVER */
-            (void)inl((uint16_t)(io + 0x00)); /* feature read, accept none */
-            outl((uint16_t)(io + 0x04), 0);
+            uint32_t device_features = inl((uint16_t)(io + 0x00));
+            uint32_t driver_features = negotiate_flush
+                ? device_features & VIRTIO_BLK_F_FLUSH : 0;
+            outl((uint16_t)(io + 0x04), driver_features);
             outb((uint16_t)(io + 0x12), 0x0b); /* FEATURES_OK */
             if ((inb((uint16_t)(io + 0x12)) & 0x08u) == 0) continue;
             outw((uint16_t)(io + 0x0e), 0); /* queue 0 */
@@ -243,6 +249,8 @@ static int probe_products(AgentOsVirtioProbe *out_probe,
             out_probe->queue_size = queue_size;
             out_probe->tx_queue_size = tx_queue_size;
             out_probe->queue_ready = 1;
+            out_probe->flush_supported =
+                (driver_features & VIRTIO_BLK_F_FLUSH) != 0;
             (void)status;
             return 1;
         }
@@ -272,7 +280,7 @@ static int discover_products(AgentOsVirtioProbe *out_probe,
 }
 
 int agent_os_virtio_probe_block(AgentOsVirtioProbe *out_probe) {
-    return probe_products(out_probe, 0x1001, 0x1042, 0x1045, 0, queue_page);
+    return probe_products(out_probe, 0x1001, 0x1042, 0x1045, 0, 1, queue_page);
 }
 
 int agent_os_virtio_block_read_sector0(const AgentOsVirtioProbe *probe) {
@@ -361,8 +369,52 @@ int agent_os_virtio_block_write_sector(const AgentOsVirtioProbe *probe,
     return 0;
 }
 
+int agent_os_virtio_block_flush(const AgentOsVirtioProbe *probe) {
+    if (probe == 0 || !probe->queue_ready || !probe->flush_supported ||
+        probe->io_base == 0 || probe->queue_size == 0) return 0;
+    const uint16_t io = probe->io_base;
+    VirtioDescriptor *descriptors = (VirtioDescriptor *)(void *)queue_page;
+    uint16_t queue_size = probe->queue_size;
+    uint8_t *avail = queue_page + (uint32_t)queue_size * sizeof(VirtioDescriptor);
+    uint32_t used_offset = ((uint32_t)queue_size * sizeof(VirtioDescriptor) +
+                            4u + (uint32_t)queue_size * 2u + 0xfffu) &
+                           ~0xfffu;
+    uint8_t *used = queue_page + used_offset;
+    uint16_t *avail_index = (uint16_t *)(void *)(avail + 2);
+    uint16_t previous_avail = *avail_index;
+    uint16_t *used_index = (uint16_t *)(void *)(used + 2);
+    uint16_t previous_used = *used_index;
+    VirtioBlkRequest *request = (VirtioBlkRequest *)(void *)request_page;
+    for (uint32_t index = 0; index < sizeof(request_page); ++index) {
+        request_page[index] = 0;
+    }
+    descriptors[0].address = (uint64_t)(uintptr_t)request;
+    descriptors[0].length = 16;
+    descriptors[0].flags = 1; /* NEXT */
+    descriptors[0].next = 1;
+    descriptors[1].address = (uint64_t)(uintptr_t)&request->status;
+    descriptors[1].length = 1;
+    descriptors[1].flags = 2; /* DEVICE_WRITE */
+    request->type = VIRTIO_BLK_T_FLUSH;
+    /* request_page was cleared above, so reserved and sector are zero. */
+    uint16_t *avail_ring = (uint16_t *)(void *)(avail + 4);
+    uint16_t next_avail = (uint16_t)(previous_avail + 1u);
+    avail_ring[previous_avail % queue_size] = 0;
+    *avail_index = next_avail;
+    __asm__ volatile ("mfence" : : : "memory");
+    outw((uint16_t)(io + 0x10), 0);
+    uint16_t expected_used = (uint16_t)(previous_used + 1u);
+    for (uint32_t spin = 0; spin < 10000000u; ++spin) {
+        if (*used_index == expected_used) {
+            __asm__ volatile ("mfence" : : : "memory");
+            return request->status == 0;
+        }
+    }
+    return 0;
+}
+
 int agent_os_virtio_probe_net(AgentOsVirtioProbe *out_probe) {
-    return probe_products(out_probe, 0x1000, 0x1041, 0x1044, 1, net_rx_queue_page);
+    return probe_products(out_probe, 0x1000, 0x1041, 0x1044, 1, 0, net_rx_queue_page);
 }
 
 int agent_os_virtio_net_send_test_packet(const AgentOsVirtioProbe *probe) {
@@ -441,7 +493,8 @@ int agent_os_virtio_net_receive_test_packet(const AgentOsVirtioProbe *probe) {
 }
 
 int agent_os_virtio_probe_input(AgentOsVirtioProbe *out_probe) {
-    if (probe_products(out_probe, 0x1052, 0x1053, 0x1054, 0, input_queue_page)) return 1;
+    if (probe_products(out_probe, 0x1052, 0x1053, 0x1054, 0, 0,
+                       input_queue_page)) return 1;
     /* Modern virtio-input devices expose MMIO common configuration rather
      * than the legacy I/O BAR.  Discovery and the bounded queue setup happen
      * before any event completion is claimed. */

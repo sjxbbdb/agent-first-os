@@ -95,6 +95,8 @@ SeaBIOS / UEFI
 
 新增的 `SYS_VIRTIO_BLOCK_WRITE` 是 test-gated 的 Ring 3 单扇区存储适配器：Ring 0 只检查 capability、固定 ABI、sector 和用户缓冲区，再调用 virtio-block used-ring 原语；独立 QEMU 数据盘已验证错误 ABI/伪造 capability 拒绝及 sector 1 写入。证据见 `product/docs/G7_NATIVE_BLOCK_WRITE.md`。该切片仍不构成通用文件服务、持久化事务、flush/barrier 或崩溃恢复。
 
+`SYS_VIRTIO_BLOCK_FLUSH` 随后补齐了受 capability 保护的 `VIRTIO_BLK_F_FLUSH` 原语，并在独立 QEMU 数据盘上观察到 used completion；不支持该 feature 时内核 fail closed。证据见 `product/docs/G7_NATIVE_BLOCK_FLUSH.md`。journal 格式、跨重启恢复和真实硬件掉电语义仍未完成。
+
 ### G8：Semantic Registry 与 Context Collector
 
 实现用户态 registry，保存稳定 tool id、版本、参数 schema、capability 要求、风险、可逆性、结果验证器和 provider。查询按意图、标签、能力和版本确定性返回结构化动作；Context Collector 只提交当前任务窗口和明确授权文件，执行前后都保留证据。
