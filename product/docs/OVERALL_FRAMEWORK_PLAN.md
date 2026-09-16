@@ -101,6 +101,8 @@ SeaBIOS / UEFI
 
 新增的固定 Ring 3 journal fixture 在同一 QEMU 数据盘上完成了 `PREPARE → FLUSH → payload → FLUSH → 受控崩溃 → 重启读取 → rollback → FLUSH`，并检查真实扇区结果；它是 G7 恢复子集证据，不封闭完整 COMMIT/replay/corruption 故障矩阵或实体掉电语义。
 
+另一个独立 fixture 已完成 `PREPARE → payload → COMMIT → FLUSH → 受控崩溃 → 重启读取`，并以 `APPLIED1` 标记证明已提交的新 payload 没有被恢复逻辑回滚；完整损坏记录、重放、多事务和真实掉电语义仍未完成。
+
 ### G8：Semantic Registry 与 Context Collector
 
 实现用户态 registry，保存稳定 tool id、版本、参数 schema、capability 要求、风险、可逆性、结果验证器和 provider。查询按意图、标签、能力和版本确定性返回结构化动作；Context Collector 只提交当前任务窗口和明确授权文件，执行前后都保留证据。

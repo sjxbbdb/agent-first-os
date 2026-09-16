@@ -6,6 +6,175 @@ global user_entry
 global user_entry_secondary
 section .user_text
 user_entry:
+%ifdef AGENT_OS_TEST_G7_NATIVE_JOURNAL_COMMIT
+    mov eax, 1
+    lea rdi, [rel g7_journal_commit_start]
+    mov esi, g7_journal_commit_start_end-g7_journal_commit_start-1
+    int 0x80
+    sub rsp, 1536
+    mov r12, rsp
+    lea r13, [rsp+512]
+    xor eax, eax
+    mov rdi, r12
+    mov rcx, 192
+    rep stosq
+    mov rax, 0x3145524150455250
+    mov [r12], rax                       ; PREPARE1
+    mov qword [r12+8], 1                 ; action nonce
+    mov qword [r12+16], 3                ; payload sector
+    mov rax, 0x31304c415657454e
+    mov [r13], rax                       ; NEWVAL01
+    mov rdi, rbx
+    mov esi, 1
+    mov rdx, r12
+    mov r10d, 512
+    mov r8d, 1
+    mov eax, 45
+    int 0x80
+    cmp rax, 512
+    jne .g7_journal_commit_fail
+    mov rdi, rbx
+    mov r8d, 1
+    mov eax, 46
+    int 0x80
+    test rax, rax
+    jnz .g7_journal_commit_fail
+    mov rdi, rbx
+    mov esi, 3
+    mov rdx, r13
+    mov r10d, 512
+    mov r8d, 1
+    mov eax, 45
+    int 0x80
+    cmp rax, 512
+    jne .g7_journal_commit_fail
+    mov rdi, rbx
+    mov r8d, 1
+    mov eax, 46
+    int 0x80
+    test rax, rax
+    jnz .g7_journal_commit_fail
+    mov rax, 0x313054494d4d4f43
+    mov [r12], rax                       ; COMMIT01
+    mov qword [r12+8], 1
+    mov qword [r12+16], 3
+    mov rdi, rbx
+    mov esi, 1
+    mov rdx, r12
+    mov r10d, 512
+    mov r8d, 1
+    mov eax, 45
+    int 0x80
+    cmp rax, 512
+    jne .g7_journal_commit_fail
+    mov rdi, rbx
+    mov r8d, 1
+    mov eax, 46
+    int 0x80
+    test rax, rax
+    jnz .g7_journal_commit_fail
+    mov eax, 1
+    lea rdi, [rel g7_journal_commit_durable]
+    mov esi, g7_journal_commit_durable_end-g7_journal_commit_durable-1
+    int 0x80
+.g7_journal_commit_crash:
+    pause
+    jmp .g7_journal_commit_crash
+.g7_journal_commit_fail:
+    add rsp, 1536
+    mov eax, 1
+    lea rdi, [rel g7_journal_commit_fail_message]
+    mov esi, g7_journal_commit_fail_message_end-g7_journal_commit_fail_message-1
+    int 0x80
+    mov eax, 0
+    mov edi, 1
+    int 0x80
+g7_journal_commit_start db 'G7 JOURNAL COMMIT START',13,10,0
+g7_journal_commit_start_end:
+g7_journal_commit_durable db 'JOURNAL COMMIT DURABLE',13,10,0
+g7_journal_commit_durable_end:
+g7_journal_commit_fail_message db 'G7 JOURNAL COMMIT FAIL',13,10,0
+g7_journal_commit_fail_message_end:
+%endif
+%ifdef AGENT_OS_TEST_G7_NATIVE_JOURNAL_COMMIT_RECOVER
+    mov eax, 1
+    lea rdi, [rel g7_journal_commit_recover_start]
+    mov esi, g7_journal_commit_recover_start_end-g7_journal_commit_recover_start-1
+    int 0x80
+    sub rsp, 1536
+    mov r12, rsp
+    lea r13, [rsp+512]
+    mov rdi, rbx
+    mov esi, 1
+    mov rdx, r12
+    mov r10d, 512
+    mov r8d, 1
+    mov eax, 47
+    int 0x80
+    cmp rax, 512
+    jne .g7_journal_commit_recover_fail
+    mov rax, 0x313054494d4d4f43
+    cmp qword [r12], rax
+    jne .g7_journal_commit_recover_fail
+    cmp qword [r12+8], 1
+    jne .g7_journal_commit_recover_fail
+    cmp qword [r12+16], 3
+    jne .g7_journal_commit_recover_fail
+    mov rdi, rbx
+    mov esi, 3
+    mov rdx, r13
+    mov r10d, 512
+    mov r8d, 1
+    mov eax, 47
+    int 0x80
+    cmp rax, 512
+    jne .g7_journal_commit_recover_fail
+    mov rax, 0x31304c415657454e
+    cmp qword [r13], rax
+    jne .g7_journal_commit_recover_fail
+    mov rax, 0x314445494c505041
+    mov [r12], rax                       ; APPLIED1
+    mov qword [r12+8], 2
+    mov qword [r12+16], 3
+    mov rdi, rbx
+    mov esi, 1
+    mov rdx, r12
+    mov r10d, 512
+    mov r8d, 1
+    mov eax, 45
+    int 0x80
+    cmp rax, 512
+    jne .g7_journal_commit_recover_fail
+    mov rdi, rbx
+    mov r8d, 1
+    mov eax, 46
+    int 0x80
+    test rax, rax
+    jnz .g7_journal_commit_recover_fail
+    mov eax, 1
+    lea rdi, [rel g7_journal_commit_recovered]
+    mov esi, g7_journal_commit_recovered_end-g7_journal_commit_recovered-1
+    int 0x80
+    add rsp, 1536
+    mov eax, 0
+    xor edi, edi
+    int 0x80
+.g7_journal_commit_recover_fail:
+    add rsp, 1536
+    mov eax, 1
+    lea rdi, [rel g7_journal_commit_fail_message]
+    mov esi, g7_journal_commit_fail_message_end-g7_journal_commit_fail_message-1
+    int 0x80
+    mov eax, 0
+    mov edi, 1
+    int 0x80
+g7_journal_commit_recover_start db 'G7 JOURNAL COMMIT RECOVER START',13,10,0
+g7_journal_commit_recover_start_end:
+g7_journal_commit_recovered db 'JOURNAL COMMIT RECOVERED',13,10,0
+g7_journal_commit_recovered_end:
+g7_journal_commit_fail_message db 'G7 JOURNAL COMMIT RECOVER FAIL',13,10,0
+g7_journal_commit_fail_message_end:
+%endif
 %ifdef AGENT_OS_TEST_G7_NATIVE_JOURNAL_PREPARE
     mov eax, 1
     lea rdi, [rel g7_journal_prepare_start]

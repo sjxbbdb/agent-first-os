@@ -124,6 +124,7 @@
 - **2026-09-16 G7 flush 原语增量：** legacy virtio-block probe 现在只在设备报告 `VIRTIO_BLK_F_FLUSH` 时协商该 feature，并通过 `SYS_VIRTIO_BLOCK_FLUSH` 暴露 test-gated 的无数据 flush 请求；BIOS/QEMU fixture 验证错误 capability/ABI 被拒绝以及真实 used completion。证据见 `product/docs/G7_NATIVE_BLOCK_FLUSH.md` 和 `product/tests/g7-native-block-flush-test.sh`。这仍不等同于 journal 格式、跨重启恢复或实体磁盘掉电保证。
 - **2026-09-16 G7 读取原语增量：** `SYS_VIRTIO_BLOCK_READ` 现在提供受 `CAP_RIGHT_READ` 和用户可写范围保护的 Ring 3 单扇区读取；BIOS/QEMU 独立数据盘 fixture 覆盖错误 ABI、sector 0、伪造 capability、非法目标地址和真实 used completion。证据见 `product/docs/G7_NATIVE_BLOCK_READ.md` 和 `product/tests/g7-native-block-read-test.sh`。这仍不是 journal 扫描、事务恢复或通用文件系统。
 - **2026-09-16 G7 原生恢复增量：** Ring 3 固定 journal fixture 已在同一 QEMU `cache=directsync` 数据盘上验证 `PREPARE → FLUSH → 新 payload → FLUSH → 受控崩溃 → 重启读取 → rollback payload → FLUSH`；串口和宿主扇区检查证明恢复没有把未提交 payload 当成已提交动作。证据见 `product/docs/G7_NATIVE_JOURNAL_RECOVERY.md` 和 `product/tests/g7-native-journal-recovery-test.sh`。这仍不是完整 journal/COMMIT/replay 故障矩阵或实体掉电保证。
+- **2026-09-16 G7 COMMIT 恢复增量：** 独立 Ring 3 fixture 又验证 `PREPARE → FLUSH → 新 payload → FLUSH → COMMIT → FLUSH → 受控崩溃 → 重启读取 → APPLIED 标记 → FLUSH`，宿主检查确认已提交 payload 保持不变。证据见 `product/docs/G7_NATIVE_JOURNAL_COMMIT.md` 和 `product/tests/g7-native-journal-commit-recovery-test.sh`。这仍不是损坏记录、重放、多事务或实体掉电的完整矩阵。
 
 ## 目录约定
 
