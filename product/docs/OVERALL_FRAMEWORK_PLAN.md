@@ -93,6 +93,8 @@ SeaBIOS / UEFI
 
 最新 G7 增量：`SYS_POLICY_PAUSE/RESUME` 已接入内核任务生命周期。暂停会取消阻塞 IPC waiter，并冻结其他 READY 任务；恢复只解冻本次暂停标记的任务。BIOS/QEMU 串口证据见 `product/docs/G7_NATIVE_EMERGENCY_PAUSE.md`。持久化 journal、真实磁盘事务、输入设备停止、SMP 全局暂停和完整故障矩阵仍未完成。
 
+新增的 `SYS_VIRTIO_BLOCK_WRITE` 是 test-gated 的 Ring 3 单扇区存储适配器：Ring 0 只检查 capability、固定 ABI、sector 和用户缓冲区，再调用 virtio-block used-ring 原语；独立 QEMU 数据盘已验证错误 ABI/伪造 capability 拒绝及 sector 1 写入。证据见 `product/docs/G7_NATIVE_BLOCK_WRITE.md`。该切片仍不构成通用文件服务、持久化事务、flush/barrier 或崩溃恢复。
+
 ### G8：Semantic Registry 与 Context Collector
 
 实现用户态 registry，保存稳定 tool id、版本、参数 schema、capability 要求、风险、可逆性、结果验证器和 provider。查询按意图、标签、能力和版本确定性返回结构化动作；Context Collector 只提交当前任务窗口和明确授权文件，执行前后都保留证据。

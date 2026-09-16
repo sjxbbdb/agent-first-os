@@ -331,6 +331,8 @@ int agent_os_virtio_block_write_sector(const AgentOsVirtioProbe *probe,
     uint32_t used_offset = ((uint32_t)queue_size * sizeof(VirtioDescriptor) +
                             4u + (uint32_t)queue_size * 2u + 0xfffu) & ~0xfffu;
     uint8_t *used = queue_page + used_offset;
+    uint16_t *avail_index = (uint16_t *)(void *)(avail + 2);
+    uint16_t previous_avail = *avail_index;
     VirtioBlkRequest *request = (VirtioBlkRequest *)(void *)request_page;
     for (uint32_t index = 0; index < sizeof(queue_page); ++index) queue_page[index] = 0;
     for (uint32_t index = 0; index < sizeof(request_page); ++index) request_page[index] = 0;
@@ -343,14 +345,15 @@ int agent_os_virtio_block_write_sector(const AgentOsVirtioProbe *probe,
     descriptors[2].length = 1; descriptors[2].flags = 2;
     request->type = 1; /* VIRTIO_BLK_T_OUT */
     request->sector = sector;
-    uint16_t *avail_index = (uint16_t *)(void *)(avail + 2);
     uint16_t *avail_ring = (uint16_t *)(void *)(avail + 4);
-    *avail_index = 1; avail_ring[0] = 0;
+    uint16_t next_avail = (uint16_t)(previous_avail + 1u);
+    *avail_index = next_avail;
+    avail_ring[previous_avail % queue_size] = 0;
     __asm__ volatile ("mfence" : : : "memory");
     outw((uint16_t)(io + 0x10), 0);
     uint16_t *used_index = (uint16_t *)(void *)(used + 2);
     for (uint32_t spin = 0; spin < 10000000u; ++spin) {
-        if (*used_index == 1) {
+        if (*used_index == next_avail) {
             __asm__ volatile ("mfence" : : : "memory");
             return request->status == 0;
         }

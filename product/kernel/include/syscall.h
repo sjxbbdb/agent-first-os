@@ -52,6 +52,13 @@ enum AgentOsSyscall {
      * token mint/consume while revoke remains available for cleanup. */
     SYS_POLICY_PAUSE = 43,
     SYS_POLICY_RESUME = 44,
+    /* Versioned Ring 3 adapter for one 512-byte virtio-block write.
+     * RDI=device capability, RSI=sector (sector 0 is rejected),
+     * RDX=user write buffer, R10=exact byte length, R8=ABI version. */
+    SYS_VIRTIO_BLOCK_WRITE = 45,
 };
+
+#define AGENT_OS_VIRTIO_BLOCK_WRITE_ABI_VERSION UINT64_C(1)
+#define AGENT_OS_VIRTIO_BLOCK_WRITE_BYTES UINT64_C(512)
 
 #endif

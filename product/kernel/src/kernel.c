@@ -15,7 +15,8 @@
 static IdtEntry idt[256] __attribute__((aligned(16)));
 extern const uintptr_t isr_stub_table[256];
 extern void isr_syscall(void);
-extern void enter_user_mode(uint64_t entry_rip, uint64_t user_rsp);
+extern void enter_user_mode(uint64_t entry_rip, uint64_t user_rsp,
+                            uint64_t initial_rbx);
 extern uint64_t high_half_rip_probe(void);
 extern uint8_t user_entry_secondary[];
 #if defined(AGENT_OS_TEST_IPC_BLOCKING_MULTI) || \
@@ -47,6 +48,11 @@ static AgentOsPolicyTokenTable policy_tokens;
 static uint8_t policy_authority;
 static uint64_t policy_token_clock;
 static uint64_t ipc_wait_sequence;
+/* The probe object is Ring-0-owned.  The native block syscall exposes only
+ * an opaque generation-tagged capability naming this object under its test
+ * gate; it never accepts a user-supplied device address. */
+static AgentOsVirtioProbe virtio_block_probe;
+static int virtio_block_ready;
 /* Emergency state is a kernel-enforced gate, not a Ring 3 convention.  The
  * Policy Firewall may request it through SYS_POLICY_PAUSE/RESUME only after
  * proving possession of the policy authority capability. */
@@ -560,6 +566,47 @@ void kernel_syscall_handler(SyscallFrame *frame) {
         }
         serial_print("SYSCALL write OK\r\n");
         frame->rax = length;
+        return;
+    }
+    if (frame->rax == SYS_VIRTIO_BLOCK_WRITE) {
+        AgentOsProcess *current_process = 0;
+        uint64_t device_object = 0;
+        AgentOsStatus cap_status = AGENT_OS_E_BAD_CAP;
+        if (current_id != AGENT_OS_PROCESS_INVALID &&
+            agent_os_process_lookup(&process_table, current_id,
+                                    &current_process) == AGENT_OS_PROCESS_OK) {
+            cap_status = agent_os_capability_lookup(
+                &current_process->capabilities,
+                (CapabilityHandle)frame->rdi, CAP_RIGHT_WRITE,
+                &device_object, 0);
+        }
+        if (frame->r8 != AGENT_OS_VIRTIO_BLOCK_WRITE_ABI_VERSION ||
+            frame->r10 != AGENT_OS_VIRTIO_BLOCK_WRITE_BYTES ||
+            frame->rsi == 0) {
+            serial_print("SYSCALL block write EINVAL\r\n");
+            frame->rax = (uint64_t)-22;
+            return;
+        }
+        if (!user_range_ok(frame->rdx, AGENT_OS_VIRTIO_BLOCK_WRITE_BYTES, 0)) {
+            serial_print("SYSCALL block write EFAULT\r\n");
+            frame->rax = (uint64_t)-14;
+            return;
+        }
+        if (cap_status != AGENT_OS_OK ||
+            device_object != (uint64_t)(uintptr_t)&virtio_block_probe ||
+            !virtio_block_ready) {
+            serial_print("SYSCALL block write ECAP\r\n");
+            frame->rax = (uint64_t)-13;
+            return;
+        }
+        int completed = agent_os_virtio_block_write_sector(
+            (const AgentOsVirtioProbe *)(uintptr_t)device_object,
+            frame->rsi, (const uint8_t *)(uintptr_t)frame->rdx);
+        serial_print(completed
+                         ? "SYSCALL block write OK used completion\r\n"
+                         : "SYSCALL block write EIO\r\n");
+        frame->rax = completed
+            ? AGENT_OS_VIRTIO_BLOCK_WRITE_BYTES : (uint64_t)-5;
         return;
     }
     if (frame->rax == SYS_IPC_CREATE) {
@@ -1278,9 +1325,10 @@ void kernel_main(const BootInfo *boot_info) {
     serial_print("IDT OK - 256 vectors\r\n");
     serial_print("KERNEL C OK\r\n");
     AgentOsVirtioProbe virtio_probe;
-    if (agent_os_virtio_probe_block(&virtio_probe)) {
+    virtio_block_ready = agent_os_virtio_probe_block(&virtio_block_probe);
+    if (virtio_block_ready) {
         serial_print("G6 virtio block transport READY\r\n");
-        if (agent_os_virtio_block_read_sector0(&virtio_probe)) {
+        if (agent_os_virtio_block_read_sector0(&virtio_block_probe)) {
             serial_print("G6 virtio block READ OK\r\n");
         } else {
             serial_print("G6 virtio block READ FAIL\r\n");
@@ -1538,6 +1586,22 @@ void kernel_main(const BootInfo *boot_info) {
             &bootstrap_shm_capability) != AGENT_OS_OK) {
         scheduler_halt("SCHEDULER shared memory setup failed");
     }
+#if defined(AGENT_OS_TEST_G7_NATIVE_BLOCK_WRITE)
+    /* This is a deliberately test-gated bootstrap grant.  The default image
+     * exposes no block-device capability to Ring 3. */
+    if (!virtio_block_ready) {
+        scheduler_halt("SCHEDULER block device capability unavailable");
+    }
+    CapabilityHandle bootstrap_block_write_capability;
+    if (agent_os_capability_mint(
+            &bootstrap_record->capabilities,
+            (uint64_t)(uintptr_t)&virtio_block_probe,
+            CAP_RIGHT_WRITE,
+            &bootstrap_block_write_capability) != AGENT_OS_OK) {
+        scheduler_halt("SCHEDULER block capability setup failed");
+    }
+    bootstrap_record->frame.rbx = bootstrap_block_write_capability;
+#endif
     second.parent = bootstrap_process;
     if (agent_os_process_create(&process_table, &second, &secondary_process) !=
         AGENT_OS_PROCESS_OK) {
@@ -1653,7 +1717,8 @@ void kernel_main(const BootInfo *boot_info) {
     }
     vm_load_address_space(initial->address_space_root);
     serial_print("G2 CR3 switch OK\r\n");
-    enter_user_mode(initial->frame.rip, initial->frame.rsp);
+    enter_user_mode(initial->frame.rip, initial->frame.rsp,
+                    initial->frame.rbx);
 #else
     serial_print("RING3 ABI READY - launch gated pending TSS\r\n");
 #endif

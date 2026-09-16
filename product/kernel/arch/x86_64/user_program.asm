@@ -6,6 +6,78 @@ global user_entry
 global user_entry_secondary
 section .user_text
 user_entry:
+%ifdef AGENT_OS_TEST_G7_NATIVE_BLOCK_WRITE
+    ; Test-gated native block service client.  The kernel passes the opaque
+    ; device capability in RBX; the user buffer, sector and ABI fields are
+    ; checked by Ring 0 before the virtio primitive can be reached.
+    mov eax, 1
+    lea rdi, [rel g7_block_write_start]
+    mov esi, g7_block_write_start_end-g7_block_write_start-1
+    int 0x80
+    ; Invalid ABI version and reserved sector must fail before hardware I/O.
+    mov rdi, rbx
+    mov esi, 1
+    lea rdx, [rel g7_block_write_data]
+    mov r10d, 512
+    xor r8d, r8d
+    mov eax, 45
+    int 0x80
+    cmp rax, -22
+    jne .g7_block_write_fail
+    mov r8d, 1
+    xor esi, esi
+    mov eax, 45
+    int 0x80
+    cmp rax, -22
+    jne .g7_block_write_fail
+    ; A forged generation-tagged handle must fail closed as a capability error.
+    mov rdi, 0x00000001000000ff
+    mov esi, 1
+    mov eax, 45
+    int 0x80
+    cmp rax, -13
+    jne .g7_block_write_fail
+    ; An unmapped user source buffer must be rejected before DMA submission.
+    mov rdi, rbx
+    mov esi, 1
+    mov rdx, 0x00300000
+    mov r10d, 512
+    mov r8d, 1
+    mov eax, 45
+    int 0x80
+    cmp rax, -14
+    jne .g7_block_write_fail
+    mov rdi, rbx
+    mov esi, 1                  ; sector 0 is reserved for the boot image
+    lea rdx, [rel g7_block_write_data]
+    mov r10d, 512
+    mov r8d, 1                  ; AGENT_OS_VIRTIO_BLOCK_WRITE_ABI_VERSION
+    mov eax, 45                 ; SYS_VIRTIO_BLOCK_WRITE
+    int 0x80
+    cmp rax, 512
+    jne .g7_block_write_fail
+    mov eax, 1
+    lea rdi, [rel g7_block_write_ok]
+    mov esi, g7_block_write_ok_end-g7_block_write_ok-1
+    int 0x80
+    mov eax, 0
+    xor edi, edi
+    int 0x80
+.g7_block_write_fail:
+    mov eax, 1
+    lea rdi, [rel g7_block_write_fail_message]
+    mov esi, g7_block_write_fail_message_end-g7_block_write_fail_message-1
+    int 0x80
+    mov eax, 0
+    mov edi, 1
+    int 0x80
+g7_block_write_start db 'G7 NATIVE BLOCK WRITE START',13,10,0
+g7_block_write_start_end:
+g7_block_write_ok db 'G7 NATIVE BLOCK WRITE OK',13,10,0
+g7_block_write_ok_end:
+g7_block_write_fail_message db 'G7 NATIVE BLOCK WRITE FAIL',13,10,0
+g7_block_write_fail_message_end:
+%endif
 %ifdef AGENT_OS_TEST_RUNTIME_SERVICE
     ; Bounded native Agent Runtime service bootstrap.  The primary Ring 3
     ; task sends START, then a HEARTBEAT; the sibling returns ACK before the
@@ -2078,6 +2150,9 @@ recursive_group_grandchild_end:
 section .user_data
 align 8
 file_backend dq 0
+align 512
+g7_block_write_data:
+times 512 db 0xA5
 
 
 section .note.GNU-stack noalloc noexec nowrite progbits

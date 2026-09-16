@@ -43,6 +43,10 @@ load_kernel_gdt:
 ; process CR3 before entering this trampoline and before every frame switch.
 enter_user_mode:
     cli
+    ; RDX carries the initial opaque argument register selected by the
+    ; bootstrap process.  Normal fixtures pass zero; test-gated native
+    ; services use it for a capability handle.
+    mov rbx, rdx
     mov ax, 0x23
     mov ds, ax
     mov es, ax
