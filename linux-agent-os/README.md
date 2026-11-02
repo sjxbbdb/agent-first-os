@@ -9,6 +9,7 @@
 - `tasks/`     任务清单，每个任务含：负责人、输入、验收标准、依赖
 
 ## 当前内容
+- `decisions/0001-route-and-side-effects.md` 路线与外部副作用原则（已定）
 - `research/round1-agent-os-gaps.md` 第一轮调研：8 个需求缺口与内核机制取舍
 - `specs/proto1-landlock-task-sandbox.md` 原型1 规格（草稿）
 - `tasks/proto1-landlock-tasks.md` 原型1、原型2 任务清单
