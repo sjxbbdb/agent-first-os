@@ -1,7 +1,7 @@
 # 第一轮调研：agent 对 OS 的需求缺口与内核机制取舍
 
 调研时间：2026-11-02（北京时间）。只做调研，不含内核代码。
-依据标注：[S1] 这类编号对应文末「来源清单」；[仓库] 指老大公开仓库 sjxbbdb/agent-first-os；[推断] 是我的判断，没有外部来源。
+依据标注：[S1] 这类编号对应文末「来源清单」；[仓库] 指项目负责人的公开仓库，即本仓库；[推断] 是我的判断，没有外部来源。
 
 ## 〇、先说两件事
 
@@ -12,7 +12,7 @@
 - FICLONE/reflink ioctl：通用化于 Linux 4.5，之前是 btrfs 私有的 BTRFS_IOC_CLONE [S11]。
 - io_uring：man page 确认 5.4 前要 3 次 mmap、5.11 起 SQPOLL 可非 root 使用 [S8][S9]。**io_uring 本身的起始版本这轮未从官方文档确认，未验证。**
 
-**2. 老大仓库现状和本课题有出入。** sjxbbdb/agent-first-os 是公开的 [仓库]。读了 README、DESIGN_BOOK、DECISION-0001：它目前是**从零写的混合内核**（UEFI x86_64，QEMU+OVMF 开发，自有 capability、native syscall/IPC、Supervisor、Policy Firewall、Trusted Input），DESIGN_BOOK 明确写「Linux/Windows 兼容不是第一版目标」[仓库]。agent runtime 定在 Ring 3，基于 pi agent 改造 [仓库 DECISION-0001]。
+**2. 项目负责人仓库现状和本课题有出入。** 本仓库是公开的 [仓库]。读了 README、DESIGN_BOOK、DECISION-0001：它目前是**从零写的混合内核**（UEFI x86_64，QEMU+OVMF 开发，自有 capability、native syscall/IPC、Supervisor、Policy Firewall、Trusted Input），DESIGN_BOOK 明确写「Linux/Windows 兼容不是第一版目标」[仓库]。agent runtime 定在 Ring 3，基于 pi agent 改造 [仓库 DECISION-0001]。
 而这次的任务描述是「Linux 内核魔改」。两条路线差别很大，见第三节第 1 条，需要拍板。下文按「魔改 Linux」来写，但仓库里已有的设计原则（agent 不是信任根、权力大但故障范围小、agent 在用户态）我照搬作为评价标准，这几条和 Linux 路线完全兼容。
 
 ---
@@ -107,7 +107,7 @@
 
 ---
 
-## 三、需要老大拍板的事
+## 三、需要项目负责人拍板的事
 
 1. **路线：魔改 Linux，还是继续仓库里的自研混合内核？** 我的倾向：**两者分开**。产品可用性上走 Linux + 现有机制（上面路线），自研内核继续作为学习主线（仓库已把 learning/ 和 product/ 分开）。理由：本报告 8 个缺口在 Linux 上基本都有零补丁的解法，而自研内核要从驱动、文件系统做起，离 agent 功能很远 [仓库 + 推断]。
 2. **基线内核版本**：倾向 6.18 longterm 而不是追 7.x mainline。理由：长期维护分支 [S1]；代价是拿不到最新 Landlock ABI（v12 的 capability/namespace 规则在哪个版本进的我没核实）。如果非要 v12 特性，要先查清版本。
@@ -122,7 +122,7 @@
 - [S2] https://docs.kernel.org/userspace-api/landlock.html ：Landlock 用户态 API 文档（页面版本 7.4.0-rc1），ABI 降级示例、v2–v12 各项特性、网络/capability/namespace 规则、「first introduced in Linux 5.13」。
 - [S3] https://man7.org/linux/man-pages/man7/landlock.7.html ：landlock(7)，各访问权限的起始 ABI 版本、「introduced in Linux 5.13」。
 - [S4] https://docs.kernel.org/admin-guide/cgroup-v2.html ：cgroup v2 文档，cgroup.events、cgroup.freeze、cgroup.kill、pressure 文件。
-- [S5] https://github.com/torvalds/linux/commit/fc611f47f2188 ：提交 fc611f47f2188ade2b48ff6902d5cce8baac0c58「bpf: Introduce BPF_PROG_TYPE_LSM」，引入 CONFIG_BPF_LSM（经搜索结果读到提交内容，附 lore 链接 https://lore.kernel.org/bpf/20200329004356.27286-2-kpsingh@chromium.org ，该 lore 链接本身我没单独打开，**未验证**）。
+- [S5] https://github.com/torvalds/linux/commit/fc611f47f2188 ：提交 fc611f47f2188ade2b48ff6902d5cce8baac0c58「bpf: Introduce BPF_PROG_TYPE_LSM」，引入 CONFIG_BPF_LSM（经搜索结果读到提交内容。已移除未验证的邮件列表链接）。
 - [S6] https://lwn.net/Articles/798157/ 与 https://lwn.net/Articles/798918/ ：LWN 关于 KRSI 的报道和 RFC 邮件（动机：audit/LSM 扩展困难）。
 - [S7] https://docs.kernel.org/bpf/prog_lsm.html ：LSM BPF Programs 文档，SEC("lsm/file_mprotect") 示例。另 https://lwn.net/Articles/821829/ ：LWN「The 5.7 kernel is out」，确认 BPF 安全钩子程序（原 KRSI）进入 5.7。
 - [S8] https://man7.org/linux/man-pages/man7/io_uring.7.html ：io_uring(7)，SQ/CQ 模型，5.4 前需三次 mmap。
