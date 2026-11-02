@@ -1,38 +1,43 @@
-# 规格：原型3 M-A1「无 shell 的任务机」
-版本：v0.1　日期：2026-11-02　状态：草稿，三项待拍板
+# 规格：原型3 M-A1「任务机」（稳定配置无 shell）
+版本：v0.2　日期：2026-11-02　状态：草稿，三项已定（决定 0002）
 
 来源：`research/round2-agent-native-os.md` 第二节第六小节（M-A1）及第二节 2.2、2.3。文中 [T3]、[T10] 等编号沿用该调研的来源清单，[R1-Sx] 指第一轮来源清单。本规格不新增调研结论，调研标为「未验证」或「[推断]」的内容这里同样标注。
 
 ## 已定与待拍板
-已定（项目负责人确认，2026-11-02，见 `decisions/0001-route-and-side-effects.md`）：
-| 项 | 结论 |
-|----|------|
-| 路线 | 只做 Linux 魔改 |
-| 外部副作用 | 一律人工确认。M-A1 不实现确认流程，只保证后续能接入 |
+已定（项目负责人确认，2026-11-02，见 `decisions/0001-route-and-side-effects.md` 与 `decisions/0002-microvm-dev-shell-confirm-channel.md`）：
+| 项 | 结论 | 对 M-A1 的影响 |
+|----|------|----------------|
+| 路线 | 只做 Linux 魔改 | 无 |
+| 外部副作用 | 一律人工确认 | M-A1 不实现确认流程，只保证后续能接入 |
+| 整机运行方式 | 默认跑 microVM（Firecracker 这类），VM 内每个任务再套沙箱 | microVM 属路线阶段 E，M-A1 仍在 QEMU 里验证；QEMU 里是否启用 KVM 加速不影响用例结果 |
+| shell | 开发阶段保留，稳定后去掉并改为带外维护模式（不是第一版就无 shell） | M-A1 分开发配置与稳定配置，见「范围」；U5 开发阶段可选，稳定配置再启用 |
+| 人工确认渠道 | 先用 Webhook 加签名 token | 属阶段 D，M-A1 不涉及 |
 
 待拍板（项目负责人尚未决定，以下倾向不得当成已定）：
-| 项 | 调研倾向 | 本规格暂用 | 对 M-A1 的影响 | 状态 |
-|----|----------|------------|----------------|------|
-| 系统默认跑在 microVM 里 | 是（Firecracker 或 Cloud Hypervisor），代价是需要 KVM | M-A1 在 QEMU 里验证，不引入 microVM | 阶段 E 才换 microVM，M-A1 不受影响；QEMU 里是否启用 KVM 加速不影响用例结果 | 待拍板 |
-| 完全不要 shell 和登录，但保留带外维护模式 | 要，维护模式参考 Bottlerocket admin container 思路 [T7] | 默认镜像不含 shell、无登录；维护模式本版不实现，调试靠串口日志和 task.sock | 开发期无调试入口，排障只能靠日志。是否另做维护镜像由拍板决定 | 待拍板 |
-| 人工确认走哪个外部渠道 | 先 Webhook 加签名 token，以后再接手机 | 本版不涉及 | 无影响；确认流程在阶段 D | 待拍板 |
-
-调研第四节另有两项也未定，M-A1 不依赖：computer-use 降为可选；确认 token 由 policyd 在用户态验证（与仓库设计书的内核验证不一致）。基线版本 6.18 longterm 与沙箱档位沿用 `specs/proto1-landlock-task-sandbox.md` 的待拍板状态。
+| 项 | 调研倾向 | 对 M-A1 的影响 | 状态 |
+|----|----------|----------------|------|
+| 基线内核版本 | 6.18 longterm | 本规格暂用 6.18 longterm，沿用 `specs/proto1-landlock-task-sandbox.md` 的待拍板状态 | 待拍板 |
+| VM 内执行不可信代码的子任务是否再加 gVisor | 加 | 无影响 | 待拍板 |
+| 确认 token 由谁验证 | policyd 在用户态验证（与仓库设计书的内核验证不一致） | 无影响 | 待拍板 |
+| computer-use 是否降为可选 | 降为可选 | 无影响 | 待拍板 |
+| 「稳定」的判定标准与带外维护模式的具体形态 | 参考 Bottlerocket admin container 思路 [T7] | 决定何时启用稳定配置与 U5；M-A1 不实现维护模式 | 待拍板 |
 
 ## 目标
-系统启动后没有 shell、没有登录，只能通过 task.sock 起任务；任务被 cgroup 限资源、被 Landlock 限文件。
+系统启动后只能通过 task.sock 起任务（稳定配置下没有 shell、没有登录；开发配置保留 shell 供调试）；任务被 cgroup 限资源、被 Landlock 限文件。
 
 ## 范围
 做什么：
 - 内核：6.18 longterm，从 `make tinyconfig` 起步 [T10]，补 virtio 控制台与块设备、cgroup v2（含 pids 与 freezer 能力）、`CONFIG_SECURITY_LANDLOCK=y`，且 `lsm=` 含 landlock。
-- initramfs 只放静态链接的 agent-init 与 taskd（第一版可合成一个程序），不放 busybox 或任何 shell。
+- initramfs 分两个配置，都必须放静态链接的 agent-init 与 taskd（第一版可合成一个程序）：
+  - 开发配置（M-A1 默认）：额外放静态 busybox，串口上可进 shell 供调试。
+  - 稳定配置：不放 busybox 或任何 shell。何时启用由「稳定」判定标准（待拍板）决定。
 - QEMU 用 `-kernel`、`-initrd`，加 virtio-serial 或 virtio-vsock 把 task.sock 转到宿主，宿主上用脚本发 JSON。
 - 在 QEMU 里验证，不碰真机。
 
 不做什么：
 - 不做 policyd、snapd、brokerd，不做 BPF LSM、审计、确认流程、快照。
-- 不做 microVM（Firecracker、Cloud Hypervisor）。
-- 不做维护模式、不做 computer-use。
+- 不做 microVM（Firecracker 等），整机 microVM 是阶段 E 的事。
+- 不做带外维护模式、不做 computer-use。
 - 不改内核源码；taskd 与 agent-init 是用户态程序。
 
 ## 接口
@@ -56,12 +61,12 @@
 | U2 | spawn 时 `limits.pids=8`，任务内跑 fork 炸弹 | 被 pids 控制器拦住，任务内进程数不超过 8，系统不崩溃 |
 | U3 | pause 后检查，再 resume | pause 后 `cgroup.events` 里 `frozen 1`，进程不再运行；resume 后继续运行 |
 | U4 | kill | cgroup 内无进程 |
-| U5 | 在串口上尝试获取 shell | 没有可用 shell |
+| U5 | 在串口上尝试获取 shell | 稳定配置：没有可用 shell。开发配置：可选，不计入通过标准，用于记录开发配置确实保留了 shell |
 
-U5 的判定写具体：一是 initramfs 内容清单（cpio 列表）里没有 shell 可执行文件；二是串口上输入回车和常见命令没有任何提示符或响应。两条都要给证据。调研只写了「没有可用 shell」，没有定义判据，这是本规格补的，需总经理确认。
+U5 在稳定配置下的判定写具体：一是 initramfs 内容清单（cpio 列表）里没有 shell 可执行文件；二是串口上输入回车和常见命令没有任何提示符或响应。两条都要给证据。调研只写了「没有可用 shell」，没有定义判据，这是本规格补的，需总经理确认。开发配置下 U5 可跑可不跑；跑的话预期相反，即能进 shell，结果只作记录。U5 在开发阶段不阻塞 T6、T7。
 
 ## 通过标准
-- 5 个用例输出与期望一致。
+- U1 到 U4 输出与期望一致。U5 开发阶段可选；稳定配置启用后，U5 也必须一致。
 - 串口日志里有 `landlock: Up and running.`。
 - Landlock ABI 实测版本号已记入日志。
 - 验收审查复核送审材料齐全并复跑通过。
@@ -70,10 +75,10 @@ U5 的判定写具体：一是 initramfs 内容清单（cpio 列表）里没有 
 - tinyconfig 加完上述选项能否直接启动，调研标为「未验证」，需要实测补选项，补了哪些要在 config 差异里列出。
 - fork 炸弹用例可能把 QEMU 内的小内存环境拖垮，需要给用例设置内存上限并写明。
 - task.sock 经 virtio-serial 或 vsock 转到宿主，两种方式调研没有比较，二选一由 T5 实测后记录理由。
-- 没有 shell 意味着排障只能靠串口日志，T5、T6 的日志要比平时更完整。
+- 开发配置有 shell，排障方便，但开发配置与稳定配置的差异必须记清楚，避免用例在开发配置通过、稳定配置失败；稳定配置启用时 U1 到 U4 要在稳定配置上重跑。
 - 本规格的 QEMU 步骤只是设计，没有运行过，运行证据靠 T6。
 
-## 未决细节（T5 实施前定稿）
+## 未决细节（T5 实施前先出方案交总经理定，T5 不得自行拍板）
 - task.sock 与 JSON 字段名、错误码的完整定义。
 - 转发 task.sock 用 virtio-serial 还是 vsock。
 - fork 炸弹用例的内存上限。
@@ -82,18 +87,19 @@ U5 的判定写具体：一是 initramfs 内容清单（cpio 列表）里没有 
 送审材料清单（缺一项即判不通过）：
 - 补丁或提交的位置：本原型零内核补丁，写明 agent-init、taskd、构建脚本、宿主脚本的提交位置。
 - 内核版本与 config：6.18 longterm 的具体小版本号，完整 `.config` 以及相对 tinyconfig 的补选项差异。
-- 完整构建命令与构建日志：内核、agent-init 与 taskd、initramfs 各一份，附 initramfs 的 cpio 内容清单。
+- 完整构建命令与构建日志：内核、agent-init 与 taskd、initramfs 各一份，附 initramfs 的 cpio 内容清单，注明是开发配置还是稳定配置。
 - QEMU 启动命令与串口日志：串口全量日志落文件，另附宿主侧每次请求与响应的记录。
 - 测试用例与输出：U1 到 U5 的脚本与输出。
-- GPL 声明与改动文件清单：内核未改动要明说；agent-init 与 taskd 的许可证写明；initramfs 不含 busybox，如含其他 GPL 组件需说明。
+- GPL 声明与改动文件清单：内核未改动要明说；agent-init 与 taskd 的许可证写明；开发配置含 busybox，须写明其 GPL 义务与来源；稳定配置不含 busybox，如含其他 GPL 组件需说明。
 - 调研与规格结论的真实来源链接：见调研来源清单。
 
 复现要求：别人拿同样的材料在盒子上能原样复跑，得到同样的串口输出。
 
 ## 依赖的决定与调研
 - `research/round2-agent-native-os.md`（第二节 2.2、2.3、第六小节，第四节待拍板事项）。
-- `decisions/0001-route-and-side-effects.md`。
+- `decisions/0001-route-and-side-effects.md`、`decisions/0002-microvm-dev-shell-confirm-channel.md`。
 - 前置原型：`specs/proto1-landlock-task-sandbox.md`（U1 复用其用例思路）。
 
 ## 变更记录
 - v0.1 2026-11-02 初稿，依据第二轮调研第二节第六小节。
+- v0.2 2026-11-02 依据决定 0002：microVM、开发阶段保留 shell、确认渠道三项改为已定；M-A1 分开发与稳定配置，U5 开发阶段可选；待拍板表补回仍未定的五项。

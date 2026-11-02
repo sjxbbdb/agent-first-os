@@ -10,6 +10,7 @@
 
 ## 当前内容
 - `decisions/0001-route-and-side-effects.md` 路线与外部副作用原则（已定）
+- `decisions/0002-microvm-dev-shell-confirm-channel.md` microVM 默认、开发阶段保留 shell、确认渠道（已定）
 - `research/round1-agent-os-gaps.md` 第一轮调研：8 个需求缺口与内核机制取舍
 - `specs/proto1-landlock-task-sandbox.md` 原型1 规格（草稿）
 - `specs/proto3-agent-native-taskbox.md` 原型3 M-A1 规格（草稿）
