@@ -32,4 +32,4 @@ T3 → T5 → T6 → T7（T5 起依赖 T3 通过，与 T4 并行）
 M-A1 的 U3、U4 用到 cgroup.freeze 与 cgroup.kill，T4 正是验证这两项。按总经理要求 T5 到 T7 只依赖 T3；T4 若先做完，T6 可复用其结论，但 T6 仍要自己跑通 U3、U4，不能引用 T4 的结果代替。
 
 ## 路线变更记录
-2026-11-02：项目负责人确认路线改为自研内核，Linux 线暂停，原型1 到此收尾。T2 的测试程序、脚本、文档和日志已入库于 `prototypes/proto1-landlock/`（不含任何二进制，二进制的哈希与获取方式见其 `artifacts/SHA256SUMS-binaries.txt`）。T3 验收及 T4 到 T7 随 Linux 线暂停，不再推进；此前的决定 0001 中「只做 Linux 魔改」一条已被新路线取代，待总经理确认后另记决定 0003 正式作废。
+2026-11-02：项目负责人确认路线改为自研内核，Linux 线暂停，原型1 到此收尾。T2 的测试程序、脚本、文档和日志已入库于 `prototypes/proto1-landlock/`（不含任何二进制，二进制的哈希与获取方式见其 `artifacts/SHA256SUMS-binaries.txt`）。T3 验收及 T4 到 T7 随 Linux 线暂停，不再推进；此前的决定 0001 中「只做 Linux 魔改」一条已被新路线取代，已由 `decisions/0003-self-built-kernel-supersedes-linux-route.md` 正式取代。
