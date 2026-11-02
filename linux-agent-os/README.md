@@ -16,12 +16,13 @@
 - `research/round1-agent-os-gaps.md` 第一轮调研：8 个需求缺口与内核机制取舍
 - `specs/proto1-landlock-task-sandbox.md` 原型1 规格（草稿）
 - `specs/proto3-agent-native-taskbox.md` 原型3 M-A1 规格（草稿）
-- `specs/native-kernel-m1.md` 自研内核第一里程碑规格（v0.2，里程碑内容已确认，接口字段待写）
+- `specs/native-kernel-m1.md` 自研内核第一里程碑规格（v0.6，里程碑内容已确认，接口字段待写）
 - `research/round2-agent-native-os.md` 第二轮调研：完全给 agent 用的操作系统
 - `research/round3-afos-baseline.md` 自研内核基线调研：agent-first-os 现状、第一里程碑差距、Linux 规格复用清单（只读源码，未编译未运行）
 - `research/round4-confirm-token-crypto.md` 确认令牌的密码原语调研（已过验收审查；密码原语待项目负责人拍板）
 - `research/round5-afos-qemu-baseline.md` agent-first-os 在 QEMU 的实测基线（验收审查有条件通过，仅为基线记录，非 M1 证据）
 - `research/round5-run-each-summary.tsv`、`research/round5-key-log-sha256.txt` round5 的逐项汇总表与关键日志哈希
+- `research/round6-g2-irq-analysis.md`、`research/round6-g2-irq-key-sha256.txt` g2-irq 根因报告（待验收审查复核）与关键文件哈希
 - `prototypes/proto1-landlock/` 原型1 源码、脚本、文档与日志（Linux 线已暂停，不含二进制）
 - `tasks/native-kernel-m1-tasks.md` 自研内核 M1 任务清单（T-M1-0 到 T-M1-5）
 - `tasks/proto1-landlock-tasks.md` 原型1、2、3 任务清单（T1 到 T7）

@@ -1,0 +1,20 @@
+# round6 g2-irq 调查关键文件的 sha256（原始文件的哈希，文件名是评估目录内的相对路径）
+# 这些文件没有入库，哈希仅用于日后拿到原件时核对。原件在评估方（codex工具人）的评估目录里，需要时向其索取。
+# diag/runs/uefi-*-12s.serial.log 与 base-pc.serial.log 内容相同，不列入。
+ecbbfa17431e47f297eb41faf0525e46838d8b36b0f60403b96e0eae02ef9a33  G2-IRQ-ANALYSIS.md
+18535b70fa785810489e6f7eb86ca74c7bb70fb964cc23efd140e1aa7f896622  diag/variants-1.txt
+4fefa32b1d9f9d568ceb1a14f3a7ffd24d84c97129093ff61c0f03eeb8eebf51  diag/variants-uefi.txt
+fb3539572e7cf30af6a61777ab853a618ce34156de80bbbfa3b03000ab5bdae3  diag/probe-bios.txt
+79874bcfaf2e868b3a66b81778c482e0a75e55570bdcb43086629eada25ce56f  diag/probe-uefi.txt
+274f30e49c195c24c70a7613c009a5d0ae2313178acecf46f6172620f081733d  diag/irq-wait-100x.patch
+e8879475bd475071a03720e64d1539775a8a2e78b8a592cfc1141396d608bcbb  diag/run-variant.sh
+98cda94fbd900f79663a0ef8e4256b86828a7d3b2c64595f9672c41c2b4ef26c  diag/runs/base-pc.serial.log
+bc51b3a8a6c744548f3c6dd0409ab7e33e4f242ab137323987d0cb7a0af3d660  diag/runs/base-pc.trace.log
+462088e763949c67cdd522ed32f4ec2e99770e848837e94f10c2c4b5d3354468  diag/runs/wait100x-pc-30s.serial.log
+462088e763949c67cdd522ed32f4ec2e99770e848837e94f10c2c4b5d3354468  diag/runs/icount2.serial.log
+6dd3cdde2fa217a5a901e504c65566f5f7327a182d2551feebf35dcff87e9818  diag/runs/probe-bios-10000000.serial.log
+6e0fd3462aed19baa171e8e7bbc4284befcd73ba83b8a86c095a9d52de3ce652  diag/runs/probe-bios-1000000000.serial.log
+586f40b6063e580c0f95e7db3323333dc7826b6a345032d98b9e7da76d21d190  diag/uefi-orig/serial.log
+d676a251d43d01457b6470ba1df95e579c317b9f10e4d12bb6325645af1e31fa  diag/uefi-orig/trace.log
+17cbbd225f395be4f4092966288e2cbb3387b458d1057893100639eb5d1301d9  diag/uefi-wait100x/serial.log
+04e64006394f60f5ebce9e405649be47a7ceb5707810d922d61ec294c072c682  diag/uefi-wait100x/trace.log
