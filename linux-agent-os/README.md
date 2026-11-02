@@ -18,7 +18,7 @@
 - `research/round1-agent-os-gaps.md` 第一轮调研：8 个需求缺口与内核机制取舍
 - `specs/proto1-landlock-task-sandbox.md` 原型1 规格（草稿）
 - `specs/proto3-agent-native-taskbox.md` 原型3 M-A1 规格（草稿）
-- `specs/native-kernel-m1.md` 自研内核第一里程碑规格（v0.11，里程碑内容已确认，T-M1-2 接口已草拟（未定稿），T-M1-3、T-M1-4 待写）
+- `specs/native-kernel-m1.md` 自研内核第一里程碑规格（v0.12，里程碑内容已确认，T-M1-2 接口已草拟（未定稿），T-M1-3、T-M1-4 待写）
 - `research/round2-agent-native-os.md` 第二轮调研：完全给 agent 用的操作系统
 - `research/round3-afos-baseline.md` 自研内核基线调研：agent-first-os 现状、第一里程碑差距、Linux 规格复用清单（只读源码，未编译未运行）
 - `research/round4-confirm-token-crypto.md` 确认令牌的密码原语调研（已过验收审查；密码原语待项目负责人拍板）
