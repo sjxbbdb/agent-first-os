@@ -1,10 +1,10 @@
 # 许可证与来源清单
 
-本项目当前版本：`0.1.0-dev`（见 `product/VERSION`）。项目自身的公开许可证在首次发布前由维护者最终选择；在选择前不把仓库标记为已授权的开源发行版。
+本项目当前版本：`0.1.0-dev`（见 `product/VERSION`）。项目自身的许可证已于 2026-11-02 确定为 MIT：仓库根目录有标准 MIT 全文的 `LICENSE`，署名为 `Copyright (c) 2026 agent-first-os contributors`（决定记录见 `linux-agent-os/decisions/0005-license-mit.md`）。例外：`linux-agent-os/prototypes/proto1-landlock` 以及基于 Linux 源码的衍生补丁保持 GPL-2.0-only；第三方组件保留各自的许可证。
 
 | 组件/参考 | 用途 | 当前处理 | 代码复制 |
 | --- | --- | --- | --- |
-| Agent-First OS `product/` | 自写内核、启动器、用户态协议 | 许可证待发布决策 | 无第三方代码复制 |
+| Agent-First OS `product/` | 自写内核、启动器、用户态协议 | MIT（见仓库根 `LICENSE`，2026-11-02 决定）；已有源码文件头暂未逐个加 SPDX，另行决定 | 无第三方代码复制 |
 | pi (`@earendil-works/pi-agent-core@0.85.1`) | 可选 Ring 3 host adapter 的 Agent/event stream | 上游 MIT（npm 包元数据已核验）；发行前仍需随发行物保留 NOTICE | 仅 `product/agent-runtime/pi-core-adapter.mjs`，不进入内核；临时 smoke 依赖放 `build/` |
 | OpenAI Codex app-server | JSONL、线程/事件/审批语义参考 | 按上游仓库许可证核对具体版本 | 当前仅语义参考 |
 | Linux、xv6、JOS、seL4、MINIX、TianoCore | 硬件与 ABI 对照 | 只读参考，迁移前逐项记录许可证和来源 | 当前无复制 |

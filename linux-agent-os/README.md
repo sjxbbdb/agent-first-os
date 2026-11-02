@@ -13,12 +13,12 @@
 - `decisions/0002-microvm-dev-shell-confirm-channel.md` microVM 默认、开发阶段保留 shell、确认渠道（已定）
 - `decisions/0003-self-built-kernel-supersedes-linux-route.md` 路线改为自研内核，Linux 线暂停（已定，取代 0001 的路线一条）
 - `decisions/0004-m1-code-base-token-signature-capability.md` M1 的代码基础、令牌签名（Ed25519）、能力撤销（已定）
-- `decisions/0005-license-mit.md` 新增文件占位许可证选 MIT（只记字面范围）
-- `specs/license-mit-rollout.md` MIT 落地方案草案（待总经理定，未实施）
+- `decisions/0005-license-mit.md` 许可证选 MIT（仓库根 LICENSE，整个仓库按 MIT，例外保持 GPL）
+- `specs/license-mit-rollout.md` MIT 落地方案与执行记录
 - `research/round1-agent-os-gaps.md` 第一轮调研：8 个需求缺口与内核机制取舍
 - `specs/proto1-landlock-task-sandbox.md` 原型1 规格（草稿）
 - `specs/proto3-agent-native-taskbox.md` 原型3 M-A1 规格（草稿）
-- `specs/native-kernel-m1.md` 自研内核第一里程碑规格（v0.8，里程碑内容已确认，接口字段待写）
+- `specs/native-kernel-m1.md` 自研内核第一里程碑规格（v0.9，里程碑内容已确认，接口字段待写）
 - `research/round2-agent-native-os.md` 第二轮调研：完全给 agent 用的操作系统
 - `research/round3-afos-baseline.md` 自研内核基线调研：agent-first-os 现状、第一里程碑差距、Linux 规格复用清单（只读源码，未编译未运行）
 - `research/round4-confirm-token-crypto.md` 确认令牌的密码原语调研（已过验收审查；密码原语待项目负责人拍板）
