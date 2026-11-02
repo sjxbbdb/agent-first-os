@@ -26,6 +26,7 @@
 - `research/round5-run-each-summary.tsv`、`research/round5-key-log-sha256.txt` round5 的逐项汇总表与关键日志哈希
 - `research/round6-g2-irq-analysis.md`、`research/round6-g2-irq-key-sha256.txt` g2-irq 根因报告（已复核，TCG 下成立，KVM 未测）与关键文件哈希
 - `research/round7-stage-reviews.md`、`research/round7-review-data-*.md`（5 个）、`research/round7-review-logs-sha256.txt` 验收审查对 T-M1-0（四轮）和 T-M1-1 的阶段审查记录（TCG 下的阶段结论，不带入 T-M1-5），日志只记哈希
+- `research/round7-agent-native-computer-use.md` 内核调研：系统原生的 agent 电脑操控（v2，M2 以后的设计输入，不改变 M1 范围；结尾三条待项目负责人决定）
 - `research/round6-g2-irq-review.md`、`research/round6-g2-irq-review-sha256.txt` 验收审查对该报告的复跑记录与日志哈希
 - `prototypes/proto1-landlock/` 原型1 源码、脚本、文档与日志（Linux 线已暂停，不含二进制）
 - `tasks/native-kernel-m1-tasks.md` 自研内核 M1 任务清单（T-M1-0 到 T-M1-5）
