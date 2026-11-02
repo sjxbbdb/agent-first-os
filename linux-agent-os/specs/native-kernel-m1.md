@@ -1,5 +1,5 @@
 # 规格：自研内核 第一里程碑 M1
-版本：v0.7　日期：2026-11-02　状态：里程碑内容已由项目负责人确认（见决定 0004）；接口字段和错误码仍待写，见「接口」
+版本：v0.8　日期：2026-11-02　状态：里程碑内容已由项目负责人确认（见决定 0004）；接口字段和错误码仍待写，见「接口」
 
 v0.2 相对 v0.1 的变化：写入决定 0004 的三项结论，待定表去掉已定项，补入 agent-first-os 实测结果（来自 codex工具人 的实测报告，该报告已入库为 `research/round5-afos-qemu-baseline.md`；验收审查核对了报告、日志和原仓库差异，结论为有条件通过，但没有复跑，只能当测试宏镜像的评估记录），任务清单另见 `tasks/native-kernel-m1-tasks.md`。核心抽象调研报告仍未入库，「内核里放哪几个对象」仍待定。本规格里没有一条运行证据经过验收审查复跑，所以证据状态一列没有「已通过复核」。
 
@@ -36,7 +36,7 @@ v0.2 相对 v0.1 的变化：写入决定 0004 的三项结论，待定表去掉
 |----|------|-------------|
 | g6-virtio-net-rx、g6-virtio-net-tx、g6-virtio-block | 串口里没有 `G6 virtio net transport READY`；QEMU 的 `info pci` 能看到设备 | 不依赖，M1 不做驱动和网络。原因待查 |
 | g7-native-block-write、g7-native-block-flush、g7-native-block-read、g7-native-journal-recovery、g7-native-journal-commit-recovery | 串口出现 `SCHEDULER block device capability unavailable`，是上一行的连带结果 | 不依赖，M1 不写磁盘。原因待查 |
-| g2-irq | 缺 `TIMER PREEMPT switched task`；`-d int` 里向量 0x20 和 0x08 在 5 秒内都是 0 次 | **依赖**：V2 的定时器抢占计数需要它。**根因已查明，限定 TCG（QEMU 10.0.13）下成立，KVM 未测**（codex工具人 报告 `research/round6-g2-irq-analysis.md`，验收审查复核并自己复跑了关键对照，一致；复核结论经总经理转达）：测试等待窗口短于 PIT 周期，不是中断配置错。细节：，不是中断配置错；Ring 3 等待循环 1000 万次在 TCG 下约 27 ms，短于 PIT 周期 54.9 ms，任务在第一次 IRQ0 前跑完，内核进 idle（`cli; hlt`）后不再收中断。BIOS 与 UEFI 两条路径都单独实测，有最小探针对照；所以现有的固定循环次数等待不适合做 M1 抢占验收，T-M1-1 要改成以 tick 数为条件的等待 |
+| g2-irq | 缺 `TIMER PREEMPT switched task`；`-d int` 里向量 0x20 和 0x08 在 5 秒内都是 0 次 | **依赖**：V2 的定时器抢占计数需要它。**根因已查明，限定 TCG（QEMU 10.0.13）下成立，KVM 未测**（codex工具人 报告 `research/round6-g2-irq-analysis.md`，验收审查复核并自己复跑了关键对照，一致，复跑记录见 `research/round6-g2-irq-review.md`）：测试等待窗口短于 PIT 周期，不是中断配置错。细节：，不是中断配置错；Ring 3 等待循环 1000 万次在 TCG 下约 27 ms，短于 PIT 周期 54.9 ms，任务在第一次 IRQ0 前跑完，内核进 idle（`cli; hlt`）后不再收中断。BIOS 与 UEFI 两条路径都单独实测，有最小探针对照；所以现有的固定循环次数等待不适合做 M1 抢占验收，T-M1-1 要改成以 tick 数为条件的等待 |
 
 另外，实测时对拷贝做过三处调整：99 个 .sh 没有执行位、9 个 UEFI 测试写死 OVMF 路径、一个测试缺 `build/uefi` 目录；`run-all.sh` 原样跑会在第 2 项失败后退出。这些影响「别人原样复跑」，列入 T-M1-0。
 
@@ -81,7 +81,7 @@ v0.2 相对 v0.1 的变化：写入决定 0004 的三项结论，待定表去掉
 3. QEMU 完整命令行和串口全量日志落文件，用 `-serial file:` 或 `tee`，不接受截取片段。验收审查用同一命令复跑至少两次，两次输出一致（时间戳除外）。
 4. 失败日志和成功日志都保留，不得覆盖。
 5. 不得改期望值凑通过。用例与期望不符，如实报告，由验收审查判是缺陷还是规格问题。
-6. 许可证：自研代码写明 SPDX；引入的第三方代码列出来源和许可证（EDK2、gnu-efi 一类要写清楚）。
+6. 许可证：新增自研文件写明 SPDX 为 `MIT`（决定 0005，只决定新增文件的占位许可证；例外与落地方案见 `specs/license-mit-rollout.md`，草案待总经理定）；基于 Linux 源码的补丁保持 GPL-2.0-only；引入的第三方代码列出来源和许可证（EDK2、gnu-efi 一类要写清楚）。
 7. 文档里不出现项目负责人的姓名。
 8. 日志头必须写明：TCG 还是 KVM、OVMF 的版本与路径、内核版本与构建号。
 9. 每条「被拒、被拦、冻结后停止」类断言必须配对照组：同一个动作在限制生效前先成功一次，否则「被拒」可能只是测试写错。
@@ -122,6 +122,7 @@ V4、V5、V6 的最终证据必须在 T-M1-4 完成后的默认镜像上，用 E
 - `research/round3-afos-baseline.md`：agent-first-os 现状、里程碑差距、Linux 规格复用清单
 - `research/round4-confirm-token-crypto.md`：确认令牌密码原语调研
 - `decisions/0004-m1-code-base-token-signature-capability.md`：M1 代码基础、令牌签名、能力撤销
+- `decisions/0005-license-mit.md`：新增文件占位许可证选 MIT
 - `research/round5-afos-qemu-baseline.md`：agent-first-os 在 QEMU 的实测报告（验收审查有条件通过，仅为基线记录，非 M1 证据）
 - 待入库：核心抽象调研报告
 
@@ -139,3 +140,4 @@ V4、V5、V6 的最终证据必须在 T-M1-4 完成后的默认镜像上，用 E
 - v0.6（2026-11-02）：收进 g2-irq 根因报告（round6，待验收审查复核）：g2-irq 行改为已有报告、待复核，V2 的等待改为以 tick 数为条件，「TIMER PREEMPT」打印口径交 T-M1-1 方案先定。v0.5（提交 0066bee）已出，本版为递增版本，不覆盖。
 - v0.7（2026-11-02）：g2-irq 根因按验收审查复核改为「已查明，限定 TCG 下，KVM 未测」；加入验收审查 D1（idle 与等待期间内核照常收 tick）；round6 按意见修订正文几处。v0.6（提交 85011ca）已出，本版为递增版本，不覆盖。
 - v0.7 补记：V7 一行的内容与对照组两列对齐任务清单 T-M1-4 第 10、12 条（验收审查对 v0.5 的复核意见）。
+- v0.8（2026-11-02）：g2-irq 引用验收审查的复跑记录；门槛 6 写入决定 0005（MIT，只管新增自研文件）。v0.7（提交 d629699）已推送，本版为递增版本，不覆盖。

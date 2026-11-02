@@ -1,9 +1,9 @@
 > 入库说明（方案规格）：本文是 codex工具人 对 g2-irq 失败的根因调查报告，正文基本未改，只在本说明里记录了入库时发现的问题，供审查参考。
-> - 状态：验收审查已复核（复核结论经总经理转达，我没有看到他的复核原始记录）：根因已查明，**限定在 TCG（QEMU 10.0.13）下成立**，KVM 没测（没有权限），KVM 下是否仍成立没有证据；他自己复跑了关键对照，结果一致。
+> - 状态：**已复核，限定在 TCG（QEMU 10.0.13）下成立，KVM 没测**（没有权限），KVM 下是否仍成立没有证据。验收审查自己复跑了关键对照，结果一致，复跑记录见 `research/round6-g2-irq-review.md`（日志的 sha256 见 `research/round6-g2-irq-review-sha256.txt`，日志本身没有入库）。
 > - 正文里的 `logs/`、`diag/`、`probe/`、`src/` 等相对路径指向评估目录，这些文件没有入库；关键文件的 sha256 见 `research/round6-g2-irq-key-sha256.txt`。
 > - 正文第 13 行引用的 `logs/tests/g2-irq-test.sh.log` 在入库时核对是 0 字节，没有那行串口输出；同样的现象见 `diag/runs/base-pc.serial.log`（最后一行是 `SCHEDULER idle - all tasks exited`）和 round5 的逐项汇总表（g2-irq 一行 rc=1）。
 > - UEFI 路径的串口证据在 `diag/uefi-orig/serial.log` 和 `diag/uefi-wait100x/serial.log`（前者没有 `TIMER PREEMPT`，后者有）。`diag/runs/uefi-orig-12s.serial.log` 与 `diag/runs/uefi-wait100x-12s.serial.log` 两个文件内容和 `base-pc.serial.log` 逐字节相同（都是 BIOS 的输出），不能当 UEFI 证据，也没有列入哈希清单。
-> - 入库时按验收审查意见改了正文几处，改动处用「【入库修订】」标出：27 ms 的来历、「宿主越快越容易失败」类说法、对照探针的证明范围、icount 建议。其余正文未改。
+> - 入库时按验收审查意见改了正文几处，改动处用「【入库修订】」标出：27 ms 的来历、「宿主越快越容易失败」类说法、对照探针的证明范围、icount 建议；「相位也不占优」一句保留原文，单独标为推断。其余正文未改。
 > - 诊断补丁（10 亿次循环）只在副本里用过，不是修复建议，也没跑回归。
 
 # g2-irq 失败根因分析
@@ -89,7 +89,7 @@ cpl0 下的 v20 来自 OVMF 自己在 ExitBootServices 之前的定时器，跟�
 ### 实验 E：墙钟时间换算
 - PIT 周期 = 65535 / 1193182 Hz ≈ 54.9 ms。
 - 探针 10 亿次循环跨过 50 次 tick，约 2.75 s，所以 1000 万次 ≈ 27 ms。
-- 27 ms < 54.9 ms，而且 PIT 是在 pic_timer_init 时开始计数的，相位也不占优，所以第一次 tick 来之前窗口就结束了。
+- 27 ms < 54.9 ms，而且 PIT 是在 pic_timer_init 时开始计数的，相位也不占优【入库修订：推断，没有做相位实验】，所以第一次 tick 来之前窗口就结束了。
 
 ## 诊断补丁
 - diag/irq-wait-100x.patch：只把 user_program.asm:1477 的 `10000000` 改成 `1000000000`。
