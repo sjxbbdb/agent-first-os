@@ -1,6 +1,6 @@
 # 任务清单：自研内核 第一里程碑 M1
 版本：v0.14　日期：2026-11-02
-规格：`specs/native-kernel-m1.md`（v0.13）　决定：`decisions/0004-m1-code-base-token-signature-capability.md`
+规格：`specs/native-kernel-m1.md`（v0.14）　决定：`decisions/0004-m1-code-base-token-signature-capability.md`
 说明：代码基础是现有 agent-first-os 代码。T-M1-0 到 T-M1-4 每个完成后，由验收审查先做阶段审查，通过后才进下一个任务，T-M1-5 仍统一验收；阶段审查不替代最终验收，按通用门槛核对本任务产出。每个任务的产出都要满足规格「验证方法」一节的通用门槛 1 到 11，下表「验收标准」只写本任务特有的部分，不重复门槛。每条「被拒、被拦、冻结后停止」类断言配对照组。证据状态以规格为准，没有运行日志的一律是「计划」。
 
 ## 已知失败（M1 不依赖，原因待查）
