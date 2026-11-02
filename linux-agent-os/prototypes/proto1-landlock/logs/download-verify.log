@@ -1,0 +1,75 @@
++++ dirname scripts/01-download.sh
+++ cd scripts/..
+++ pwd
++ P=$PROJECT
++ cd $PROJECT/dl
++ KV=6.18.60
++ BB=1.36.1
++ dl https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.18.60.tar.xz
+++ basename https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.18.60.tar.xz
++ '[' -f linux-6.18.60.tar.xz ']'
++ dl https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.18.60.tar.sign
+++ basename https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.18.60.tar.sign
++ '[' -f linux-6.18.60.tar.sign ']'
++ dl https://cdn.kernel.org/pub/linux/kernel/v6.x/sha256sums.asc
+++ basename https://cdn.kernel.org/pub/linux/kernel/v6.x/sha256sums.asc
++ '[' -f sha256sums.asc ']'
++ grep ' linux-6.18.60.tar.xz$' sha256sums.asc
++ cat k.sha256
+3c2f44ef6acc021a7ad444d9a2e6ec1ef488ff09368793d0004a6080f69d621e  linux-6.18.60.tar.xz
++ sha256sum -c k.sha256
+linux-6.18.60.tar.xz: OK
++ for fp in ABAF11C65A2970B130ABE3C479BE3E4300411886 647F28654894E3BD457199BE38DBBDC86092693E B8868C80BA62A1FFFAF5FDA9632D3A06589DA6B1
++ curl -fs 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xABAF11C65A2970B130ABE3C479BE3E4300411886'
++ gpg --batch --import
+gpg: no valid OpenPGP data found.
+gpg: Total number processed: 0
++ echo '取 key ABAF11C65A2970B130ABE3C479BE3E4300411886 失败'
+取 key ABAF11C65A2970B130ABE3C479BE3E4300411886 失败
++ for fp in ABAF11C65A2970B130ABE3C479BE3E4300411886 647F28654894E3BD457199BE38DBBDC86092693E B8868C80BA62A1FFFAF5FDA9632D3A06589DA6B1
++ curl -fs 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x647F28654894E3BD457199BE38DBBDC86092693E'
++ gpg --batch --import
+gpg: key 38DBBDC86092693E: 1 duplicate signature removed
+gpg: key 38DBBDC86092693E: 223 signatures not checked due to missing keys
+gpg: key 38DBBDC86092693E: public key "Greg Kroah-Hartman <gregkh@linuxfoundation.org>" imported
+gpg: Total number processed: 1
+gpg:               imported: 1
+gpg: no ultimately trusted keys found
++ for fp in ABAF11C65A2970B130ABE3C479BE3E4300411886 647F28654894E3BD457199BE38DBBDC86092693E B8868C80BA62A1FFFAF5FDA9632D3A06589DA6B1
++ curl -fs 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xB8868C80BA62A1FFFAF5FDA9632D3A06589DA6B1'
++ gpg --batch --import
+gpg: key 632D3A06589DA6B1: 8 signatures not checked due to missing keys
+gpg: key 632D3A06589DA6B1: public key "Kernel.org checksum autosigner <autosigner@kernel.org>" imported
+gpg: Total number processed: 1
+gpg:               imported: 1
+gpg: no ultimately trusted keys found
++ gpg --batch --verify sha256sums.asc
+gpg: Signature made Fri Oct 30 20:30:16 2026 CST
+gpg:                using RSA key B8868C80BA62A1FFFAF5FDA9632D3A06589DA6B1
+gpg: Good signature from "Kernel.org checksum autosigner <autosigner@kernel.org>" [unknown]
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: B886 8C80 BA62 A1FF FAF5  FDA9 632D 3A06 589D A6B1
++ xz -dc linux-6.18.60.tar.xz
++ gpg --batch --verify linux-6.18.60.tar.sign -
+gpg: Signature made Fri Oct 30 20:08:08 2026 CST
+gpg:                using RSA key 647F28654894E3BD457199BE38DBBDC86092693E
+gpg: Good signature from "Greg Kroah-Hartman <gregkh@linuxfoundation.org>" [unknown]
+gpg:                 aka "Greg Kroah-Hartman <gregkh@kernel.org>" [unknown]
+gpg:                 aka "Greg Kroah-Hartman (Linux kernel stable release signing key) <greg@kroah.com>" [unknown]
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: 647F 2865 4894 E3BD 4571  99BE 38DB BDC8 6092 693E
++ dl https://busybox.net/downloads/busybox-1.36.1.tar.bz2
+++ basename https://busybox.net/downloads/busybox-1.36.1.tar.bz2
++ '[' -f busybox-1.36.1.tar.bz2 ']'
++ dl https://busybox.net/downloads/busybox-1.36.1.tar.bz2.sha256
+++ basename https://busybox.net/downloads/busybox-1.36.1.tar.bz2.sha256
++ '[' -f busybox-1.36.1.tar.bz2.sha256 ']'
++ cat busybox-1.36.1.tar.bz2.sha256
+b8cc24c9574d809e7279c3be349795c5d5ceb6fdf19ca709f80cde50e47de314  busybox-1.36.1.tar.bz2
++ sha256sum -c busybox-1.36.1.tar.bz2.sha256
+busybox-1.36.1.tar.bz2: OK
++ sha256sum linux-6.18.60.tar.xz busybox-1.36.1.tar.bz2
+3c2f44ef6acc021a7ad444d9a2e6ec1ef488ff09368793d0004a6080f69d621e  linux-6.18.60.tar.xz
+b8cc24c9574d809e7279c3be349795c5d5ceb6fdf19ca709f80cde50e47de314  busybox-1.36.1.tar.bz2

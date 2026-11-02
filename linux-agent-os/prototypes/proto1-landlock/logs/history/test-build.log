@@ -1,0 +1,31 @@
++++ dirname scripts/04-build-test.sh
+++ cd scripts/..
+++ pwd
++ P=$PROJECT
++ source $PROJECT/env.sh
+++ export LP=$PROJECT
+++ LP=$PROJECT
+++ export PATH=$PROJECT/tools/env/bin:$PROJECT/tools/qemu-root/usr/bin:$PROJECT/tools/env/bin:$PROJECT/tools/qemu-root/usr/bin:$PROJECT/tools/env/bin:$PROJECT/tools/qemu-root/usr/bin:$HOME_DIR/.local/bin:$HOME_DIR/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
+++ PATH=$PROJECT/tools/env/bin:$PROJECT/tools/qemu-root/usr/bin:$PROJECT/tools/env/bin:$PROJECT/tools/qemu-root/usr/bin:$PROJECT/tools/env/bin:$PROJECT/tools/qemu-root/usr/bin:$HOME_DIR/.local/bin:$HOME_DIR/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
+++ export QEMU_LD=$PROJECT/tools/qemu-root/usr/lib/x86_64-linux-gnu
+++ QEMU_LD=$PROJECT/tools/qemu-root/usr/lib/x86_64-linux-gnu
+++ export QEMU_DATA=$PROJECT/tools/qemu-root/usr/share/qemu
+++ QEMU_DATA=$PROJECT/tools/qemu-root/usr/share/qemu
+++ export KV=6.18.60 BB=1.36.1
+++ KV=6.18.60
+++ BB=1.36.1
+++ export TENV=$PROJECT/tools/env
+++ TENV=$PROJECT/tools/env
++ KH=$PROJECT/build/linux-6.18.60/usr/include
++ test -f $PROJECT/build/linux-6.18.60/usr/include/linux/landlock.h
++ mkdir -p $PROJECT/build/out
++ gcc --version
++ head -1
+gcc (Debian 14.2.0-19) 14.2.0
++ gcc -static -O2 -Wall -Wextra -isystem $PROJECT/build/linux-6.18.60/usr/include -o $PROJECT/build/out/landlock_test $PROJECT/src/landlock_test.c
++ readelf -lW $PROJECT/build/out/landlock_test
++ grep -E 'Elf file type|INTERP'
+Elf file type is EXEC (Executable file)
++ sha256sum $PROJECT/build/out/landlock_test
++ tee $PROJECT/artifacts/landlock_test.sha256
+2f70167ac819dc26ba709c326d8f2a71c038c44bf5393565c8e908fb517e0ed5  $PROJECT/build/out/landlock_test

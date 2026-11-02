@@ -1,0 +1,8 @@
+# 不入库的二进制/大文件：只留哈希与获取方式
+3c2f44ef6acc021a7ad444d9a2e6ec1ef488ff09368793d0004a6080f69d621e  linux-6.18.60.tar.xz          https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.18.60.tar.xz （scripts/01-download.sh）
+b8cc24c9574d809e7279c3be349795c5d5ceb6fdf19ca709f80cde50e47de314  busybox-1.36.1.tar.bz2        https://busybox.net/downloads/busybox-1.36.1.tar.bz2 （scripts/01-download.sh）
+822c9098d5358bdf25ccc39213e295f951d5d09d05116e0dede78ac6c0a6dffa  bzImage                       scripts/02-build-kernel.sh 构建；存档于 frozen-v1/bin/bzImage
+90701128d26742b170d05da5fe015bb0a9509f2265f16e445ac720345fec8c42  initramfs-t2.cpio.gz          scripts/05-build-initramfs.sh t2；存档于 frozen-v1/bin/
+f3664393bb1774385beecfe751a57ac1afa3515c7cf3019cc9b987208602420e  landlock_test                 scripts/04-build-test.sh；存档于 frozen-v1/bin/
+1d730a26d1bc2523b044096441b6f5e7f7f7963e3e77d78b127ba8989943391a  busybox (static)              scripts/03-build-busybox.sh
+# tools/（micromamba 环境、qemu-root）由 scripts/00-install-tools.sh、00b-install-qemu-debs.sh 重新生成；build/ 由各构建脚本生成

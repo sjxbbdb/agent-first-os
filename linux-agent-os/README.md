@@ -15,6 +15,7 @@
 - `specs/proto1-landlock-task-sandbox.md` 原型1 规格（草稿）
 - `specs/proto3-agent-native-taskbox.md` 原型3 M-A1 规格（草稿）
 - `research/round2-agent-native-os.md` 第二轮调研：完全给 agent 用的操作系统
+- `prototypes/proto1-landlock/` 原型1 源码、脚本、文档与日志（Linux 线已暂停，不含二进制）
 - `tasks/proto1-landlock-tasks.md` 原型1、2、3 任务清单（T1 到 T7）
 
 ## 约定

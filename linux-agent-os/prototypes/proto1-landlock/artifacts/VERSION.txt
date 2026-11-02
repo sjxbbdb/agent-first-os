@@ -1,0 +1,6 @@
+内核: Linux 6.18.60（kernel.org releases.json 2026-11-02 查询：6.18.60 标记为 longterm）
+内核 tarball: https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.18.60.tar.xz
+make kernelrelease: 6.18.60
+busybox: 1.36.1  https://busybox.net/downloads/busybox-1.36.1.tar.bz2
+QEMU: 10.0.13 (Debian 1:10.0.13+ds-0+deb13u1，trixie .deb 解包)
+gcc: Debian 14.2.0-19（盒子自带），静态 libc: glibc libc.a（盒子自带）

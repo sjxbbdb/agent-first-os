@@ -1,0 +1,9 @@
+#!/bin/sh
+# T2：挂载伪文件系统，打印 landlock dmesg，运行测试程序，poweroff
+mount -t proc proc /proc; mount -t sysfs sysfs /sys; mount -t devtmpfs devtmpfs /dev
+echo "=== T2: dmesg | grep -i landlock ==="
+dmesg | grep -i landlock
+echo "=== T2: 运行 /usr/bin/landlock_test ==="
+/usr/bin/landlock_test; echo "landlock_test 退出码=$?"
+echo "=== T2 结束, poweroff ==="
+poweroff -f

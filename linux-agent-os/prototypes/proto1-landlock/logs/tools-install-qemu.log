@@ -1,0 +1,205 @@
++++ dirname scripts/00b-install-qemu-debs.sh
+++ cd scripts/..
+++ pwd
++ P=$PROJECT
++ D=$PROJECT/tools/debs
++ R=$PROJECT/tools/qemu-root
++ mkdir -p $PROJECT/tools/debs $PROJECT/tools/qemu-root
++ cd $PROJECT/tools/debs
++ '[' -f Packages.xz ']'
++ python3 -
++ cat urls.txt
+http://deb.debian.org/debian/pool/main/q/qemu/qemu-system-x86_10.0.13+ds-0+deb13u1_amd64.deb
+http://deb.debian.org/debian/pool/main/i/ipxe/ipxe-qemu_1.21.1+git20250501.dad20602+dfsg-1_all.deb
+http://deb.debian.org/debian/pool/main/s/seabios/seabios_1.16.3-2_all.deb
+http://deb.debian.org/debian/pool/main/q/qemu/qemu-system-data_10.0.13+ds-0+deb13u1_all.deb
+http://deb.debian.org/debian/pool/main/q/qemu/qemu-system-common_10.0.13+ds-0+deb13u1_amd64.deb
+http://deb.debian.org/debian/pool/main/u/usbredir/libusbredirparser1t64_0.15.0-1_amd64.deb
+http://deb.debian.org/debian/pool/main/libu/liburing/liburing2_2.9-1_amd64.deb
+http://deb.debian.org/debian/pool/main/libc/libcacard/libcacard0_2.8.0-3+b2_amd64.deb
+http://deb.debian.org/debian/pool/main/p/pcsc-lite/libpcsclite1_2.3.3-1_amd64.deb
+http://deb.debian.org/debian/pool/main/b/brltty/libbrlapi0.8_6.7-3.1+deb13u3_amd64.deb
+http://deb.debian.org/debian/pool/main/v/vdeplug4/libvdeplug2t64_4.0.1-5.1+b1_amd64.deb
+http://deb.debian.org/debian/pool/main/libe/libexecs/libexecs1_1.4-2+b2_amd64.deb
+http://deb.debian.org/debian/pool/main/libs/libslirp/libslirp0_4.8.0-1+deb13u1_amd64.deb
+http://deb.debian.org/debian/pool/main/r/rdma-core/librdmacm1t64_56.1-1_amd64.deb
+http://deb.debian.org/debian/pool/main/libn/libnl3/libnl-3-200_3.7.0-2_amd64.deb
+http://deb.debian.org/debian/pool/main/r/rdma-core/libibverbs1_56.1-1_amd64.deb
+http://deb.debian.org/debian/pool/main/libn/libnl3/libnl-route-3-200_3.7.0-2_amd64.deb
+http://deb.debian.org/debian/pool/main/p/pmdk/libpmem1_1.13.1-1.1+b1_amd64.deb
+http://deb.debian.org/debian/pool/main/n/ndctl/libndctl6_81-1_amd64.deb
+http://deb.debian.org/debian/pool/main/n/ndctl/libdaxctl1_81-1_amd64.deb
+http://deb.debian.org/debian/pool/main/f/fuse3/libfuse3-4_3.17.2-3_amd64.deb
+http://deb.debian.org/debian/pool/main/d/device-tree-compiler/libfdt1_1.7.2-2+b1_amd64.deb
+http://deb.debian.org/debian/pool/main/c/capstone/libcapstone5_5.0.7-1~deb13u1_amd64.deb
+http://deb.debian.org/debian/pool/main/liba/libaio/libaio1t64_0.3.113-8+b1_amd64.deb
++ read u
+++ basename http://deb.debian.org/debian/pool/main/q/qemu/qemu-system-x86_10.0.13+ds-0+deb13u1_amd64.deb
++ f=qemu-system-x86_10.0.13+ds-0+deb13u1_amd64.deb
++ '[' -f qemu-system-x86_10.0.13+ds-0+deb13u1_amd64.deb ']'
++ curl -fsSLO http://deb.debian.org/debian/pool/main/q/qemu/qemu-system-x86_10.0.13+ds-0+deb13u1_amd64.deb
++ dpkg -x qemu-system-x86_10.0.13+ds-0+deb13u1_amd64.deb $PROJECT/tools/qemu-root
++ read u
+++ basename http://deb.debian.org/debian/pool/main/i/ipxe/ipxe-qemu_1.21.1+git20250501.dad20602+dfsg-1_all.deb
++ f=ipxe-qemu_1.21.1+git20250501.dad20602+dfsg-1_all.deb
++ '[' -f ipxe-qemu_1.21.1+git20250501.dad20602+dfsg-1_all.deb ']'
++ curl -fsSLO http://deb.debian.org/debian/pool/main/i/ipxe/ipxe-qemu_1.21.1+git20250501.dad20602+dfsg-1_all.deb
++ dpkg -x ipxe-qemu_1.21.1+git20250501.dad20602+dfsg-1_all.deb $PROJECT/tools/qemu-root
++ read u
+++ basename http://deb.debian.org/debian/pool/main/s/seabios/seabios_1.16.3-2_all.deb
++ f=seabios_1.16.3-2_all.deb
++ '[' -f seabios_1.16.3-2_all.deb ']'
++ curl -fsSLO http://deb.debian.org/debian/pool/main/s/seabios/seabios_1.16.3-2_all.deb
++ dpkg -x seabios_1.16.3-2_all.deb $PROJECT/tools/qemu-root
++ read u
+++ basename http://deb.debian.org/debian/pool/main/q/qemu/qemu-system-data_10.0.13+ds-0+deb13u1_all.deb
++ f=qemu-system-data_10.0.13+ds-0+deb13u1_all.deb
++ '[' -f qemu-system-data_10.0.13+ds-0+deb13u1_all.deb ']'
++ curl -fsSLO http://deb.debian.org/debian/pool/main/q/qemu/qemu-system-data_10.0.13+ds-0+deb13u1_all.deb
++ dpkg -x qemu-system-data_10.0.13+ds-0+deb13u1_all.deb $PROJECT/tools/qemu-root
++ read u
+++ basename http://deb.debian.org/debian/pool/main/q/qemu/qemu-system-common_10.0.13+ds-0+deb13u1_amd64.deb
++ f=qemu-system-common_10.0.13+ds-0+deb13u1_amd64.deb
++ '[' -f qemu-system-common_10.0.13+ds-0+deb13u1_amd64.deb ']'
++ curl -fsSLO http://deb.debian.org/debian/pool/main/q/qemu/qemu-system-common_10.0.13+ds-0+deb13u1_amd64.deb
++ dpkg -x qemu-system-common_10.0.13+ds-0+deb13u1_amd64.deb $PROJECT/tools/qemu-root
++ read u
+++ basename http://deb.debian.org/debian/pool/main/u/usbredir/libusbredirparser1t64_0.15.0-1_amd64.deb
++ f=libusbredirparser1t64_0.15.0-1_amd64.deb
++ '[' -f libusbredirparser1t64_0.15.0-1_amd64.deb ']'
++ curl -fsSLO http://deb.debian.org/debian/pool/main/u/usbredir/libusbredirparser1t64_0.15.0-1_amd64.deb
++ dpkg -x libusbredirparser1t64_0.15.0-1_amd64.deb $PROJECT/tools/qemu-root
++ read u
+++ basename http://deb.debian.org/debian/pool/main/libu/liburing/liburing2_2.9-1_amd64.deb
++ f=liburing2_2.9-1_amd64.deb
++ '[' -f liburing2_2.9-1_amd64.deb ']'
++ curl -fsSLO http://deb.debian.org/debian/pool/main/libu/liburing/liburing2_2.9-1_amd64.deb
++ dpkg -x liburing2_2.9-1_amd64.deb $PROJECT/tools/qemu-root
++ read u
+++ basename http://deb.debian.org/debian/pool/main/libc/libcacard/libcacard0_2.8.0-3+b2_amd64.deb
++ f=libcacard0_2.8.0-3+b2_amd64.deb
++ '[' -f libcacard0_2.8.0-3+b2_amd64.deb ']'
++ curl -fsSLO http://deb.debian.org/debian/pool/main/libc/libcacard/libcacard0_2.8.0-3+b2_amd64.deb
++ dpkg -x libcacard0_2.8.0-3+b2_amd64.deb $PROJECT/tools/qemu-root
++ read u
+++ basename http://deb.debian.org/debian/pool/main/p/pcsc-lite/libpcsclite1_2.3.3-1_amd64.deb
++ f=libpcsclite1_2.3.3-1_amd64.deb
++ '[' -f libpcsclite1_2.3.3-1_amd64.deb ']'
++ curl -fsSLO http://deb.debian.org/debian/pool/main/p/pcsc-lite/libpcsclite1_2.3.3-1_amd64.deb
++ dpkg -x libpcsclite1_2.3.3-1_amd64.deb $PROJECT/tools/qemu-root
++ read u
+++ basename http://deb.debian.org/debian/pool/main/b/brltty/libbrlapi0.8_6.7-3.1+deb13u3_amd64.deb
++ f=libbrlapi0.8_6.7-3.1+deb13u3_amd64.deb
++ '[' -f libbrlapi0.8_6.7-3.1+deb13u3_amd64.deb ']'
++ curl -fsSLO http://deb.debian.org/debian/pool/main/b/brltty/libbrlapi0.8_6.7-3.1+deb13u3_amd64.deb
++ dpkg -x libbrlapi0.8_6.7-3.1+deb13u3_amd64.deb $PROJECT/tools/qemu-root
++ read u
+++ basename http://deb.debian.org/debian/pool/main/v/vdeplug4/libvdeplug2t64_4.0.1-5.1+b1_amd64.deb
++ f=libvdeplug2t64_4.0.1-5.1+b1_amd64.deb
++ '[' -f libvdeplug2t64_4.0.1-5.1+b1_amd64.deb ']'
++ curl -fsSLO http://deb.debian.org/debian/pool/main/v/vdeplug4/libvdeplug2t64_4.0.1-5.1+b1_amd64.deb
++ dpkg -x libvdeplug2t64_4.0.1-5.1+b1_amd64.deb $PROJECT/tools/qemu-root
++ read u
+++ basename http://deb.debian.org/debian/pool/main/libe/libexecs/libexecs1_1.4-2+b2_amd64.deb
++ f=libexecs1_1.4-2+b2_amd64.deb
++ '[' -f libexecs1_1.4-2+b2_amd64.deb ']'
++ curl -fsSLO http://deb.debian.org/debian/pool/main/libe/libexecs/libexecs1_1.4-2+b2_amd64.deb
++ dpkg -x libexecs1_1.4-2+b2_amd64.deb $PROJECT/tools/qemu-root
++ read u
+++ basename http://deb.debian.org/debian/pool/main/libs/libslirp/libslirp0_4.8.0-1+deb13u1_amd64.deb
++ f=libslirp0_4.8.0-1+deb13u1_amd64.deb
++ '[' -f libslirp0_4.8.0-1+deb13u1_amd64.deb ']'
++ curl -fsSLO http://deb.debian.org/debian/pool/main/libs/libslirp/libslirp0_4.8.0-1+deb13u1_amd64.deb
++ dpkg -x libslirp0_4.8.0-1+deb13u1_amd64.deb $PROJECT/tools/qemu-root
++ read u
+++ basename http://deb.debian.org/debian/pool/main/r/rdma-core/librdmacm1t64_56.1-1_amd64.deb
++ f=librdmacm1t64_56.1-1_amd64.deb
++ '[' -f librdmacm1t64_56.1-1_amd64.deb ']'
++ curl -fsSLO http://deb.debian.org/debian/pool/main/r/rdma-core/librdmacm1t64_56.1-1_amd64.deb
++ dpkg -x librdmacm1t64_56.1-1_amd64.deb $PROJECT/tools/qemu-root
++ read u
+++ basename http://deb.debian.org/debian/pool/main/libn/libnl3/libnl-3-200_3.7.0-2_amd64.deb
++ f=libnl-3-200_3.7.0-2_amd64.deb
++ '[' -f libnl-3-200_3.7.0-2_amd64.deb ']'
++ curl -fsSLO http://deb.debian.org/debian/pool/main/libn/libnl3/libnl-3-200_3.7.0-2_amd64.deb
++ dpkg -x libnl-3-200_3.7.0-2_amd64.deb $PROJECT/tools/qemu-root
++ read u
+++ basename http://deb.debian.org/debian/pool/main/r/rdma-core/libibverbs1_56.1-1_amd64.deb
++ f=libibverbs1_56.1-1_amd64.deb
++ '[' -f libibverbs1_56.1-1_amd64.deb ']'
++ curl -fsSLO http://deb.debian.org/debian/pool/main/r/rdma-core/libibverbs1_56.1-1_amd64.deb
++ dpkg -x libibverbs1_56.1-1_amd64.deb $PROJECT/tools/qemu-root
++ read u
+++ basename http://deb.debian.org/debian/pool/main/libn/libnl3/libnl-route-3-200_3.7.0-2_amd64.deb
++ f=libnl-route-3-200_3.7.0-2_amd64.deb
++ '[' -f libnl-route-3-200_3.7.0-2_amd64.deb ']'
++ curl -fsSLO http://deb.debian.org/debian/pool/main/libn/libnl3/libnl-route-3-200_3.7.0-2_amd64.deb
++ dpkg -x libnl-route-3-200_3.7.0-2_amd64.deb $PROJECT/tools/qemu-root
++ read u
+++ basename http://deb.debian.org/debian/pool/main/p/pmdk/libpmem1_1.13.1-1.1+b1_amd64.deb
++ f=libpmem1_1.13.1-1.1+b1_amd64.deb
++ '[' -f libpmem1_1.13.1-1.1+b1_amd64.deb ']'
++ curl -fsSLO http://deb.debian.org/debian/pool/main/p/pmdk/libpmem1_1.13.1-1.1+b1_amd64.deb
++ dpkg -x libpmem1_1.13.1-1.1+b1_amd64.deb $PROJECT/tools/qemu-root
++ read u
+++ basename http://deb.debian.org/debian/pool/main/n/ndctl/libndctl6_81-1_amd64.deb
++ f=libndctl6_81-1_amd64.deb
++ '[' -f libndctl6_81-1_amd64.deb ']'
++ curl -fsSLO http://deb.debian.org/debian/pool/main/n/ndctl/libndctl6_81-1_amd64.deb
++ dpkg -x libndctl6_81-1_amd64.deb $PROJECT/tools/qemu-root
++ read u
+++ basename http://deb.debian.org/debian/pool/main/n/ndctl/libdaxctl1_81-1_amd64.deb
++ f=libdaxctl1_81-1_amd64.deb
++ '[' -f libdaxctl1_81-1_amd64.deb ']'
++ curl -fsSLO http://deb.debian.org/debian/pool/main/n/ndctl/libdaxctl1_81-1_amd64.deb
++ dpkg -x libdaxctl1_81-1_amd64.deb $PROJECT/tools/qemu-root
++ read u
+++ basename http://deb.debian.org/debian/pool/main/f/fuse3/libfuse3-4_3.17.2-3_amd64.deb
++ f=libfuse3-4_3.17.2-3_amd64.deb
++ '[' -f libfuse3-4_3.17.2-3_amd64.deb ']'
++ curl -fsSLO http://deb.debian.org/debian/pool/main/f/fuse3/libfuse3-4_3.17.2-3_amd64.deb
++ dpkg -x libfuse3-4_3.17.2-3_amd64.deb $PROJECT/tools/qemu-root
++ read u
+++ basename http://deb.debian.org/debian/pool/main/d/device-tree-compiler/libfdt1_1.7.2-2+b1_amd64.deb
++ f=libfdt1_1.7.2-2+b1_amd64.deb
++ '[' -f libfdt1_1.7.2-2+b1_amd64.deb ']'
++ curl -fsSLO http://deb.debian.org/debian/pool/main/d/device-tree-compiler/libfdt1_1.7.2-2+b1_amd64.deb
++ dpkg -x libfdt1_1.7.2-2+b1_amd64.deb $PROJECT/tools/qemu-root
++ read u
+++ basename http://deb.debian.org/debian/pool/main/c/capstone/libcapstone5_5.0.7-1~deb13u1_amd64.deb
++ f=libcapstone5_5.0.7-1~deb13u1_amd64.deb
++ '[' -f libcapstone5_5.0.7-1~deb13u1_amd64.deb ']'
++ curl -fsSLO http://deb.debian.org/debian/pool/main/c/capstone/libcapstone5_5.0.7-1~deb13u1_amd64.deb
++ dpkg -x libcapstone5_5.0.7-1~deb13u1_amd64.deb $PROJECT/tools/qemu-root
++ read u
+++ basename http://deb.debian.org/debian/pool/main/liba/libaio/libaio1t64_0.3.113-8+b1_amd64.deb
++ f=libaio1t64_0.3.113-8+b1_amd64.deb
++ '[' -f libaio1t64_0.3.113-8+b1_amd64.deb ']'
++ curl -fsSLO http://deb.debian.org/debian/pool/main/liba/libaio/libaio1t64_0.3.113-8+b1_amd64.deb
++ dpkg -x libaio1t64_0.3.113-8+b1_amd64.deb $PROJECT/tools/qemu-root
++ read u
++ sha256sum ipxe-qemu_1.21.1+git20250501.dad20602+dfsg-1_all.deb libaio1t64_0.3.113-8+b1_amd64.deb libbrlapi0.8_6.7-3.1+deb13u3_amd64.deb libcacard0_2.8.0-3+b2_amd64.deb libcapstone5_5.0.7-1~deb13u1_amd64.deb libdaxctl1_81-1_amd64.deb libexecs1_1.4-2+b2_amd64.deb libfdt1_1.7.2-2+b1_amd64.deb libfuse3-4_3.17.2-3_amd64.deb libibverbs1_56.1-1_amd64.deb libndctl6_81-1_amd64.deb libnl-3-200_3.7.0-2_amd64.deb libnl-route-3-200_3.7.0-2_amd64.deb libpcsclite1_2.3.3-1_amd64.deb libpmem1_1.13.1-1.1+b1_amd64.deb librdmacm1t64_56.1-1_amd64.deb libslirp0_4.8.0-1+deb13u1_amd64.deb liburing2_2.9-1_amd64.deb libusbredirparser1t64_0.15.0-1_amd64.deb libvdeplug2t64_4.0.1-5.1+b1_amd64.deb qemu-system-common_10.0.13+ds-0+deb13u1_amd64.deb qemu-system-data_10.0.13+ds-0+deb13u1_all.deb qemu-system-x86_10.0.13+ds-0+deb13u1_amd64.deb seabios_1.16.3-2_all.deb
+b3b799d90b87ef2d6defa925cd48cf1691a19806f08041733a4f884d4a218b17  ipxe-qemu_1.21.1+git20250501.dad20602+dfsg-1_all.deb
+490c8a2d116001a5f3b0a6d7a7aabf6a7b629366590dc5c3f75b078e931dd129  libaio1t64_0.3.113-8+b1_amd64.deb
+d8767805735bfae0edbe793fc8b6f6266ac9e55bec88c3d36b567c41b6438ca2  libbrlapi0.8_6.7-3.1+deb13u3_amd64.deb
+1d6a8d17b893e54dfea8fe78df16c9a8ab4a6e626f9312881784592d480d9317  libcacard0_2.8.0-3+b2_amd64.deb
+775187a7be26bb0b076d1979a02163b943dbc13eb4adb0efc503223a03c75422  libcapstone5_5.0.7-1~deb13u1_amd64.deb
+6296eb5c976743ba0defb7a061ef081238ca072cf569c6bb96fd3f9095c58a30  libdaxctl1_81-1_amd64.deb
+05b578fead365a81141fe834c3b3b6df89d17a050784a237f736489fbd426105  libexecs1_1.4-2+b2_amd64.deb
+8e37034d7864807ae2063efcc82fc79aad59069546212e6e0908ed67f9f7e107  libfdt1_1.7.2-2+b1_amd64.deb
+92e2d521ff872755a13aa69dba7b24025a7dc0f0f5aa708c9a86cd3565f570da  libfuse3-4_3.17.2-3_amd64.deb
+4c3b889607586e6328964a5f98e01ef01daa415be24334d743d6654aab4c47a4  libibverbs1_56.1-1_amd64.deb
+fe60a05d42e61cb9f49a90b872aa5ca569363b13459ee0d405243c37a7de7c93  libndctl6_81-1_amd64.deb
+ce5c153953016be42def7b105f37d55eae07a9608d1dfe6bcb03cc017fc384cb  libnl-3-200_3.7.0-2_amd64.deb
+1c8c95542688996cff8e954583642b10a3bd78b69954f565fda62144c2bc3897  libnl-route-3-200_3.7.0-2_amd64.deb
+a8bc4725549060d1e696d358e32a3699d947d5381871553a290389830bebccbd  libpcsclite1_2.3.3-1_amd64.deb
+7d972d6958e915ce602e4b90debc6b4b91a01dfea1fe003d0b013756e7d9d863  libpmem1_1.13.1-1.1+b1_amd64.deb
+5b56911725905b8e2a8389c99416ca078395c4ca8ce0d516bc758d5be0134687  librdmacm1t64_56.1-1_amd64.deb
+6125698173f8be0d0de01ff897a0df3c5e50fb09f70238b26dd6574aaa0934e1  libslirp0_4.8.0-1+deb13u1_amd64.deb
+4b589c00c7a51172aace2cb2fb3d3ff32daf86c644023126dcfcaa840cc941ea  liburing2_2.9-1_amd64.deb
+4b039802dac140bae5a6f3fb6341eeeb9ea8c3e4d7b95ad36a07a8c28572f177  libusbredirparser1t64_0.15.0-1_amd64.deb
+01291e2c8e28e91eac6b59c983a3a44e29ad0ddb8622699fbb84cbd5f26334a4  libvdeplug2t64_4.0.1-5.1+b1_amd64.deb
+3a99dc23c42c66bb7e96dc1f2ba12b1797d154a472fbdb1cfcd822d9fb69e85b  qemu-system-common_10.0.13+ds-0+deb13u1_amd64.deb
+a0e03c526cc09d4c2ab20aa19a8c12e916cdc49a170acb16a6563c28f70eafd3  qemu-system-data_10.0.13+ds-0+deb13u1_all.deb
+5e841d0723a657fd8bc2e9e1a085d24f47fcb3e4a0f94762e6c38b429f22fbb1  qemu-system-x86_10.0.13+ds-0+deb13u1_amd64.deb
+2b590534250b940f43222eeab9a8f57f337a9d9a73fc412a43ab8cd07a7e56f6  seabios_1.16.3-2_all.deb

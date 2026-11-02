@@ -1,0 +1,9 @@
+#!/bin/sh
+# T1 自检：挂载伪文件系统，打印 landlock 相关 dmesg，起 shell 执行自检命令后关机
+mount -t proc proc /proc; mount -t sysfs sysfs /sys; mount -t devtmpfs devtmpfs /dev
+echo "=== T1 自检: init 已运行, 内核 $(uname -r) ==="
+dmesg | grep -i landlock
+cat /sys/kernel/security/lsm 2>/dev/null || { mount -t securityfs none /sys/kernel/security && cat /sys/kernel/security/lsm; echo; }
+/bin/sh -c 'echo "T1_SHELL_OK: shell 可用, pid=$$"; ls /'
+echo "=== T1 自检结束, poweroff ==="
+poweroff -f

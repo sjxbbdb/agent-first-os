@@ -1,0 +1,1247 @@
++++ dirname scripts/05-build-initramfs.sh
+++ cd scripts/..
+++ pwd
++ P=$PROJECT
++ source $PROJECT/env.sh
+++ export LP=$PROJECT
+++ LP=$PROJECT
+++ export PATH=$PROJECT/tools/env/bin:$PROJECT/tools/qemu-root/usr/bin:$PROJECT/tools/env/bin:$PROJECT/tools/qemu-root/usr/bin:$PROJECT/tools/env/bin:$PROJECT/tools/qemu-root/usr/bin:$HOME_DIR/.local/bin:$HOME_DIR/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
+++ PATH=$PROJECT/tools/env/bin:$PROJECT/tools/qemu-root/usr/bin:$PROJECT/tools/env/bin:$PROJECT/tools/qemu-root/usr/bin:$PROJECT/tools/env/bin:$PROJECT/tools/qemu-root/usr/bin:$HOME_DIR/.local/bin:$HOME_DIR/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
+++ export QEMU_LD=$PROJECT/tools/qemu-root/usr/lib/x86_64-linux-gnu
+++ QEMU_LD=$PROJECT/tools/qemu-root/usr/lib/x86_64-linux-gnu
+++ export QEMU_DATA=$PROJECT/tools/qemu-root/usr/share/qemu
+++ QEMU_DATA=$PROJECT/tools/qemu-root/usr/share/qemu
+++ export KV=6.18.60 BB=1.36.1
+++ KV=6.18.60
+++ BB=1.36.1
+++ export TENV=$PROJECT/tools/env
+++ TENV=$PROJECT/tools/env
++ T=t2
++ R=$PROJECT/build/rootfs-t2
++ rm -rf $PROJECT/build/rootfs-t2
++ mkdir -p $PROJECT/build/rootfs-t2/bin $PROJECT/build/rootfs-t2/sbin $PROJECT/build/rootfs-t2/usr/bin $PROJECT/build/rootfs-t2/usr/sbin $PROJECT/build/rootfs-t2/proc $PROJECT/build/rootfs-t2/sys $PROJECT/build/rootfs-t2/dev $PROJECT/build/rootfs-t2/etc $PROJECT/build/rootfs-t2/root $PROJECT/build/rootfs-t2/tmp/work
++ cp $PROJECT/build/busybox-1.36.1/busybox $PROJECT/build/rootfs-t2/bin/busybox
+++ $PROJECT/build/rootfs-t2/bin/busybox --list-full
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e '$PROJECT/build/rootfs-t2/usr/bin/[' ']'
++ ln -s /bin/busybox '$PROJECT/build/rootfs-t2/usr/bin/['
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e '$PROJECT/build/rootfs-t2/usr/bin/[[' ']'
++ ln -s /bin/busybox '$PROJECT/build/rootfs-t2/usr/bin/[['
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/acpid ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/acpid
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/add-shell ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/add-shell
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/addgroup ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/addgroup
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/adduser ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/adduser
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/adjtimex ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/adjtimex
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/arch ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/arch
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/arp ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/arp
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/arping ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/arping
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/ascii ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/ascii
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/ash ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/ash
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/awk ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/awk
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/base32 ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/base32
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/base64 ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/base64
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/basename ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/basename
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/bc ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/bc
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/beep ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/beep
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/blkdiscard ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/blkdiscard
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/blkid ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/blkid
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/blockdev ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/blockdev
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/bootchartd ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/bootchartd
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/brctl ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/brctl
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/bunzip2 ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/bunzip2
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/bzcat ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/bzcat
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/bzip2 ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/bzip2
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/cal ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/cal
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/cat ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/cat
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/chat ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/chat
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/chattr ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/chattr
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/chgrp ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/chgrp
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/chmod ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/chmod
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/chown ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/chown
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/chpasswd ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/chpasswd
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/chpst ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/chpst
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/chroot ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/chroot
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/chrt ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/chrt
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/chvt ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/chvt
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/cksum ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/cksum
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/clear ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/clear
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/cmp ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/cmp
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/comm ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/comm
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/conspy ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/conspy
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/cp ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/cp
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/cpio ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/cpio
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/crc32 ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/crc32
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/crond ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/crond
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/crontab ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/crontab
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/cryptpw ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/cryptpw
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/cttyhack ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/cttyhack
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/cut ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/cut
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/date ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/date
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/dc ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/dc
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/dd ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/dd
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/deallocvt ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/deallocvt
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/delgroup ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/delgroup
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/deluser ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/deluser
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/depmod ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/depmod
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/devmem ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/devmem
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/df ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/df
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/dhcprelay ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/dhcprelay
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/diff ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/diff
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/dirname ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/dirname
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/dmesg ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/dmesg
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/dnsd ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/dnsd
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/dnsdomainname ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/dnsdomainname
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/dos2unix ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/dos2unix
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/dpkg ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/dpkg
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/dpkg-deb ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/dpkg-deb
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/du ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/du
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/dumpkmap ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/dumpkmap
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/dumpleases ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/dumpleases
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/echo ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/echo
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/ed ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/ed
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/egrep ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/egrep
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/eject ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/eject
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/env ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/env
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/envdir ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/envdir
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/envuidgid ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/envuidgid
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/ether-wake ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/ether-wake
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/expand ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/expand
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/expr ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/expr
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/factor ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/factor
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/fakeidentd ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/fakeidentd
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/fallocate ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/fallocate
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/false ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/false
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/fatattr ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/fatattr
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/fbset ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/fbset
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/fbsplash ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/fbsplash
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/fdflush ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/fdflush
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/fdformat ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/fdformat
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/fdisk ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/fdisk
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/fgconsole ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/fgconsole
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/fgrep ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/fgrep
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/find ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/find
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/findfs ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/findfs
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/flock ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/flock
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/fold ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/fold
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/free ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/free
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/freeramdisk ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/freeramdisk
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/fsck ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/fsck
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/fsck.minix ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/fsck.minix
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/fsfreeze ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/fsfreeze
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/fstrim ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/fstrim
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/fsync ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/fsync
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/ftpd ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/ftpd
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/ftpget ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/ftpget
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/ftpput ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/ftpput
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/fuser ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/fuser
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/getopt ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/getopt
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/getty ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/getty
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/grep ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/grep
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/groups ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/groups
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/gunzip ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/gunzip
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/gzip ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/gzip
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/halt ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/halt
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/hd ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/hd
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/hdparm ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/hdparm
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/head ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/head
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/hexdump ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/hexdump
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/hexedit ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/hexedit
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/hostid ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/hostid
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/hostname ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/hostname
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/httpd ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/httpd
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/hush ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/hush
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/hwclock ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/hwclock
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/i2cdetect ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/i2cdetect
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/i2cdump ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/i2cdump
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/i2cget ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/i2cget
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/i2cset ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/i2cset
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/i2ctransfer ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/i2ctransfer
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/id ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/id
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/ifconfig ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/ifconfig
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/ifdown ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/ifdown
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/ifenslave ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/ifenslave
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/ifplugd ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/ifplugd
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/ifup ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/ifup
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/inetd ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/inetd
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/init ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/init
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/insmod ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/insmod
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/install ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/install
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/ionice ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/ionice
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/iostat ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/iostat
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/ip ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/ip
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/ipaddr ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/ipaddr
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/ipcalc ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/ipcalc
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/ipcrm ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/ipcrm
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/ipcs ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/ipcs
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/iplink ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/iplink
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/ipneigh ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/ipneigh
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/iproute ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/iproute
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/iprule ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/iprule
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/iptunnel ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/iptunnel
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/kbd_mode ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/kbd_mode
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/kill ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/kill
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/killall ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/killall
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/killall5 ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/killall5
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/klogd ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/klogd
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/last ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/last
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/less ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/less
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/link ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/link
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/linux32 ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/linux32
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/linux64 ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/linux64
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/linuxrc ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/linuxrc
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/ln ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/ln
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/loadfont ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/loadfont
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/loadkmap ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/loadkmap
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/logger ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/logger
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/login ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/login
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/logname ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/logname
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/logread ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/logread
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/losetup ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/losetup
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/lpd ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/lpd
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/lpq ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/lpq
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/lpr ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/lpr
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/ls ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/ls
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/lsattr ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/lsattr
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/lsmod ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/lsmod
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/lsof ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/lsof
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/lspci ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/lspci
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/lsscsi ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/lsscsi
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/lsusb ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/lsusb
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/lzcat ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/lzcat
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/lzma ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/lzma
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/lzop ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/lzop
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/makedevs ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/makedevs
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/makemime ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/makemime
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/man ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/man
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/md5sum ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/md5sum
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/mdev ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/mdev
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/mesg ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/mesg
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/microcom ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/microcom
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/mim ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/mim
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/mkdir ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/mkdir
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/mkdosfs ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/mkdosfs
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/mke2fs ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/mke2fs
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/mkfifo ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/mkfifo
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/mkfs.ext2 ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/mkfs.ext2
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/mkfs.minix ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/mkfs.minix
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/mkfs.vfat ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/mkfs.vfat
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/mknod ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/mknod
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/mkpasswd ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/mkpasswd
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/mkswap ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/mkswap
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/mktemp ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/mktemp
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/modinfo ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/modinfo
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/modprobe ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/modprobe
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/more ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/more
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/mount ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/mount
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/mountpoint ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/mountpoint
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/mpstat ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/mpstat
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/mt ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/mt
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/mv ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/mv
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/nameif ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/nameif
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/nanddump ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/nanddump
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/nandwrite ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/nandwrite
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/nbd-client ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/nbd-client
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/nc ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/nc
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/netstat ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/netstat
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/nice ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/nice
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/nl ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/nl
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/nmeter ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/nmeter
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/nohup ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/nohup
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/nologin ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/nologin
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/nproc ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/nproc
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/nsenter ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/nsenter
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/nslookup ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/nslookup
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/ntpd ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/ntpd
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/od ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/od
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/openvt ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/openvt
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/partprobe ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/partprobe
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/passwd ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/passwd
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/paste ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/paste
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/patch ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/patch
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/pgrep ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/pgrep
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/pidof ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/pidof
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/ping ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/ping
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/ping6 ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/ping6
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/pipe_progress ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/pipe_progress
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/pivot_root ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/pivot_root
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/pkill ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/pkill
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/pmap ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/pmap
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/popmaildir ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/popmaildir
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/poweroff ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/poweroff
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/powertop ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/powertop
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/printenv ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/printenv
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/printf ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/printf
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/ps ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/ps
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/pscan ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/pscan
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/pstree ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/pstree
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/pwd ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/pwd
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/pwdx ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/pwdx
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/raidautorun ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/raidautorun
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/rdate ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/rdate
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/rdev ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/rdev
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/readahead ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/readahead
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/readlink ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/readlink
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/readprofile ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/readprofile
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/realpath ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/realpath
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/reboot ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/reboot
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/reformime ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/reformime
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/remove-shell ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/remove-shell
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/renice ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/renice
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/reset ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/reset
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/resize ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/resize
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/resume ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/resume
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/rev ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/rev
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/rm ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/rm
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/rmdir ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/rmdir
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/rmmod ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/rmmod
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/route ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/route
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/rpm ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/rpm
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/rpm2cpio ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/rpm2cpio
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/rtcwake ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/rtcwake
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/run-init ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/run-init
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/run-parts ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/run-parts
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/runlevel ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/runlevel
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/runsv ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/runsv
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/runsvdir ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/runsvdir
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/rx ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/rx
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/script ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/script
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/scriptreplay ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/scriptreplay
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/sed ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/sed
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/seedrng ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/seedrng
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/sendmail ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/sendmail
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/seq ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/seq
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/setarch ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/setarch
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/setconsole ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/setconsole
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/setfattr ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/setfattr
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/setfont ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/setfont
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/setkeycodes ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/setkeycodes
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/setlogcons ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/setlogcons
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/setpriv ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/setpriv
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/setserial ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/setserial
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/setsid ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/setsid
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/setuidgid ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/setuidgid
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/sh ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/sh
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/sha1sum ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/sha1sum
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/sha256sum ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/sha256sum
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/sha3sum ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/sha3sum
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/sha512sum ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/sha512sum
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/showkey ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/showkey
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/shred ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/shred
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/shuf ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/shuf
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/slattach ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/slattach
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/sleep ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/sleep
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/smemcap ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/smemcap
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/softlimit ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/softlimit
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/sort ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/sort
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/split ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/split
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/ssl_client ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/ssl_client
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/start-stop-daemon ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/start-stop-daemon
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/stat ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/stat
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/strings ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/strings
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/stty ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/stty
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/su ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/su
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/sulogin ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/sulogin
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/sum ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/sum
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/sv ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/sv
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/svc ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/svc
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/svlogd ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/svlogd
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/svok ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/svok
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/swapoff ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/swapoff
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/swapon ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/swapon
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/switch_root ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/switch_root
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/sync ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/sync
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/sysctl ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/sysctl
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/syslogd ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/syslogd
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/tac ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/tac
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/tail ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/tail
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/tar ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/tar
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/taskset ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/taskset
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/tcpsvd ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/tcpsvd
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/tee ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/tee
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/telnet ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/telnet
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/telnetd ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/telnetd
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/test ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/test
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/tftp ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/tftp
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/tftpd ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/tftpd
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/time ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/time
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/timeout ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/timeout
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/top ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/top
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/touch ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/touch
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/tr ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/tr
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/traceroute ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/traceroute
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/traceroute6 ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/traceroute6
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/tree ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/tree
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/true ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/true
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/truncate ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/truncate
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/ts ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/ts
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/tsort ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/tsort
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/tty ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/tty
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/ttysize ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/ttysize
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/tunctl ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/tunctl
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/ubiattach ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/ubiattach
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/ubidetach ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/ubidetach
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/ubimkvol ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/ubimkvol
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/ubirename ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/ubirename
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/ubirmvol ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/ubirmvol
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/ubirsvol ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/ubirsvol
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/ubiupdatevol ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/ubiupdatevol
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/udhcpc ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/udhcpc
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/udhcpc6 ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/udhcpc6
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/sbin/udhcpd ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/sbin/udhcpd
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/udpsvd ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/udpsvd
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/uevent ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/uevent
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/umount ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/umount
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/uname ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/uname
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/unexpand ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/unexpand
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/uniq ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/uniq
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/unix2dos ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/unix2dos
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/unlink ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/unlink
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/unlzma ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/unlzma
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/unshare ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/unshare
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/unxz ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/unxz
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/unzip ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/unzip
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/uptime ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/uptime
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/users ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/users
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/usleep ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/usleep
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/uudecode ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/uudecode
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/uuencode ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/uuencode
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/vconfig ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/vconfig
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/vi ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/vi
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/vlock ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/vlock
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/volname ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/volname
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/w ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/w
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/wall ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/wall
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/watch ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/watch
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/watchdog ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/watchdog
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/wc ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/wc
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/wget ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/wget
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/which ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/which
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/who ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/who
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/whoami ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/whoami
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/whois ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/whois
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/xargs ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/xargs
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/xxd ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/xxd
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/xz ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/xz
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/xzcat ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/xzcat
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/usr/bin/yes ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/usr/bin/yes
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/bin/zcat ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/bin/zcat
++ for a in $("$R/bin/busybox" --list-full)
++ '[' -e $PROJECT/build/rootfs-t2/sbin/zcip ']'
++ ln -s /bin/busybox $PROJECT/build/rootfs-t2/sbin/zcip
++ cp $PROJECT/initramfs-src/init-t2 $PROJECT/build/rootfs-t2/init
++ chmod 755 $PROJECT/build/rootfs-t2/init
++ echo top-secret-for-C3
++ chmod 600 $PROJECT/build/rootfs-t2/root/secret
++ '[' t2 = t2 ']'
++ install -m 755 $PROJECT/build/out/landlock_test $PROJECT/build/rootfs-t2/usr/bin/landlock_test
++ mkdir -p $PROJECT/build/out
++ gcc -O2 -o $PROJECT/build/out/gen_init_cpio $PROJECT/build/linux-6.18.60/usr/gen_init_cpio.c
++ L=$PROJECT/build/out/initramfs-t2.list
++ python3 - $PROJECT/build/rootfs-t2
++ grep -v '^nod ' $PROJECT/build/out/initramfs-t2.list
++ echo 'nod /dev/console 0600 0 0 c 5 1'
++ mv $PROJECT/build/out/initramfs-t2.list.tmp $PROJECT/build/out/initramfs-t2.list
++ $PROJECT/build/out/gen_init_cpio -t 0 $PROJECT/build/out/initramfs-t2.list
++ gzip -9 -n
++ ls -l $PROJECT/build/out/initramfs-t2.cpio.gz
+-rw-r--r-- 1 builder builder 1595889 Nov  2 15:07 $PROJECT/build/out/initramfs-t2.cpio.gz
++ sha256sum $PROJECT/build/out/initramfs-t2.cpio.gz
++ tee $PROJECT/artifacts/initramfs-t2.sha256
+49fc23b3f7bd22d97768a21044bb280d87ede72335eb4031d5ed3396ef44bb57  $PROJECT/build/out/initramfs-t2.cpio.gz
