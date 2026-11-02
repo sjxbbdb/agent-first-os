@@ -1,0 +1,11 @@
+# round5 关键日志的 sha256（原始文件的哈希，文件名不含路径）
+# 只有 run-each-summary.tsv 已入库（research/round5-run-each-summary.tsv），其余日志没有入库，哈希仅用于日后拿到原日志时核对是否被改动。
+5a5a5b68164ee23ae8515a1388ade33725f49b61961ff16abb7618cd8efdf03a  run-each-summary.tsv
+36f6c939d321912f3e75414fbbafa1806a7173aeafb4958401fe1e6bd31819dd  run-all.log
+6b5cb452fa2fae305fb81d758f4c03fea3a94116a917c301b3744cc81bbb52ca  bios-serial.log
+91631000f2fbbf96a8f79d7d0f0459f0956890e062e614b66a344bfeb786fd1a  uefi-kernel-serial.log
+a137edf29a1d6f35abc28d4f6e49c20abfb8041f25ee6c6b4778272c87bd1575  uefi-stage0-serial.log
+fabe98ee48292e17edf2e6dc0ab76f65cae44f575d6a6e427c94665fba7b5240  bios-build.log
+5bb1b2c4b98ae63c66d7750e345d81771341ccba5958cafff6dc9cdfb82c06dc  test-g5-uefi-kernel-test.log
+f233b0c927a328fca33b92f285b788bbdecb5741a006c4fa16e24907c5ea8ab9  test-g5-uefi-stage0-test.log
+7a00e679a8c8b3a7a26842e88d7fb8241993deda70bd1f06f2dcce752bf77029  toolchain-versions.log

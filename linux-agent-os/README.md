@@ -21,6 +21,7 @@
 - `research/round3-afos-baseline.md` 自研内核基线调研：agent-first-os 现状、第一里程碑差距、Linux 规格复用清单（只读源码，未编译未运行）
 - `research/round4-confirm-token-crypto.md` 确认令牌的密码原语调研（已过验收审查；密码原语待项目负责人拍板）
 - `research/round5-afos-qemu-baseline.md` agent-first-os 在 QEMU 的实测基线（验收审查有条件通过，仅为基线记录，非 M1 证据）
+- `research/round5-run-each-summary.tsv`、`research/round5-key-log-sha256.txt` round5 的逐项汇总表与关键日志哈希
 - `prototypes/proto1-landlock/` 原型1 源码、脚本、文档与日志（Linux 线已暂停，不含二进制）
 - `tasks/native-kernel-m1-tasks.md` 自研内核 M1 任务清单（T-M1-0 到 T-M1-5）
 - `tasks/proto1-landlock-tasks.md` 原型1、2、3 任务清单（T1 到 T7）
