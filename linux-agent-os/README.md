@@ -12,7 +12,9 @@
 - `decisions/0001-route-and-side-effects.md` 路线与外部副作用原则（已定）
 - `research/round1-agent-os-gaps.md` 第一轮调研：8 个需求缺口与内核机制取舍
 - `specs/proto1-landlock-task-sandbox.md` 原型1 规格（草稿）
-- `tasks/proto1-landlock-tasks.md` 原型1、原型2 任务清单
+- `specs/proto3-agent-native-taskbox.md` 原型3 M-A1 规格（草稿）
+- `research/round2-agent-native-os.md` 第二轮调研：完全给 agent 用的操作系统
+- `tasks/proto1-landlock-tasks.md` 原型1、2、3 任务清单（T1 到 T7）
 
 ## 约定
 - 文档与提交信息不含任何个人信息（姓名、邮箱、本机路径里的用户名）。
